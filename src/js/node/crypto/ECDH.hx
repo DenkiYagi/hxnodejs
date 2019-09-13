@@ -35,18 +35,12 @@ import js.node.Buffer;
 	The class for creating EC Diffie-Hellman key exchanges.
 
 	Returned by `Crypto.createECDH`.
+
+	https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_class_ecdh
 **/
 extern class ECDH {
-	/**
-		Generates private and public EC Diffie-Hellman key values, and returns the public key
-		in the specified `format` and `encoding`. This key should be transferred to the other party.
-
-		Format specifies point encoding and can be 'compressed', 'uncompressed', or 'hybrid'.
-		If no format is provided - the point will be returned in 'uncompressed' format.
-
-		Encoding can be 'binary', 'hex', or 'base64'. If no encoding is provided, then a buffer is returned.
-	**/
-	function generateKeys(?encoding:String, ?format:ECDHFormat):EitherType<String, Buffer>;
+	/** **/
+	function convertKey(key:EitherType<String, Buffer>, curve:String, ?input_encoding:String, output_encoding:String, format:String):EitherType<Buffer, String>;
 
 	/**
 		Computes the shared secret using `other_public_key` as the other party's public key
@@ -63,6 +57,24 @@ extern class ECDH {
 	function computeSecret(other_public_key:Buffer):Buffer;
 
 	/**
+		Generates private and public EC Diffie-Hellman key values, and returns the public key
+		in the specified `format` and `encoding`. This key should be transferred to the other party.
+
+		Format specifies point encoding and can be 'compressed', 'uncompressed', or 'hybrid'.
+		If no format is provided - the point will be returned in 'uncompressed' format.
+
+		Encoding can be 'binary', 'hex', or 'base64'. If no encoding is provided, then a buffer is returned.
+	**/
+	function generateKeys(?encoding:String, ?format:ECDHFormat):EitherType<String, Buffer>;
+
+	/**
+		Returns the EC Diffie-Hellman private key in the specified encoding, which can be 'binary', 'hex', or 'base64'.
+		If no `encoding` is provided, then a buffer is returned.
+	**/
+	@:overload(function():Buffer {})
+	function getPrivateKey(encoding:String):String;
+
+	/**
 		Returns the EC Diffie-Hellman public key in the specified `encoding` and `format`.
 
 		Format specifies point encoding and can be 'compressed', 'uncompressed', or 'hybrid'.
@@ -73,11 +85,13 @@ extern class ECDH {
 	function getPublicKey(?encoding:String, ?format:ECDHFormat):EitherType<String, Buffer>;
 
 	/**
-		Returns the EC Diffie-Hellman private key in the specified encoding, which can be 'binary', 'hex', or 'base64'.
-		If no `encoding` is provided, then a buffer is returned.
+		Sets the EC Diffie-Hellman private key.
+
+		Key encoding can be 'binary', 'hex' or 'base64'.
+		If no encoding is provided, then a buffer is expected.
 	**/
-	@:overload(function():Buffer {})
-	function getPrivateKey(encoding:String):String;
+	@:overload(function(private_key:Buffer):Void {})
+	function setPrivateKey(private_key:String, encoding:String):Void;
 
 	/**
 		Sets the EC Diffie-Hellman public key.
@@ -87,13 +101,4 @@ extern class ECDH {
 	**/
 	@:overload(function(public_key:Buffer):Void {})
 	function setPublicKey(public_key:String, encoding:String):Void;
-
-	/**
-		Sets the EC Diffie-Hellman private key.
-
-		Key encoding can be 'binary', 'hex' or 'base64'.
-		If no encoding is provided, then a buffer is expected.
-	**/
-	@:overload(function(private_key:Buffer):Void {})
-	function setPrivateKey(private_key:String, encoding:String):Void;
 }

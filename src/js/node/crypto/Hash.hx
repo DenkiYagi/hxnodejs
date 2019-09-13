@@ -37,6 +37,16 @@ import js.node.Buffer;
 **/
 extern class Hash extends js.node.stream.Transform<Hash> {
 	/**
+		Calculates the digest of all of the passed data to be hashed.
+		The `encoding` can be 'hex', 'binary' or 'base64'.
+		If no `encoding` is provided, then a buffer is returned.
+
+		Note: hash object can not be used after `digest` method has been called.
+	**/
+	@:overload(function():Buffer {})
+	function digest(encoding:String):String;
+
+	/**
 		Updates the hash content with the given `data`,
 
 		the `encoding` of which is given in `input_encoding` and can be 'utf8', 'ascii' or 'binary'.
@@ -47,14 +57,4 @@ extern class Hash extends js.node.stream.Transform<Hash> {
 	**/
 	@:overload(function(data:Buffer):Hash {})
 	function update(data:String, ?input_encoding:String):Hash;
-
-	/**
-		Calculates the digest of all of the passed data to be hashed.
-		The `encoding` can be 'hex', 'binary' or 'base64'.
-		If no `encoding` is provided, then a buffer is returned.
-
-		Note: hash object can not be used after `digest` method has been called.
-	**/
-	@:overload(function():Buffer {})
-	function digest(encoding:String):String;
 }

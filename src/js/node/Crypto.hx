@@ -32,6 +32,7 @@ import js.node.Buffer;
 import js.node.crypto.*;
 import js.node.crypto.DiffieHellman.IDiffieHellman;
 import js.node.tls.SecureContext;
+import js.node.stream.Transform;
 
 /**
 	Enumerations of crypto algorighms to be used.
@@ -58,23 +59,13 @@ import js.node.tls.SecureContext;
 }
 
 /**
-	The crypto module offers a way of encapsulating secure credentials
-	to be used as part of a secure HTTPS net or http connection.
+	The crypto module provides cryptographic functionality that includes
+	a set of wrappers for OpenSSL's hash, HMAC, cipher, decipher, sign, and verify functions.
 
-	It also offers a set of wrappers for OpenSSL's hash, hmac, cipher, decipher, sign and verify methods.
+	@see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_crypto
 **/
 @:jsRequire("crypto")
 extern class Crypto {
-	/**
-		Load and set engine for some/all OpenSSL functions (selected by `flags`).
-
-		`engine` could be either an id or a path to the to the engine's shared library.
-
-		`flags` is optional and has `Constants.ENGINE_METHOD_ALL` value by default.
-		It could take one of or mix of flags prefixed with `ENGINE_METHOD_` defined in `Constants` module.
-	**/
-	static function setEngine(engine:String, ?flags:Int):Void;
-
 	/**
 		The default encoding to use for functions that can take either strings or buffers.
 		The default value is 'buffer', which makes it default to using `Buffer` objects.
@@ -90,7 +81,59 @@ extern class Crypto {
 		Property for checking and controlling whether a FIPS compliant crypto provider is currently in use.
 		Setting to true requires a FIPS build of Node.js.
 	**/
+	@:deprecated
 	static var fips:Bool;
+
+	/**
+		Creates and returns a cipher object, with the given algorithm and password.
+
+		`algorithm` is dependent on OpenSSL, examples are 'aes192', etc.
+		On recent releases, openssl list-cipher-algorithms will display the available cipher algorithms.
+
+		`password` is used to derive key and IV, which must be a 'binary' encoded string or a buffer.
+
+		It is a stream that is both readable and writable. The written data is used to compute the hash.
+		Once the writable side of the stream is ended, use the `read` method to get the computed hash digest.
+		The legacy `update` and `digest` methods are also supported.
+	**/
+	@:deprecated
+	static function createCipher(algorithm:String, password:EitherType<String, Buffer>, ?options: Transform<Cipher>):Cipher;
+
+	/**
+		Creates and returns a cipher object, with the given algorithm, key and iv.
+
+		`algorithm` is the same as the argument to `createCipher`.
+
+		`key` is the raw key used by the algorithm.
+
+		`iv` is an initialization vector.
+
+		`key` and `iv` must be 'binary' encoded strings or buffers.
+	**/
+	static function createCipheriv(algorithm:String, key:EitherType<String, Buffer>, iv:EitherType<String, Buffer>, ?options: Transform<Cipher>):Cipher;
+
+	/**
+		Creates and returns a decipher object, with the given algorithm and key.
+		This is the mirror of the `createCipher` above.
+	**/
+	@:deprecated
+	static function createDecipher(algorithm:String, password:EitherType<String, Buffer>):Decipher;
+
+	/**
+		Creates and returns a decipher object, with the given algorithm, key and iv.
+		This is the mirror of the `createCipheriv` above.
+	**/
+	static function createDecipheriv(algorithm:String, key:EitherType<String, Buffer>, iv:EitherType<String, Buffer>):Decipher;
+
+	/**
+		Load and set engine for some/all OpenSSL functions (selected by `flags`).
+
+		`engine` could be either an id or a path to the to the engine's shared library.
+
+		`flags` is optional and has `Constants.ENGINE_METHOD_ALL` value by default.
+		It could take one of or mix of flags prefixed with `ENGINE_METHOD_` defined in `Constants` module.
+	**/
+	static function setEngine(engine:String, ?flags:Int):Void;
 
 	/**
 		Returns an array with the names of the supported ciphers.
@@ -129,45 +172,6 @@ extern class Crypto {
 	static function createHmac(algorithm:CryptoAlgorithm, key:EitherType<String, Buffer>):Hmac;
 
 	/**
-		Creates and returns a cipher object, with the given algorithm and password.
-
-		`algorithm` is dependent on OpenSSL, examples are 'aes192', etc.
-		On recent releases, openssl list-cipher-algorithms will display the available cipher algorithms.
-
-		`password` is used to derive key and IV, which must be a 'binary' encoded string or a buffer.
-
-		It is a stream that is both readable and writable. The written data is used to compute the hash.
-		Once the writable side of the stream is ended, use the `read` method to get the computed hash digest.
-		The legacy `update` and `digest` methods are also supported.
-	**/
-	static function createCipher(algorithm:String, password:EitherType<String, Buffer>):Cipher;
-
-	/**
-		Creates and returns a cipher object, with the given algorithm, key and iv.
-
-		`algorithm` is the same as the argument to `createCipher`.
-
-		`key` is the raw key used by the algorithm.
-
-		`iv` is an initialization vector.
-
-		`key` and `iv` must be 'binary' encoded strings or buffers.
-	**/
-	static function createCipheriv(algorithm:String, key:EitherType<String, Buffer>, iv:EitherType<String, Buffer>):Cipher;
-
-	/**
-		Creates and returns a decipher object, with the given algorithm and key.
-		This is the mirror of the `createCipher` above.
-	**/
-	static function createDecipher(algorithm:String, password:EitherType<String, Buffer>):Decipher;
-
-	/**
-		Creates and returns a decipher object, with the given algorithm, key and iv.
-		This is the mirror of the `createCipheriv` above.
-	**/
-	static function createDecipheriv(algorithm:String, key:EitherType<String, Buffer>, iv:EitherType<String, Buffer>):Decipher;
-
-	/**
 		Creates and returns a signing object, with the given algorithm.
 		On recent OpenSSL releases, openssl list-public-key-algorithms will display the available signing algorithms.
 		Example: 'RSA-SHA256'.
@@ -186,9 +190,7 @@ extern class Crypto {
 
 		Creates a Diffie-Hellman key exchange object and generates a prime of the given bit length. The generator used is 2.
 	**/
-	@:overload(function(prime_length:Int):DiffieHellman {})
-	@:overload(function(prime:Buffer):DiffieHellman {})
-	static function createDiffieHellman(prime:String, encoding:String):DiffieHellman;
+	static function createDiffieHellman(prime:EitherType<String, Buffer>, ?prime_encoding:String, ?generator:EitherType<Int, EitherType<String, Buffer>>, ?generator_encoding:String):DiffieHellman;
 
 	/**
 		Creates a predefined Diffie-Hellman key exchange object.

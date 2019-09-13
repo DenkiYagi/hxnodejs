@@ -53,15 +53,10 @@ extern interface IDiffieHellman {
 /**
 	The class for creating Diffie-Hellman key exchanges.
 	Returned by `Crypto.createDiffieHellman`.
+
+	@see https://nodejs.org/dist/latest-v12.x/docs/api/all.html#crypto_class_diffiehellman
 **/
 extern class DiffieHellman implements IDiffieHellman {
-	/**
-		Generates private and public Diffie-Hellman key values, and returns the public key in the specified `encoding`.
-		This key should be transferred to the other party. `encoding` can be 'binary', 'hex', or 'base64'.
-	**/
-	@:overload(function():Buffer {})
-	function generateKeys(encoding:String):String;
-
 	/**
 		Computes the shared secret using `other_public_key` as the other party's public key
 		and returns the computed shared secret.
@@ -78,11 +73,11 @@ extern class DiffieHellman implements IDiffieHellman {
 	function computeSecret(other_public_key:String, input_encoding:String, output_encoding:String):String;
 
 	/**
-		Returns the Diffie-Hellman prime in the specified encoding, which can be 'binary', 'hex', or 'base64'.
-		If no encoding is provided, then a buffer is returned.
+		Generates private and public Diffie-Hellman key values, and returns the public key in the specified `encoding`.
+		This key should be transferred to the other party. `encoding` can be 'binary', 'hex', or 'base64'.
 	**/
 	@:overload(function():Buffer {})
-	function getPrime(encoding:String):String;
+	function generateKeys(encoding:String):String;
 
 	/**
 		Returns the Diffie-Hellman generator in the specified encoding, which can be 'binary', 'hex', or 'base64'.
@@ -92,11 +87,11 @@ extern class DiffieHellman implements IDiffieHellman {
 	function getGenerator(encoding:String):String;
 
 	/**
-		Returns the Diffie-Hellman public key in the specified encoding, which can be 'binary', 'hex', or 'base64'.
+		Returns the Diffie-Hellman prime in the specified encoding, which can be 'binary', 'hex', or 'base64'.
 		If no encoding is provided, then a buffer is returned.
 	**/
 	@:overload(function():Buffer {})
-	function getPublicKey(encoding:String):String;
+	function getPrime(encoding:String):String;
 
 	/**
 		Returns the Diffie-Hellman private key in the specified encoding, which can be 'binary', 'hex', or 'base64'.
@@ -106,11 +101,11 @@ extern class DiffieHellman implements IDiffieHellman {
 	function getPrivateKey(encoding:String):String;
 
 	/**
-		Sets the Diffie-Hellman public key. Key encoding can be 'binary', 'hex' or 'base64'.
-		If no `encoding` is provided, then a `Buffer` is expected.
+		Returns the Diffie-Hellman public key in the specified encoding, which can be 'binary', 'hex', or 'base64'.
+		If no encoding is provided, then a buffer is returned.
 	**/
-	@:overload(function(public_key:Buffer):Void {})
-	function setPublicKey(public_key:String, encoding:String):Void;
+	@:overload(function():Buffer {})
+	function getPublicKey(encoding:String):String;
 
 	/**
 		Sets the Diffie-Hellman private key. Key encoding can be 'binary', 'hex' or 'base64'.
@@ -118,4 +113,24 @@ extern class DiffieHellman implements IDiffieHellman {
 	**/
 	@:overload(function(private_key:Buffer):Void {})
 	function setPrivateKey(private_key:String, encoding:String):Void;
+
+	/**
+		Sets the Diffie-Hellman public key. Key encoding can be 'binary', 'hex' or 'base64'.
+		If no `encoding` is provided, then a `Buffer` is expected.
+	**/
+	@:overload(function(public_key:Buffer):Void {})
+	function setPublicKey(public_key:String, encoding:String):Void;
+
+	/**
+		A bit field containing any warnings and/or errors resulting from a check performed
+		during initialization of the DiffieHellman object.
+
+		The following values are valid (as defined in `crypto.Constants` module):
+		* DH_CHECK_P_NOT_SAFE_PRIME
+		* DH_CHECK_P_NOT_PRIME
+		* DH_UNABLE_TO_CHECK_GENERATOR
+		* DH_NOT_SUITABLE_GENERATOR
+		* DH_CHECK_P_NOT_SAFE_PRIME
+	**/
+	function verifyError(v:Int):Void;
 }

@@ -23,6 +23,8 @@
 package js.node.crypto;
 
 import js.node.Buffer;
+import js.node.stream.Transform;
+import js.node.stream.Transform.TSelf;
 
 /**
 	Class for decrypting data.
@@ -33,19 +35,10 @@ import js.node.Buffer;
 	The written enciphered data is used to produce the plain-text data on the the readable side.
 
 	The legacy `update` and `final` methods are also supported.
+
+	@see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_class_decipher
 **/
 extern class Decipher extends js.node.stream.Transform<Decipher> {
-	/**
-		Updates the decipher with `data`, which is encoded in 'binary', 'base64' or 'hex'.
-		If no encoding is provided, then a buffer is expected.
-
-		The `output_decoding` specifies in what format to return the deciphered plaintext: 'binary', 'ascii' or 'utf8'.
-		If no encoding is provided, then a buffer is returned.
-	**/
-	@:overload(function(data:Buffer):Buffer {})
-	@:overload(function(data:String, input_encoding:String):Buffer {})
-	function update(data:String, input_encoding:String, output_encoding:String):String;
-
 	/**
 		Returns any remaining plaintext which is deciphered,
 		with `output_encoding` being one of: 'binary', 'ascii' or 'utf8'.
@@ -55,6 +48,22 @@ extern class Decipher extends js.node.stream.Transform<Decipher> {
 	**/
 	@:native("final") @:overload(function():Buffer {})
 	function finalContents(output_encoding:String):String;
+
+	/**
+		For authenticated encryption modes (currently supported: GCM), this method sets the value
+		used for the additional authenticated data (AAD) input parameter.
+
+        https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_decipher_setaad_buffer_options
+	**/
+	function setAAD(buffer:Buffer, ?options: Transform<Decipher>):Void;
+
+	/**
+		For authenticated encryption modes (currently supported: GCM), this method must be used
+		to pass in the received authentication tag. If no tag is provided or if the ciphertext
+		has been tampered with, `final` will throw, thus indicating that the ciphertext should be
+		discarded due to failed authentication.
+	**/
+	function setAuthTag(buffer:Buffer):Void;
 
 	/**
 		You can disable auto padding if the data has been encrypted without standard block padding
@@ -68,16 +77,13 @@ extern class Decipher extends js.node.stream.Transform<Decipher> {
 	function setAutoPadding(auto_padding:Bool):Void;
 
 	/**
-		For authenticated encryption modes (currently supported: GCM), this method must be used
-		to pass in the received authentication tag. If no tag is provided or if the ciphertext
-		has been tampered with, `final` will throw, thus indicating that the ciphertext should be
-		discarded due to failed authentication.
-	**/
-	function setAuthTag(buffer:Buffer):Void;
+		Updates the decipher with `data`, which is encoded in 'binary', 'base64' or 'hex'.
+		If no encoding is provided, then a buffer is expected.
 
-	/**
-		For authenticated encryption modes (currently supported: GCM), this method sets the value
-		used for the additional authenticated data (AAD) input parameter.
+		The `output_decoding` specifies in what format to return the deciphered plaintext: 'binary', 'ascii' or 'utf8'.
+		If no encoding is provided, then a buffer is returned.
 	**/
-	function setAAD(buffer:Buffer):Void;
+	@:overload(function(data:Buffer):Buffer {})
+	@:overload(function(data:String, input_encoding:String):Buffer {})
+	function update(data:String, input_encoding:String, output_encoding:String):String;
 }

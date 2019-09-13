@@ -23,6 +23,7 @@
 package js.node.crypto;
 
 import js.node.Buffer;
+import js.node.stream.Transform;
 
 /**
 	Class for encrypting data.
@@ -33,41 +34,26 @@ import js.node.Buffer;
 	The written plain text data is used to produce the encrypted data on the readable side.
 
 	The legacy `update` and `final` methods are also supported.
+
+	@see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_class_cipher
 **/
 extern class Cipher extends js.node.stream.Transform<Cipher> {
-	/**
-		Updates the cipher with `data`, the encoding of which is given in `input_encoding`
-		and can be 'utf8', 'ascii' or 'binary'. If no encoding is provided, then a buffer is expected.
-		If data is a Buffer then `input_encoding` is ignored.
-
-		The `output_encoding` specifies the output format of the enciphered data,
-		and can be 'binary', 'base64' or 'hex'. If no encoding is provided, then a buffer is returned.
-
-		Returns the enciphered contents, and can be called many times with new data as it is streamed.
-	**/
-	@:overload(function(data:Buffer):Buffer {})
-	@:overload(function(data:String, input_encoding:String):Buffer {})
-	function update(data:String, input_encoding:String, output_encoding:String):String;
-
 	/**
 		Returns any remaining enciphered contents, with `output_encoding` being one of: 'binary', 'base64' or 'hex'.
 		If no encoding is provided, then a buffer is returned.
 
-		Note: cipher object can not be used after `final` method has been called.
+		Note: cipher object can not be used after `finalContents` method has been called.
 	**/
-	@:native("final") @:overload(function():Buffer {})
+	@:native("final") @:overload(function(output_encoding:String):Buffer {})
 	function finalContents(output_encoding:String):String;
 
 	/**
-		You can disable automatic padding of the input data to block size.
-		If `auto_padding` is false, the length of the entire input data
-		must be a multiple of the cipher's block size or `final` will fail.
+		For authenticated encryption modes (currently supported: GCM), this method sets the value
+		used for the additional authenticated data (AAD) input parameter.
 
-		Useful for non-standard padding, e.g. using 0x0 instead of PKCS padding.
-		You must call this before `final`.
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_cipher_setaad_buffer_options
 	**/
-	@:overload(function():Void {})
-	function setAutoPadding(auto_padding:Bool):Void;
+	function setAAD(buffer:Buffer, ?options: Transform<Cipher>):Void;
 
 	/**
 		For authenticated encryption modes (currently supported: GCM), this method returns a `Buffer`
@@ -77,8 +63,31 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 	function getAuthTag():Buffer;
 
 	/**
-		For authenticated encryption modes (currently supported: GCM), this method sets the value
-		used for the additional authenticated data (AAD) input parameter.
+		You can disable automatic padding of the input data to block size.
+		If `auto_padding` is false, the length of the entire input data
+		must be a multiple of the cipher's block size or `final` will fail.
+
+		Useful for non-standard padding, e.g. using 0x0 instead of PKCS padding.
+		You must call this before `final`.
+
+        @see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_cipher_setautopadding_autopadding
 	**/
-	function setAAD(buffer:Buffer):Void;
+	@:overload(function():Void {})
+	function setAutoPadding(auto_padding:Bool):Void;
+
+	/**
+		Updates the cipher with `data`, the encoding of which is given in `input_encoding`
+		and can be 'utf8', 'ascii' or 'binary'. If no encoding is provided, then a buffer is expected.
+		If data is a Buffer then `input_encoding` is ignored.
+
+		The `output_encoding` specifies the output format of the enciphered data,
+		and can be 'binary', 'base64' or 'hex'. If no encoding is provided, then a buffer is returned.
+
+		Returns the enciphered contents, and can be called many times with new data as it is streamed.
+
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_cipher_update_data_inputencoding_outputencoding
+	**/
+	@:overload(function(data:Buffer):Buffer {})
+	@:overload(function(data:String, input_encoding:String):Buffer {})
+	function update(data:String, input_encoding:String, output_encoding:String):String;
 }

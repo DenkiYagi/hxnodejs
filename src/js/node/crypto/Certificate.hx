@@ -27,6 +27,8 @@ import js.node.Buffer;
 /**
 	SPKAC is a Certificate Signing Request mechanism originally implemented by Netscape
 	and now specified formally as part of HTML5's keygen element.
+
+	@see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_class_certificate
 **/
 @:jsRequire("crypto", "Certificate")
 extern class Certificate {
@@ -45,8 +47,8 @@ extern class Certificate {
 
 		The `spkac` data structure includes a public key and a challenge.
 	**/
-	@:overload(function(spkac:String):Buffer {})
-	function exportPublicKey(spkac:Buffer):Buffer;
+	@:overload(function(spkac:String, ?encoding:String):Buffer {})
+	function exportPublicKey(spkac:Buffer, ?encoding:String):Buffer;
 
 	/**
 		Returns true if the given `spkac` data structure is valid, false otherwise.
