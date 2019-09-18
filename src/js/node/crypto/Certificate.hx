@@ -35,23 +35,25 @@ extern class Certificate {
 	function new();
 
 	/**
-		Returns the challenge component in the form of a Node.js `Buffer`.
+		Returns the challenge component of the spkac data structure, which includes a public key and a challenge.
 
-		The `spkac` data structure includes a public key and a challenge.
+		@see https://nodejs.org/api/crypto.html#crypto_certificate_exportchallenge_spkac
 	**/
 	@:overload(function(spkac:String):Buffer {})
 	function exportChallenge(spkac:Buffer):Buffer;
 
 	/**
-		Returns the public key component in the form of a Node.js `Buffer`.
+		Returns the public key component of the `spkac` data structure, which includes a public key and a challenge.
 
-		The `spkac` data structure includes a public key and a challenge.
+		@see https://nodejs.org/api/crypto.html#crypto_certificate_exportpublickey_spkac_encoding
 	**/
 	@:overload(function(spkac:String, ?encoding:String):Buffer {})
 	function exportPublicKey(spkac:Buffer, ?encoding:String):Buffer;
 
 	/**
-		Returns true if the given `spkac` data structure is valid, false otherwise.
+		Returns `true` if the given `spkac` data structure is valid, `false` otherwise.
+
+		@see https://nodejs.org/api/crypto.html#crypto_certificate_verifyspkac_spkac
 	**/
 	function verifySpkac(spkac:Buffer):Bool;
 }

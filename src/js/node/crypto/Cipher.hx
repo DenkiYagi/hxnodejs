@@ -26,66 +26,48 @@ import js.node.Buffer;
 import js.node.stream.Transform;
 
 /**
-	Class for encrypting data.
-
-	Returned by `Crypto.createCipher` and `Crypto.createCipheriv`.
-
-	Cipher objects are streams that are both readable and writable.
-	The written plain text data is used to produce the encrypted data on the readable side.
-
-	The legacy `update` and `final` methods are also supported.
-
-	@see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_class_cipher
+	Instances of the Cipher class are used to encrypt data.
+	@see https://nodejs.org/api/crypto.html#crypto_class_cipher
 **/
 extern class Cipher extends js.node.stream.Transform<Cipher> {
 	/**
-		Returns any remaining enciphered contents, with `output_encoding` being one of: 'binary', 'base64' or 'hex'.
-		If no encoding is provided, then a buffer is returned.
+		Any remaining enciphered contents. If `outputEncoding~ is specified, a string is returned. If an `outputEncoding` is not provided, a `Buffer` is returned.
 
-		Note: cipher object can not be used after `finalContents` method has been called.
+		Once the `Cipher.final()` method has been called, the `Cipher` object can no longer be used to encrypt data. Attempts to call `Cipher.final()` more than once will result in an error being thrown.
+
+		@see https://nodejs.org/api/crypto.html#crypto_cipher_final_outputencoding
 	**/
 	@:native("final") @:overload(function(output_encoding:String):Buffer {})
 	function finalContents(output_encoding:String):String;
 
 	/**
-		For authenticated encryption modes (currently supported: GCM), this method sets the value
-		used for the additional authenticated data (AAD) input parameter.
+		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported), the `Cipher.setAAD()` method sets the value used for the additional authenticated data (AAD) input parameter.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_cipher_setaad_buffer_options
+		@see https://nodejs.org/api/crypto.html#crypto_cipher_setaad_buffer_options
 	**/
 	function setAAD(buffer:Buffer, ?options: Transform<Cipher>):Void;
 
 	/**
-		For authenticated encryption modes (currently supported: GCM), this method returns a `Buffer`
-		that represents the authentication tag that has been computed from the given data.
-		Should be called after encryption has been completed using the `final` method!
+		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported), the `Cipher.getAuthTag()` method returns a Buffer containing the authentication tag that has been computed from the given data.
+
+		The `Cipher.getAuthTag()` method should only be called after encryption has been completed using the `Cipher.final()` method.
+
+		@see https://nodejs.org/api/crypto.html#crypto_cipher_getauthtag
 	**/
 	function getAuthTag():Buffer;
 
 	/**
-		You can disable automatic padding of the input data to block size.
-		If `auto_padding` is false, the length of the entire input data
-		must be a multiple of the cipher's block size or `final` will fail.
+		When using block encryption algorithms, the Cipher class will automatically add padding to the input data to the appropriate block size. To disable the default padding call `Cipher.setAutoPadding(false)`.
 
-		Useful for non-standard padding, e.g. using 0x0 instead of PKCS padding.
-		You must call this before `final`.
-
-        @see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_cipher_setautopadding_autopadding
+		@see https://nodejs.org/api/crypto.html#crypto_cipher_setautopadding_autopadding
 	**/
 	@:overload(function():Void {})
 	function setAutoPadding(auto_padding:Bool):Void;
 
 	/**
-		Updates the cipher with `data`, the encoding of which is given in `input_encoding`
-		and can be 'utf8', 'ascii' or 'binary'. If no encoding is provided, then a buffer is expected.
-		If data is a Buffer then `input_encoding` is ignored.
+		Updates the cipher with `data`. If the `input_encoding` argument is given, the `data` argument is a string using the specified encoding. If the `input_encoding` argument is not given, data must be a `Buffer`. If data is a `Buffer`, then `input_encoding` is ignored.
 
-		The `output_encoding` specifies the output format of the enciphered data,
-		and can be 'binary', 'base64' or 'hex'. If no encoding is provided, then a buffer is returned.
-
-		Returns the enciphered contents, and can be called many times with new data as it is streamed.
-
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_cipher_update_data_inputencoding_outputencoding
+		@see https://nodejs.org/api/crypto.html#crypto_cipher_setautopadding_autopadding
 	**/
 	@:overload(function(data:Buffer):Buffer {})
 	@:overload(function(data:String, input_encoding:String):Buffer {})
