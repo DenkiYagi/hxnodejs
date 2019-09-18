@@ -26,49 +26,117 @@ import haxe.DynamicAccess;
 import haxe.extern.EitherType;
 import haxe.extern.Rest;
 import js.node.events.EventEmitter;
+import js.node.net.Server;
+import js.node.net.Socket;
 import js.node.stream.Readable;
 import js.node.stream.Writable;
 import js.node.child_process.ChildProcess.ChildProcessSendOptions;
 #if haxe4
 import js.lib.Error;
+import js.lib.Promise;
 #else
 import js.Error;
+import js.Promise;
 #end
 
 /**
-	Enumeration of events emitted by the Process class.
+	Enumeration of events emitted by the `Process` class.
 **/
 @:enum abstract ProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		Emitted when the process is about to exit.
-		There is no way to prevent the exiting of the event loop at this point,
-		and once all exit listeners have finished running the process will exit.
-		Therefore you must only perform synchronous operations in this handler.
-		This is a good hook to perform checks on the module's state (like for unit tests).
-		The callback takes one argument, the code the process is exiting with.
-	**/
-	var Exit:ProcessEvent<Int->Void> = "exit";
+		Emitted when Node.js empties its event loop and has no additional work to schedule.
 
-	/**
-		Emitted when node empties it's event loop and has nothing else to schedule.
-
-		Normally, node exits when there is no work scheduled, but a listener for `beforeExit`
-		can make asynchronous calls, and cause node to continue.
-
-		`beforeExit` is not emitted for conditions causing explicit termination, such as `process.exit()`
-		or uncaught exceptions, and should not be used as an alternative to the `exit` event
-		unless the intention is to schedule more work.
+		@see https://nodejs.org/api/process.html#process_event_beforeexit
 	**/
 	var BeforeExit:ProcessEvent<Int->Void> = "beforeExit";
 
 	/**
-		Emitted when an exception bubbles all the way back to the event loop.
-		If a listener is added for this exception, the default action (which is to print a stack trace and exit)
-		will not occur.
+		If the Node.js process is spawned with an IPC channel (see the `ChildProcess` and `Cluster` documentation), the
+		`'disconnect'` event will be emitted when the IPC channel is closed.
+
+		@see https://nodejs.org/api/process.html#process_event_disconnect
 	**/
-	var UncaughtException:ProcessEvent<Error->Void> = "uncaughtException";
+	var Disconnect:ProcessEvent<Void->Void> = "disconnect";
+
+	/**
+		Emitted when the Node.js process is about to exit.
+
+		@see https://nodejs.org/api/process.html#process_event_exit
+	**/
+	var Exit:ProcessEvent<Int->Void> = "exit";
+
+	/**
+		If the Node.js process is spawned with an IPC channel (see the `ChildProcess` and `Cluster` documentation), the
+		`'message'` event is emitted whenever a message sent by a parent process using `ChildProcess.send` is received
+		by the child process.
+
+		@see https://nodejs.org/api/process.html#process_event_message
+	**/
+	var Message:ProcessEvent<Dynamic->EitherType<Server, Socket>->Void> = "message";
+
+	/**
+		@see https://nodejs.org/api/process.html#process_event_multipleresolves
+	**/
+	var MultipleResolves:ProcessEvent<String->Promise<Dynamic>->Dynamic->Void> = "multipleResolves";
+
+	/**
+		Emitted whenever a `Promise` has been rejected and an error handler was attached to it (using
+		`Promise.catchError`, for example) later than one turn of the Node.js event loop.
+
+		@see https://nodejs.org/api/process.html#process_event_rejectionhandled
+	**/
+	var RejectionHandled:ProcessEvent<Promise<Dynamic>->Void> = "rejectionHandled";
+
+	/**
+		Emitted when an uncaught JavaScript exception bubbles all the way back to the event loop.
+
+		@see https://nodejs.org/api/process.html#process_event_uncaughtexception
+	**/
+	var UncaughtException:ProcessEvent<Error->String->Void> = "uncaughtException";
+
+	/**
+		Emitted whenever a `Promise` is rejected and no error handler is attached to the promise within a turn of the
+		event loop.
+
+		@see https://nodejs.org/api/process.html#process_event_unhandledrejection
+	**/
+	var UnhandledRejection:ProcessEvent<EitherType<Error, Dynamic>->Promise<Dynamic>->Void> = "unhandledRejection";
+
+	/**
+		Emitted whenever Node.js emits a process warning.
+
+		@see https://nodejs.org/api/process.html#process_event_warning
+	**/
+	var Warning:ProcessEvent<ProcessWarningEvent->Void> = "warning";
 }
 
+/**
+	Options object used by `ProcessEvent.Warning`.
+**/
+typedef ProcessWarningEvent = {
+	/**
+		The name of the warning.
+
+		Default: `'Warning'`.
+	**/
+	var name:String;
+
+	/**
+		A system-provided description of the warning.
+	**/
+	var message:String;
+
+	/**
+		A stack trace to the location in the code where the warning was issued
+	**/
+	var stack:String;
+}
+
+/**
+	A `global` that provides information about, and control over, the current Node.js process.
+
+	@see https://nodejs.org/api/process.html#process_process
+**/
 extern class Process extends EventEmitter<Process> {
 	/**
 		A Writable Stream to stdout.
