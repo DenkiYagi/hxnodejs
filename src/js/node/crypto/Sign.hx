@@ -27,31 +27,29 @@ import js.node.Buffer;
 import js.node.stream.Writable;
 
 /**
-	Class for generating signatures.
+	The `Sign` class is a utility for generating signatures. It can be used in one of two ways:
 
-	Returned by `Crypto.createSign`.
+	* As a writable stream, where data to be signed is written and the `Sign.sign()` method is used to generate and return the signature, or
+	* Using the `Sign.update()` and `Sign.sign()` methods to produce the signature.
 
-	Sign objects are writable streams. The written data is used to generate the signature.
-	Once all of the data has been written, the sign method will return the signature.
+	The `Crypto.createSign()` method is used to create `Sign` instances. The argument is the string name of the hash function to use. `Sign` objects are not to be created directly using the `new` keyword.
 
-	The legacy `update` method is also supported.
+	@see https://nodejs.org/api/crypto.html#crypto_class_sign
 **/
 extern class Sign extends Writable<Sign> {
-	/**
-		Updates the sign object with data.
-		This can be called many times with new data as it is streamed.
-	**/
-	@:overload(function(data:Buffer):Void {})
-	function update(data:String, ?encoding:String):Void;
 
 	/**
-		Calculates the signature on all the updated data passed through the sign.
-		`private_key` is a string containing the PEM encoded private key for signing.
-		Returns the signature in `output_format` which can be 'binary', 'hex' or 'base64'.
-		If no encoding is provided, then a buffer is returned.
+		Calculates the signature on all the data passed through using either `Sign.update()` or `Sign.write()`.
 
-		Note: sign object can not be used after `sign` method has been called.
+		@see https://nodejs.org/api/crypto.html#crypto_sign_sign_privatekey_outputencoding
 	**/
 	@:overload(function(private_key:EitherType<String, {key:String, passphrase:String}>):Buffer {})
 	function sign(private_key:EitherType<String, {key:String, passphrase:String}>, output_format:String):String;
+
+	/**
+		Updates the Sign content with the given data, the encoding of which is given in `input_encoding`. If `input_encoding` is not provided, and the `data` is a string, an encoding of `'utf8'` is enforced. If data is a `Buffer`, then `input_encoding` is ignored.
+		@see https://nodejs.org/api/crypto.html#crypto_sign_update_data_inputencoding
+	**/
+	@:overload(function(data:Buffer):Void {})
+	function update(data:String, ?input_encoding:String):Void;
 }

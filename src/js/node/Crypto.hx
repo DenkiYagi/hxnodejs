@@ -67,61 +67,48 @@ import js.node.stream.Transform;
 @:jsRequire("crypto")
 extern class Crypto {
 	/**
-		The default encoding to use for functions that can take either strings or buffers.
-		The default value is 'buffer', which makes it default to using `Buffer` objects.
-		This is here to make the crypto module more easily compatible with legacy programs
-		that expected 'binary' to be the default encoding.
+		The default encoding to use for functions that can take either strings or buffers. The default value is 'buffer', which makes methods default to Buffer objects.
 
-		Note that new programs will probably expect buffers, so only use this as a temporary measure.
+		@see https://nodejs.org/api/crypto.html#crypto_crypto_default_encoding
 	**/
 	@:deprecated
 	static var DEFAULT_ENCODING:String;
 
 	/**
-		Property for checking and controlling whether a FIPS compliant crypto provider is currently in use.
-		Setting to true requires a FIPS build of Node.js.
+		Property for checking and controlling whether a FIPS compliant crypto provider is currently in use. Setting to true requires a FIPS build of Node.js.
+
+		@see https://nodejs.org/api/crypto.html#crypto_crypto_fips
 	**/
 	@:deprecated
 	static var fips:Bool;
 
 	/**
-		Creates and returns a cipher object, with the given algorithm and password.
+		Creates and returns a cipher object, with the given `algorithm` and `password`.
 
-		`algorithm` is dependent on OpenSSL, examples are 'aes192', etc.
-		On recent releases, openssl list-cipher-algorithms will display the available cipher algorithms.
-
-		`password` is used to derive key and IV, which must be a 'binary' encoded string or a buffer.
-
-		It is a stream that is both readable and writable. The written data is used to compute the hash.
-		Once the writable side of the stream is ended, use the `read` method to get the computed hash digest.
-		The legacy `update` and `digest` methods are also supported.
+        @see https://nodejs.org/api/crypto.html#crypto_crypto_createcipher_algorithm_password_options
 	**/
 	@:deprecated
 	static function createCipher(algorithm:String, password:EitherType<String, Buffer>, ?options: Transform<Cipher>):Cipher;
 
 	/**
-		Creates and returns a cipher object, with the given algorithm, key and iv.
+		Creates and returns a `Cipher` object, with the given `algorithm`, `key` and initialization vector (`iv`).
 
-		`algorithm` is the same as the argument to `createCipher`.
-
-		`key` is the raw key used by the algorithm.
-
-		`iv` is an initialization vector.
-
-		`key` and `iv` must be 'binary' encoded strings or buffers.
+		@see https://nodejs.org/api/crypto.html#crypto_crypto_createcipheriv_algorithm_key_iv_options
 	**/
 	static function createCipheriv(algorithm:String, key:EitherType<String, Buffer>, iv:EitherType<String, Buffer>, ?options: Transform<Cipher>):Cipher;
 
 	/**
-		Creates and returns a decipher object, with the given algorithm and key.
-		This is the mirror of the `createCipher` above.
+		Creates and returns a `Decipher` object that uses the given `algorithm` and `password` (key).
+
+		@see https://nodejs.org/api/crypto.html#crypto_crypto_createdecipher_algorithm_password_options
 	**/
 	@:deprecated
 	static function createDecipher(algorithm:String, password:EitherType<String, Buffer>):Decipher;
 
 	/**
-		Creates and returns a decipher object, with the given algorithm, key and iv.
-		This is the mirror of the `createCipheriv` above.
+		Creates and returns a `Decipher` object that uses the given `algorithm`, `key` and initialization vector (`iv`).
+
+		@see https://nodejs.org/api/crypto.html#crypto_crypto_createdecipheriv_algorithm_key_iv_options
 	**/
 	static function createDecipheriv(algorithm:String, key:EitherType<String, Buffer>, iv:EitherType<String, Buffer>):Decipher;
 

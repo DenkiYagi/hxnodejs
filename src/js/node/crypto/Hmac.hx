@@ -25,30 +25,28 @@ package js.node.crypto;
 import js.node.Buffer;
 
 /**
-	Class for creating cryptographic hmac content.
+	The `Hmac` class is a utility for creating cryptographic HMAC digests. It can be used in one of two ways:
 
-	It is a stream that is both readable and writable. The written data is used to compute the hmac.
-	Once the writable side of the stream is ended, use the `read` method to get the computed digest.
+	* As a stream that is both readable and writable, where data is written to produce a computed HMAC digest on the readable side, or
+	* Using the `Hmac.update()` and `Hmac.digest()` methods to produce the computed HMAC digest.
 
-	The legacy `update` and `digest` methods are also supported.
+	The `Crypto.createHmac()` method is used to create `Hmac` instances. `Hmac` objects are not to be created directly using the `new` keyword.
 
-	Returned by `Crypto.createHmac`.
+	@see https://nodejs.org/api/crypto.html#crypto_class_hmac
 **/
 extern class Hmac extends js.node.stream.Transform<Hmac> {
 	/**
-		Calculates the digest of all of the passed data to the hmac.
-		The `encoding` can be 'hex', 'binary' or 'base64'.
-		If no `encoding` is provided, then a buffer is returned.
+		Calculates the HMAC digest of all of the data passed using `Hmac.update()`. If `encoding` is provided a string is returned; otherwise a `Buffer` is returned,
 
-		Note: hmac object can not be used after `digest` method has been called.
+		@see https://nodejs.org/api/crypto.html#crypto_hmac_digest_encoding
 	**/
 	@:overload(function():Buffer {})
 	function digest(encoding:String):String;
 
 	/**
-		Update the hmac content with the given data.
+		Updates the Hmac content with the given data, the encoding of which is given in inputEncoding. If encoding is not provided, and the data is a string, an encoding of 'utf8' is enforced. If data is a Buffer, TypedArray, or DataView, then inputEncoding is ignored.
 
-		This can be called many times with new data as it is streamed.
+		@see https://nodejs.org/api/crypto.html#crypto_hmac_update_data_inputencoding
 	**/
 	@:overload(function(data:Buffer):Hmac {})
 	function update(data:String, ?input_encoding:String):Hmac;

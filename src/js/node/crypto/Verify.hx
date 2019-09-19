@@ -26,34 +26,28 @@ import js.node.Buffer;
 import js.node.stream.Writable;
 
 /**
-	Class for verifying signatures.
-	Returned by `Crypto.createVerify`.
+	The Verify class is a utility for verifying signatures. It can be used in one of two ways:
 
-	Verify objects are writable streams. The written data is used to validate against the supplied signature.
-	Once all of the data has been written, the verify method will return true if the supplied signature is valid.
+	* As a writable stream where written data is used to validate against the supplied signature, or
+	* Using the verify.update() and verify.verify() methods to verify the signature.
 
-	The legacy `update` method is also supported.
+	The `Crypto.createVerify()` method is used to create `Verify` instances. `Verify` objects are not to be created directly using the `new` keyword.
+
+	@see https://nodejs.org/api/crypto.html#crypto_class_verify
 **/
 extern class Verify extends Writable<Sign> {
 	/**
-		Updates the verifier object with data. This can be called many times with new data as it is streamed.
+		Updates the `Verify` content with the given data, the encoding of which is given in input_encoding. If `input_encoding` is not provided, and the `data` is a string, an encoding of `'utf8'` is enforced. If data is a `Buffer`, then `input_encoding` is ignored.
+
+		@see https://nodejs.org/api/crypto.html#crypto_verify_update_data_inputencoding
 	**/
 	@:overload(function(data:Buffer):Void {})
-	function update(data:String, ?encoding:String):Void;
+	function update(data:String, ?input_encoding:String):Void;
 
 	/**
-		Verifies the signed data by using the object and signature.
+		Verifies the provided data using the given object and signature.
 
-		`object` is a string containing a PEM encoded object, which can be one of RSA public key,
-		DSA public key, or X.509 certificate.
-
-		`signature` is the previously calculated signature for the data,
-		in the `signature_format` which can be 'binary', 'hex' or 'base64'.
-		If no encoding is specified, then a buffer is expected.
-
-		Returns true or false depending on the validity of the signature for the data and public key.
-
-		Note: verifier object can not be used after `verify` method has been called.
+		@see https://nodejs.org/api/crypto.html#crypto_verify_verify_object_signature_signatureencoding
 	**/
 	@:overload(function(object:String, signature:Buffer):Bool {})
 	function verify(object:String, signature:String, signature_format:String):Bool;
