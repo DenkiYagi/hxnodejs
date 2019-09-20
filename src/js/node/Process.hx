@@ -34,6 +34,7 @@ import js.node.child_process.ChildProcess.ChildProcessSendOptions;
 #if haxe4
 import js.lib.Error;
 import js.lib.Promise;
+import js.lib.Set;
 #else
 import js.Error;
 import js.Promise;
@@ -142,6 +143,116 @@ typedef ProcessWarningEvent = {
 **/
 extern class Process extends EventEmitter<Process> {
 	/**
+		The `process.abort()` method causes the Node.js process to exit immediately and generate a core file.
+
+		@see https://nodejs.org/api/process.html#process_process_abort
+	**/
+	function abort():Void;
+
+	/**
+		The `process.allowedNodeEnvironmentFlags` property is a special, read-only `Set` of flags allowable within the
+		`NODE_OPTIONS` environment variable.
+
+		@see https://nodejs.org/api/process.html#process_process_allowednodeenvironmentflags
+	**/
+	var allowedNodeEnvironmentFlags(default, never):Set<String>;
+
+	/**
+		The `process.arch` property returns a string identifying the operating system CPU architecture for which the
+		Node.js binary was compiled.
+
+		@see https://nodejs.org/api/process.html#process_process_arch
+	**/
+	var arch:String;
+
+	/**
+		The `process.argv` property returns an array containing the command line arguments passed when the Node.js
+		process was launched.
+
+		@see https://nodejs.org/api/process.html#process_process_argv
+	**/
+	var argv:Array<String>;
+
+	/**
+		The `process.argv0` property stores a read-only copy of the original value of `argv[0]` passed when Node.js
+		starts.
+
+		@see https://nodejs.org/api/process.html#process_process_argv0
+	**/
+	var argv0(default, never):String;
+
+	/**
+		If the Node.js process was spawned with an IPC channel (see the Child Process documentation), the
+		`process.channel` property is a reference to the IPC channel.
+
+		@see https://nodejs.org/api/process.html#process_process_channel
+	**/
+	var channel:DynamicAccess<String>;
+
+	/**
+		The `process.chdir()` method changes the current working directory of the Node.js process or throws an exception
+		if doing so fails (for instance, if the specified `directory` does not exist).
+
+		@see https://nodejs.org/api/process.html#process_process_chdir_directory
+	**/
+	function chdir(directory:String):Void;
+
+	/**
+		The `process.config` property returns an `Object` containing the JavaScript representation of the configure
+		options used to compile the current Node.js executable.
+
+		@see https://nodejs.org/api/process.html#process_process_config
+	**/
+	var config:Dynamic<Dynamic>;
+
+	/**
+		If the Node.js process is spawned with an IPC channel (see the Child Process and Cluster documentation), the
+		`process.connected` property will return `true` so long as the IPC channel is connected and will return `false`
+		after `process.disconnect()` is called.
+
+		@see https://nodejs.org/api/process.html#process_process_connected
+	**/
+	var connected:Bool;
+
+	/**
+		The `process.cpuUsage()` method returns the user and system CPU time usage of the current process, in an object
+		with properties `user` and `system`, whose values are microsecond values (millionth of a second).
+
+		@see https://nodejs.org/api/process.html#process_process_cpuusage_previousvalue
+	**/
+	function cpuUsage(?previousValue:CpuUsage):CpuUsage;
+
+	/**
+		The `process.cwd()` method returns the current working directory of the Node.js process.
+
+		@see https://nodejs.org/api/process.html#process_process_cwd
+	**/
+	function cwd():String;
+
+	/**
+		The port used by Node.js's debugger when enabled.
+
+		@see https://nodejs.org/api/process.html#process_process_debugport
+	**/
+	var debugPort:Int;
+
+	/**
+		If the Node.js process is spawned with an IPC channel (see the Child Process and Cluster documentation), the
+		`process.disconnect()` method will close the IPC channel to the parent process, allowing the child process to
+		exit gracefully once there are no other connections keeping it alive.
+
+		@see https://nodejs.org/api/process.html#process_process_disconnect
+	**/
+	function disconnect():Void;
+
+	/**
+		The `process.dlopen()` method allows to dynamically load shared objects.
+
+		@see https://nodejs.org/api/process.html#process_process_dlopen_module_filename_flags
+	**/
+	function dlopen(module:Dynamic<Dynamic>, filename:String, ?flags:Int):Void;
+
+	/**
 		A Writable Stream to stdout.
 
 		`stderr` and `stdout` are unlike other streams in Node in that writes to them are usually blocking.
@@ -161,21 +272,6 @@ extern class Process extends EventEmitter<Process> {
 	var stdin:IReadable;
 
 	/**
-		An array containing the command line arguments.
-		The first element will be `node`, the second element will be the name of the JavaScript file.
-		The next elements will be any additional command line arguments.
-
-		E.g:
-			$ node process-2.js one two=three four
-			0: node
-			1: /Users/mjr/work/node/process-2.js
-			2: one
-			3: two=three
-			4: four
-	**/
-	var argv:Array<String>;
-
-	/**
 		This is the absolute pathname of the executable that started the process.
 	**/
 	var execPath:String;
@@ -188,21 +284,6 @@ extern class Process extends EventEmitter<Process> {
 		These options are useful in order to spawn child processes with the same execution environment as the parent.
 	**/
 	var execArgv:Array<String>;
-
-	/**
-		This causes node to emit an abort. This will cause node to exit and generate a core file.
-	**/
-	function abort():Void;
-
-	/**
-		Changes the current working directory of the process or throws an exception if that fails.
-	**/
-	function chdir(directory:String):Void;
-
-	/**
-		Returns the current working directory of the process.
-	**/
-	function cwd():String;
 
 	/**
 		An object containing the user environment. See environ(7).
@@ -290,12 +371,6 @@ extern class Process extends EventEmitter<Process> {
 	var versions:DynamicAccess<String>;
 
 	/**
-		An Object containing the JavaScript representation of the configure options that were used to compile the current node executable.
-		This is the same as the "config.gypi" file that was produced when running the ./configure script.
-	**/
-	var config:Dynamic<Dynamic>;
-
-	/**
 		Send a signal to a process.
 		`pid` is the process id and `signal` is the string describing the signal to send. Signal names are strings like 'SIGINT' or 'SIGHUP'.
 
@@ -322,11 +397,6 @@ extern class Process extends EventEmitter<Process> {
 		command line arguments because it overwrites the argv memory.
 	**/
 	var title:String;
-
-	/**
-		What processor architecture you're running on: 'arm', 'ia32', or 'x64'.
-	**/
-	var arch:String;
 
 	/**
 		What platform you're running on: 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
@@ -390,13 +460,6 @@ extern class Process extends EventEmitter<Process> {
 	function send(message:Dynamic, ?callback:Error->Void):Bool;
 
 	/**
-		Close the IPC channel to parent process.
-
-		Only available for child processes. See `ChildProcess.disconnect`.
-	**/
-	function disconnect():Void;
-
-	/**
 		Disable run-time deprecation warnings.
 		See `Util.deprecate`.
 	**/
@@ -413,6 +476,14 @@ extern class Process extends EventEmitter<Process> {
 		See `Util.deprecate`.
 	**/
 	var throwDeprecation:Bool;
+}
+
+/**
+	Object used by `Process.cpuUsage`.
+**/
+typedef CpuUsage = {
+	user:Int,
+	system:Int
 }
 
 typedef MemoryUsage = {
