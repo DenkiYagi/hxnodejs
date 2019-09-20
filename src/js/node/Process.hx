@@ -44,7 +44,7 @@ import js.Promise;
 **/
 @:enum abstract ProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		Emitted when Node.js empties its event loop and has no additional work to schedule.
+		The `'beforeExit'` is emitted when Node.js empties its event loop and has no additional work to schedule.
 
 		@see https://nodejs.org/api/process.html#process_event_beforeexit
 	**/
@@ -59,15 +59,15 @@ import js.Promise;
 	var Disconnect:ProcessEvent<Void->Void> = "disconnect";
 
 	/**
-		Emitted when the Node.js process is about to exit.
+		The `'exit'` event is emitted when the Node.js process is about to exit.
 
 		@see https://nodejs.org/api/process.html#process_event_exit
 	**/
 	var Exit:ProcessEvent<Int->Void> = "exit";
 
 	/**
-		If the Node.js process is spawned with an IPC channel (see the `ChildProcess` and `Cluster` documentation), the
-		`'message'` event is emitted whenever a message sent by a parent process using `ChildProcess.send` is received
+		If the Node.js process is spawned with an IPC channel (see the Child Process and Cluster documentation), the
+		`'message'` event is emitted whenever a message sent by a parent process using `childprocess.send()` is received
 		by the child process.
 
 		@see https://nodejs.org/api/process.html#process_event_message
@@ -75,35 +75,38 @@ import js.Promise;
 	var Message:ProcessEvent<Dynamic->EitherType<Server, Socket>->Void> = "message";
 
 	/**
+		The `'multipleResolves'` event is emitted whenever a `Promise` has been either:
+
 		@see https://nodejs.org/api/process.html#process_event_multipleresolves
 	**/
 	var MultipleResolves:ProcessEvent<String->Promise<Dynamic>->Dynamic->Void> = "multipleResolves";
 
 	/**
-		Emitted whenever a `Promise` has been rejected and an error handler was attached to it (using
-		`Promise.catchError`, for example) later than one turn of the Node.js event loop.
+		The `'rejectionHandled'` event is emitted whenever a `Promise` has been rejected and an error handler was
+		attached to it (using `Promise.catchError`, for example) later than one turn of the Node.js event loop.
 
 		@see https://nodejs.org/api/process.html#process_event_rejectionhandled
 	**/
 	var RejectionHandled:ProcessEvent<Promise<Dynamic>->Void> = "rejectionHandled";
 
 	/**
-		Emitted when an uncaught JavaScript exception bubbles all the way back to the event loop.
+		The `'uncaughtException'` event is emitted when an uncaught JavaScript exception bubbles all the way back to the
+		event loop.
 
 		@see https://nodejs.org/api/process.html#process_event_uncaughtexception
 	**/
 	var UncaughtException:ProcessEvent<Error->String->Void> = "uncaughtException";
 
 	/**
-		Emitted whenever a `Promise` is rejected and no error handler is attached to the promise within a turn of the
-		event loop.
+		The `'unhandledRejection'` event is emitted whenever a `Promise` is rejected and no error handler is attached to
+		the promise within a turn of the event loop.
 
 		@see https://nodejs.org/api/process.html#process_event_unhandledrejection
 	**/
 	var UnhandledRejection:ProcessEvent<EitherType<Error, Dynamic>->Promise<Dynamic>->Void> = "unhandledRejection";
 
 	/**
-		Emitted whenever Node.js emits a process warning.
+		The `'warning'` event is emitted whenever Node.js emits a process warning.
 
 		@see https://nodejs.org/api/process.html#process_event_warning
 	**/
@@ -133,7 +136,7 @@ typedef ProcessWarningEvent = {
 }
 
 /**
-	A `global` that provides information about, and control over, the current Node.js process.
+	The `process` object is a `global` that provides information about, and control over, the current Node.js process.
 
 	@see https://nodejs.org/api/process.html#process_process
 **/
