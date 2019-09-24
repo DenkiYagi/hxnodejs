@@ -253,6 +253,82 @@ extern class Process extends EventEmitter<Process> {
 	function dlopen(module:Dynamic<Dynamic>, filename:String, ?flags:Int):Void;
 
 	/**
+		The `process.emitWarning()` method can be used to emit custom or application specific process warnings.
+
+		@see https://nodejs.org/api/process.html#process_process_emitwarning_warning_options
+		@see https://nodejs.org/api/process.html#process_process_emitwarning_warning_type_code_ctor
+	**/
+	@:overload(function(warning:EitherType<String, Error>, ?type:String, ?code:String, ?ctor:Function):Void {})
+	function emitWarning(warning:EitherType<String, Error>, ?options:EmitWarningOptions):Void;
+
+	/**
+		The `process.env` property returns an object containing the user environment.
+
+		@see https://nodejs.org/api/process.html#process_process_env
+	**/
+	var env:DynamicAccess<String>;
+
+	/**
+		The `process.execArgv` property returns the set of Node.js-specific command-line options passed when the Node.js
+		process was launched.
+
+		@see https://nodejs.org/api/process.html#process_process_execargv
+	**/
+	var execArgv:Array<String>;
+
+	/**
+		The `process.execPath` property returns the absolute pathname of the executable that started the Node.js
+		process.
+
+		@see https://nodejs.org/api/process.html#process_process_execpath
+	**/
+	var execPath:String;
+
+	/**
+		The `process.exit()` method instructs Node.js to terminate the process synchronously with an exit status of
+		`code`.
+
+		@see https://nodejs.org/api/process.html#process_process_exit_code
+	**/
+	function exit(?code:Int):Void;
+
+	/**
+		A number which will be the process exit code, when the process either exits gracefully, or is exited via
+		`process.exit()` without specifying a code.
+
+		@see https://nodejs.org/api/process.html#process_process_exitcode
+	**/
+	var exitCode:Null<Int>;
+
+	/**
+		The `process.getegid()` method returns the numerical effective group identity of the Node.js process.
+
+		@see https://nodejs.org/api/process.html#process_process_getegid
+	**/
+	function getegid():Int;
+
+	/**
+		The `process.geteuid()` method returns the numerical effective user identity of the process.
+
+		@see https://nodejs.org/api/process.html#process_process_geteuid
+	**/
+	function getuid():Int;
+
+	/**
+		The `process.getgid()` method returns the numerical group identity of the process.
+
+		@see https://nodejs.org/api/process.html#process_process_getgid
+	**/
+	function getgid():Int;
+
+	/**
+		The `process.getgroups()` method returns an array with the supplementary group IDs.
+
+		@see https://nodejs.org/api/process.html#process_process_getgroups
+	**/
+	function getgroups():Array<Int>;
+
+	/**
 		A Writable Stream to stdout.
 
 		`stderr` and `stdout` are unlike other streams in Node in that writes to them are usually blocking.
@@ -272,45 +348,6 @@ extern class Process extends EventEmitter<Process> {
 	var stdin:IReadable;
 
 	/**
-		This is the absolute pathname of the executable that started the process.
-	**/
-	var execPath:String;
-
-	/**
-		This is the set of node-specific command line options from the executable that started the process.
-		These options do not show up in `argv`, and do not include the node executable, the name of the script,
-		or any options following the script name.
-
-		These options are useful in order to spawn child processes with the same execution environment as the parent.
-	**/
-	var execArgv:Array<String>;
-
-	/**
-		An object containing the user environment. See environ(7).
-	**/
-	var env:DynamicAccess<String>;
-
-	/**
-		Ends the process with the specified `code`. If the `code` is omitted, exit uses either the
-		'success' code `0` or the value of `process.exitCode` if specified.
-	**/
-	function exit(?code:Int):Void;
-
-	/**
-		A number which will be the process exit code, when the process either exits gracefully,
-		or is exited via `process.exit()` without specifying a code.
-
-		Specifying a code to `process.exit(code)` will override any previous setting of `process.exitCode`.
-	**/
-	var exitCode:Null<Int>;
-
-	/**
-		Gets the group identity of the process. See getgid(2).
-		Note: this function is only available on POSIX platforms (i.e. not Windows)
-	**/
-	function getgid():Int;
-
-	/**
 		Sets the group identity of the process. See setgid(2).
 		This accepts either a numerical ID or a groupname string.
 		If a groupname is specified, this method blocks while resolving it to a numerical ID.
@@ -321,12 +358,6 @@ extern class Process extends EventEmitter<Process> {
 	function setgid(id:Int):Void;
 
 	/**
-		Gets the user identity of the process. See getuid(2).
-		Note: this function is only available on POSIX platforms (i.e. not Windows)
-	**/
-	function getuid():Int;
-
-	/**
 		Sets the user identity of the process. See setuid(2).
 		This accepts either a numerical ID or a username string.
 		If a username is specified, this method blocks while resolving it to a numerical ID.
@@ -335,13 +366,6 @@ extern class Process extends EventEmitter<Process> {
 	**/
 	@:overload(function(id:String):Void {})
 	function setuid(id:Int):Void;
-
-	/**
-		Returns an array with the supplementary group IDs.
-		POSIX leaves it unspecified if the effective group ID is included but node.js ensures it always is.
-		Note: this function is only available on POSIX platforms (i.e. not Windows)
-	**/
-	function getgroups():Array<Int>;
 
 	/**
 		Sets the supplementary group IDs.
@@ -484,6 +508,35 @@ extern class Process extends EventEmitter<Process> {
 typedef CpuUsage = {
 	user:Int,
 	system:Int
+}
+
+/**
+	Object used by `Process.emitWarning`.
+**/
+typedef EmitWarningOptions = {
+	/**
+		When `warning` is a `String`, `type` is the name to use for the type of warning being emitted.
+
+		Default: `'Warning'`.
+	**/
+	@:optional var type:String;
+
+	/**
+		A unique identifier for the warning instance being emitted.
+	**/
+	@:optional var code:String;
+
+	/**
+		When `warning` is a `String`, `ctor` is an optional function used to limit the generated stack trace.
+
+		Default: `process.emitWarning`.
+	**/
+	@:optional var ctor:Function;
+
+	/**
+		Additional text to include with the error.
+	**/
+	@:optional var detail:String;
 }
 
 typedef MemoryUsage = {
