@@ -22,6 +22,87 @@
 
 package js.node.crypto;
 
-class KeyObject {} // TODO
+import haxe.extern.EitherType;
+import js.node.Buffer;
 
+/**
+	Node.js uses a `KeyObject` class to represent a symmetric or asymmetric key, and each kind of key exposes different functions.
+ 	The `Crypto.createSecretKey()`, `Crypto.createPublicKey()` and `Crypto.createPrivateKey()` methods are used to create `KeyObject` instances.
+ 	`KeyObject` objects are not to be created directly using the new keyword.
+
+ 	@see https://nodejs.org/api/crypto.html#crypto_class_keyobject
+**/
+extern class KeyObject {
+	/**
+		 For asymmetric keys, this property represents the type of the key.
+
+		 @see https://nodejs.org/api/crypto.html#crypto_keyobject_asymmetrickeytype
+	**/
+    var asymmetricKeyType: String;
+
+	/**
+		 For symmetric keys, this function allocates a `Buffer` containing the key material and ignores any options.
+
+		 @see https://nodejs.org/api/crypto.html#crypto_keyobject_export_options
+	**/
+	@:overload(function(?options: ExportPrivateKeyOptions):String {})
+	static function export(?options: ExportPublicKeyOptions): Buffer;
+
+	/**
+		 For secret keys, this property represents the size of the key in bytes.
+		 This property is undefined for asymmetric keys.
+
+		 @see https://nodejs.org/api/crypto.html#crypto_keyobject_symmetrickeysize
+	**/
+    var symmetricKeySize: Int;
+
+	/**
+		 Depending on the type of this `KeyObject`,
+		 this property is either `'secret'` for secret (symmetric) keys, `'public'` for public (asymmetric) keys or `'private'` for private (asymmetric) keys.
+
+		 @see https://nodejs.org/api/crypto.html#crypto_keyobject_type
+	**/
+    var type: String;
+}
+
+/**
+	An options type for `export` of `KeyObject` for public key.
+**/
+typedef ExportPublicKeyOptions = {
+
+	/**
+		 Must be one of `'pkcs1'` (RSA only) or `'spki'`.
+	**/
+	var type: String;
+
+	/**
+		 Must be `'pem'` or `'der'`.
+	**/
+	var format: String;
+}
+
+/**
+	An options type for `export` of `KeyObject` for private key.
+**/
+typedef ExportPrivateKeyOptions = {
+	/**
+		 Must be one of `'pkcs1'` (RSA only), `'pkcs8'` or `'sec1'` (EC only).
+	**/
+	var type: String;
+
+	/**
+		 Must be `'pem'` or `'der'`.
+	**/
+	var format: String;
+
+	/**
+		 If specified, the private key will be encrypted with the given cipher and passphrase using PKCS#5 v2.0 password based encryption.
+	**/
+    var cipher: String;
+
+	/**
+		 The passphrase to use for encryption, see `cipher`.
+	**/
+    var passphrase: EitherType<String, Buffer>;
+}
 
