@@ -234,7 +234,7 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_debugport
 	**/
-	var debugPort:Int;
+	var debugPort:Float;
 
 	/**
 		If the Node.js process is spawned with an IPC channel (see the Child Process and Cluster documentation), the
@@ -250,7 +250,7 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_dlopen_module_filename_flags
 	**/
-	function dlopen(module:Dynamic<Dynamic>, filename:String, ?flags:Int):Void;
+	function dlopen(module:Module, filename:String, ?flags:Int):Void;
 
 	/**
 		The `process.emitWarning()` method can be used to emit custom or application specific process warnings.
@@ -312,7 +312,7 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_geteuid
 	**/
-	function getuid():Int;
+	function geteuid():Int;
 
 	/**
 		The `process.getgid()` method returns the numerical group identity of the process.
@@ -329,177 +329,232 @@ extern class Process extends EventEmitter<Process> {
 	function getgroups():Array<Int>;
 
 	/**
-		A Writable Stream to stdout.
+		The `process.getuid()` method returns the numeric user identity of the process.
 
-		`stderr` and `stdout` are unlike other streams in Node in that writes to them are usually blocking.
+		@see https://nodejs.org/api/process.html#process_process_getuid
 	**/
-	var stdout:IWritable;
+	function getuid():Int;
 
 	/**
-		A writable stream to stderr.
+		Indicates whether a callback has been set using `process.setUncaughtExceptionCaptureCallback()`.
 
-		`stderr` and `stdout` are unlike other streams in Node in that writes to them are usually blocking.
+		@see https://nodejs.org/api/process.html#process_process_hasuncaughtexceptioncapturecallback
 	**/
-	var stderr:IWritable;
+	function hasUncaughtExceptionCaptureCallback():Bool;
 
 	/**
-		A Readable Stream for stdin.
+		The `process.hrtime()` method returns the current high-resolution real time in a `[seconds, nanoseconds]` tuple
+		`Array`, where `nanoseconds` is the remaining part of the real time that can't be represented in second
+		precision.
+
+		@see https://nodejs.org/api/process.html#process_process_hrtime_time
 	**/
-	var stdin:IReadable;
+	function hrtime(?time:Array<Int>):Array<Int>;
 
 	/**
-		Sets the group identity of the process. See setgid(2).
-		This accepts either a numerical ID or a groupname string.
-		If a groupname is specified, this method blocks while resolving it to a numerical ID.
+		The `process.initgroups()` method reads the `/etc/group` file and initializes the group access list, using all
+		groups of which the user is a member.
 
-		Note: this function is only available on POSIX platforms (i.e. not Windows)
+		@see https://nodejs.org/api/process.html#process_process_initgroups_user_extragroup
+	**/
+	function initgroups(user:EitherType<String, Float>, extra_group:EitherType<String, Float>):Void;
+
+	/**
+		The `process.kill()` method sends the `signal` to the process identified by `pid`.
+
+		@see https://nodejs.org/api/process.html#process_process_kill_pid_signal
+	**/
+	function kill(pid:Float, ?signal:EitherType<String, Float>):Void;
+
+	/**
+		The `process.mainModule` property provides an alternative way of retrieving `require.main`.
+
+		@see https://nodejs.org/api/process.html#process_process_mainmodule
+	**/
+	var mainModule:Module;
+
+	/**
+		The `process.memoryUsage()` method returns an object describing the memory usage of the Node.js process measured
+		in bytes.
+
+		@see https://nodejs.org/api/process.html#process_process_memoryusage
+	**/
+	function memoryUsage():MemoryUsage;
+
+	/**
+		`process.nextTick()` adds `callback` to the "next tick queue".
+
+		@see https://nodejs.org/api/process.html#process_process_nexttick_callback_args
+	**/
+	function nextTick(callback:Void->Void, args:Rest<Dynamic>):Void;
+
+	/**
+		The `process.noDeprecation` property indicates whether the `--no-deprecation` flag is set on the current Node.js
+		process.
+
+		@see https://nodejs.org/api/process.html#process_process_nodeprecation
+	**/
+	var noDeprecation:Bool;
+
+	/**
+		The `process.pid` property returns the PID of the process.
+
+		@see https://nodejs.org/api/process.html#process_process_pid
+	**/
+	var pid(default, null):Int;
+
+	/**
+		The `process.platform` property returns a string identifying the operating system platform on which the Node.js
+		process is running.
+
+		@see https://nodejs.org/api/process.html#process_process_platform
+	**/
+	var platform(default, null):String;
+
+	/**
+		The `process.ppid` property returns the PID of the current parent process.
+
+		@see https://nodejs.org/api/process.html#process_process_ppid
+	**/
+	var ppid(default, null):String;
+
+	/**
+		The `process.release` property returns an `Object` containing metadata related to the current release, including
+		URLs for the source tarball and headers-only tarball.
+
+		@see https://nodejs.org/api/process.html#process_process_release
+	**/
+	var release(default, null):Release;
+
+	/**
+		The resource usage for the current process.
+
+		@see https://nodejs.org/api/process.html#process_process_resourceusage
+	**/
+	function resourceUsage():ResourceUsage;
+
+	/**
+		If Node.js is spawned with an IPC channel, the `process.send()` method can be used to send messages to the
+		parent process.
+
+		@see https://nodejs.org/api/process.html#process_process_send_message_sendhandle_options_callback
+	**/
+	function send(message:Dynamic, ?sendHandle:EitherType<Server, Socket>, ?options:ChildProcessSendOptions, ?callback:Error->Void):Bool;
+
+	/**
+		The `process.setegid()` method sets the effective group identity of the process.
+
+		@see https://nodejs.org/api/process.html#process_process_setegid_id
 	**/
 	@:overload(function(id:String):Void {})
-	function setgid(id:Int):Void;
+	function setegid(id:Float):Void;
 
 	/**
-		Sets the user identity of the process. See setuid(2).
-		This accepts either a numerical ID or a username string.
-		If a username is specified, this method blocks while resolving it to a numerical ID.
+		The `process.seteuid()` method sets the effective user identity of the process.
 
-		Note: this function is only available on POSIX platforms (i.e. not Windows)
+		@see https://nodejs.org/api/process.html#process_process_seteuid_id
+	**/
+	@:overload(function(id:String):Void {})
+	function seteuid(id:Float):Void;
+
+	/**
+		The `process.setgid()` method sets the group identity of the process.
+
+		@see https://nodejs.org/api/process.html#process_process_setgid_id
+	**/
+	@:overload(function(id:String):Void {})
+	function setgid(id:Float):Void;
+
+	/**
+		The `process.setgroups()` method sets the supplementary group IDs for the Node.js process.
+
+		@see https://nodejs.org/api/process.html#process_process_setgroups_groups
+	**/
+	function setgroups(groups:Array<Int>):Void;
+
+	/**
+		The `process.setuid(id)` method sets the user identity of the process.
+
+		@see https://nodejs.org/api/process.html#process_process_setuid_id
 	**/
 	@:overload(function(id:String):Void {})
 	function setuid(id:Int):Void;
 
 	/**
-		Sets the supplementary group IDs.
-		This is a privileged operation, meaning you need to be root or have the CAP_SETGID capability.
+		The `process.setUncaughtExceptionCaptureCallback()` function sets a function that will be invoked when an
+		uncaught exception occurs, which will receive the exception value itself as its first argument.
 
-		Note: this function is only available on POSIX platforms (i.e. not Windows)
-		The list can contain group IDs, group names or both.
+		@see https://nodejs.org/api/process.html#process_process_setuncaughtexceptioncapturecallback_fn
 	**/
-	function setgroups(groups:Array<EitherType<String, Int>>):Void;
+	function setUncaughtExceptionCaptureCallback(fn:Null<Error->Void>):Void;
 
 	/**
-		Reads /etc/group and initializes the group access list, using all groups of which the user is a member.
-		This is a privileged operation, meaning you need to be root or have the CAP_SETGID capability.
+		The `process.stderr` property returns a stream connected to `stderr` (fd `2`).
 
-		Note: this function is only available on POSIX platforms (i.e. not Windows)
+		@see https://nodejs.org/api/process.html#process_process_stderr
 	**/
-	function initgroups(user:EitherType<String, Int>, extra_group:EitherType<String, Int>):Void;
+	var stderr:IWritable;
 
 	/**
-		A compiled-in property that exposes NODE_VERSION.
+		The `process.stdin` property returns a stream connected to `stdin` (fd `0`).
+
+		@see https://nodejs.org/api/process.html#process_process_stdin
 	**/
-	var version(default, null):String;
+	var stdin:IReadable;
 
 	/**
-		A property exposing version strings of node and its dependencies.
+		The `process.stdout` property returns a stream connected to `stdout` (fd `1`).
+
+		@see https://nodejs.org/api/process.html#process_process_stdout
 	**/
-	var versions:DynamicAccess<String>;
+	var stdout:IWritable;
 
 	/**
-		Send a signal to a process.
-		`pid` is the process id and `signal` is the string describing the signal to send. Signal names are strings like 'SIGINT' or 'SIGHUP'.
+		The `process.throwDeprecation` property indicates whether the `--throw-deprecation` flag is set on the current
+		Node.js process.
 
-		If omitted, the `signal` will be 'SIGTERM'. See Signal Events and kill(2) for more information.
-
-		Will throw an error if target does not exist, and as a special case,
-		a signal of 0 can be used to test for the existence of a process.
-
-		Note that just because the name of this function is `kill`, it is really just a signal sender, like the kill system call.
-		The signal sent may do something other than kill the target process.
+		@see https://nodejs.org/api/process.html#process_process_throwdeprecation
 	**/
-	function kill(pid:Int, ?signal:String):Void;
+	var throwDeprecation:Bool;
 
 	/**
-		The PID of the process.
-	**/
-	var pid(default, null):Int;
+		The `process.title` property returns the current process title (i.e. returns the current value of `ps`).
 
-	/**
-		Getter/setter to set what is displayed in 'ps'.
-
-		When used as a setter, the maximum length is platform-specific and probably short.
-		On Linux and OS X, it's limited to the size of the binary name plus the length of the
-		command line arguments because it overwrites the argv memory.
+		@see https://nodejs.org/api/process.html#process_process_title
 	**/
 	var title:String;
 
 	/**
-		What platform you're running on: 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
-	**/
-	var platform:String;
+		The `process.traceDeprecation` property indicates whether the `--trace-deprecation` flag is set on the current
+		Node.js process.
 
-	/**
-		Returns an object describing the memory usage of the Node process measured in bytes.
-	**/
-	function memoryUsage():MemoryUsage;
-
-	/**
-		On the next loop around the event loop call this callback.
-		This is not a simple alias to setTimeout(fn, 0), it's much more efficient.
-		It typically runs before any other I/O events fire, but there are some exceptions.
-
-		This is important in developing APIs where you want to give the user the chance to
-		assign event handlers after an object has been constructed, but before any I/O has occurred.
-	**/
-	function nextTick(callback:Void->Void, args:Rest<Dynamic>):Void;
-
-	/**
-		Sets or reads the process's file mode creation mask.
-		Child processes inherit the mask from the parent process.
-		Returns the old mask if mask argument is given, otherwise returns the current mask.
-	**/
-	function umask(?mask:Int):Int;
-
-	/**
-		Number of seconds Node has been running.
-	**/
-	function uptime():Float;
-
-	/**
-		Returns the current high-resolution real time in a [seconds, nanoseconds] tuple Array.
-		It is relative to an arbitrary time in the past.
-		It is not related to the time of day and therefore not subject to clock drift.
-		The primary use is for measuring performance between intervals.
-		You may pass in the result of a previous call to `hrtime` to get a diff reading,
-		useful for benchmarks and measuring intervals
-	**/
-	@:overload(function(prev:Array<Float>):Array<Float> {})
-	function hrtime():Array<Float>;
-
-	/**
-		Alternate way to retrieve require.main. The difference is that if the main module changes at runtime,
-		require.main might still refer to the original main module in modules that were required
-		before the change occurred. Generally it's safe to assume that the two refer to the same module.
-
-		As with require.main, it will be undefined if there was no entry script.
-	**/
-	var mainModule(default, null):Module;
-
-	/**
-		Send a message to the parent process.
-
-		Only available for child processes. See `ChildProcess.send`.
-	**/
-	@:overload(function(message:Dynamic, sendHandle:Dynamic, options:ChildProcessSendOptions, ?callback:Error->Void):Bool {})
-	@:overload(function(message:Dynamic, sendHandle:Dynamic, ?callback:Error->Void):Bool {})
-	function send(message:Dynamic, ?callback:Error->Void):Bool;
-
-	/**
-		Disable run-time deprecation warnings.
-		See `Util.deprecate`.
-	**/
-	var noDeprecation:Bool;
-
-	/**
-		Enable logging of deprecation warnings.
-		See `Util.deprecate`.
+		@see https://nodejs.org/api/process.html#process_process_tracedeprecation
 	**/
 	var traceDeprecation:Bool;
 
 	/**
-		Throw on deprecated API usage.
-		See `Util.deprecate`.
+		The `process.umask()` method sets or returns the Node.js process's file mode creation mask.
+
+		@see https://nodejs.org/api/process.html#process_process_umask_mask
 	**/
-	var throwDeprecation:Bool;
+	function umask(?mask:Int):Int;
+
+	/**
+		The `process.uptime()` method returns the number of seconds the current Node.js process has been running.
+
+		@see https://nodejs.org/api/process.html#process_process_uptime
+	**/
+	function uptime():Float;
+
+	/**
+		The `process.version` property returns the Node.js version string.
+	**/
+	var version(default, null):String;
+
+	/**
+		The `process.versions` property returns an object listing the version strings of Node.js and its dependencies.
+	**/
+	var versions:DynamicAccess<String>;
 }
 
 /**
@@ -539,8 +594,54 @@ typedef EmitWarningOptions = {
 	@:optional var detail:String;
 }
 
+/**
+	Object used by `Process.memoryUsage`.
+**/
 typedef MemoryUsage = {
-	rss:Float,
-	heapTotal:Float,
-	heapUsed:Float
+	rss:Int,
+	heapTotal:Int,
+	heapUsed:Int,
+	external:Int
 }
+
+/**
+	Object used by `Process.release`.
+**/
+typedef Release = {
+	/**
+		A value that will always be `'node'` for Node.js.
+		For legacy io.js releases, this will be `'io.js'`.
+	**/
+	var name:String;
+
+	/**
+		An absolute URL pointing to a `.tar.gz` file containing the source code of the current release.
+	**/
+	var sourceUrl:String;
+
+	/**
+		An absolute URL pointing to a `.tar.gz` file containing only the source header files for the current release.
+		This file is significantly smaller than the full source file and can be used for compiling Node.js native
+		add-ons.
+	**/
+	var headersUrl:String;
+
+	/**
+		An absolute URL pointing to a `node.lib` file matching the architecture and version of the current release.
+		This file is used for compiling Node.js native add-ons. This property is only present on Windows builds of
+		Node.js and will be missing on all other platforms.
+	**/
+	var libUrl:String;
+
+	/**
+		A string label identifying the `LTS` label for this release.
+		This property only exists for LTS releases and is `undefined` for all other release types, including Current
+		releases.
+	**/
+	var lts:String;
+}
+
+/**
+	Object used by `Process.resourceUsage`.
+**/
+typedef ResourceUsage = {}
