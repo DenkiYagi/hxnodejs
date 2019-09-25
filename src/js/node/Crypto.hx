@@ -69,7 +69,8 @@ import js.node.stream.Writable;
 @:jsRequire("crypto")
 extern class Crypto {
 	/**
-		The default encoding to use for functions that can take either strings or buffers. The default value is 'buffer', which makes methods default to Buffer objects.
+		The default encoding to use for functions that can take either strings or buffers.
+		The default value is 'buffer', which makes methods default to Buffer objects.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_default_encoding
 	**/
@@ -77,7 +78,8 @@ extern class Crypto {
 	static var DEFAULT_ENCODING:String;
 
 	/**
-		Property for checking and controlling whether a FIPS compliant crypto provider is currently in use. Setting to true requires a FIPS build of Node.js.
+		Property for checking and controlling whether a FIPS compliant crypto provider is
+		currently in use. Setting to true requires a FIPS build of Node.js.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_fips
 	**/
@@ -115,8 +117,10 @@ extern class Crypto {
 	static function createDecipheriv(algorithm:String, key:EitherType<String, Buffer>, iv:EitherType<String, Buffer>):Decipher;
 
 	/**
-		If `prim` is provoded as string or a `Buffer`, creates a `DiffieHellman` key exchange object using the supplied `prime` and an optional specific `generator`,
-		Otherwise creates a `DiffieHellman` key exchange object and generates a prime of given `prime_length` bits using an optional specific numeric `generator`
+		If `prim` is provoded as string or a `Buffer`, creates a `DiffieHellman` key exchange object
+		using the supplied `prime` and an optional specific `generator`,
+		Otherwise creates a `DiffieHellman` key exchange object and generates a prime of given `prime_length` bits
+		using an optional specific numeric `generator`
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_creatediffiehellman_prime_primeencoding_generator_generatorencoding
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_creatediffiehellman_primelength_generator
@@ -132,35 +136,44 @@ extern class Crypto {
 	static function createDiffieHellmanGroup(name:String):DiffieHellman;
 
 	/**
-		Creates an Elliptic Curve Diffie-Hellman (`ECDH`) key exchange object using a predefined curve specified by the `curve_name` string. Use `Crypto.getCurves()` to obtain a list of available curve names. On recent OpenSSL releases, `openssl ecparam -list_curves` will also display the name and description of each available elliptic curve.
+		Creates an Elliptic Curve Diffie-Hellman (`ECDH`) key exchange object using a predefined curve specified by the `curve_name` string.
+		Use `Crypto.getCurves()` to obtain a list of available curve names.
+		On recent OpenSSL releases, `openssl ecparam -list_curves` will also display the name and description of each available elliptic curve.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createecdh_curvename
 	**/
 	static function createECDH(curve_name:String):ECDH;
 
 	/**
-		Creates and returns a `Hash` object that can be used to generate hash digests using the given `algorithm`. Optional `options` argument controls stream behavior. For XOF hash functions such as `'shake256'`, the `output_length` option can be used to specify the desired output length in bytes.
+		Creates and returns a `Hash` object that can be used to generate hash digests using the given `algorithm`.
+		Optional `options` argument controls stream behavior.
+		For XOF hash functions such as `'shake256'`, the `output_length` option can be used to specify the desired output length in bytes.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options
 	**/
 	static function createHash(algorithm:CryptoAlgorithm, ?options: Transform<Hash>):Hash;
 
 	/**
-		Creates and returns an `Hmac` object that uses the given `algorithm` and `key`. Optional `options` argument controls stream behavior.
+		Creates and returns an `Hmac` object that uses the given `algorithm` and `key`.
+		Optional `options` argument controls stream behavior.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key_options
 	**/
 	static function createHmac(algorithm:CryptoAlgorithm, key:EitherType<String, Buffer>, ?options: Transform<Hmac>):Hmac;
 
 	/**
-		Creates and returns a new key object containing a private key. If `key` is a string or `Buffer`, `format` is assumed to be `'pem'`; otherwise, `key` must be an object with the properties described above.
+		Creates and returns a new key object containing a private key.
+		If `key` is a string or `Buffer`, `format` is assumed to be `'pem'`; otherwise, `key` must be an object with the properties described above.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createprivatekey_key
 	**/
 	static function createPrivateKey(key: PrivateKeyOptions):KeyObject;
 
 	/**
-		Creates and returns a new key object containing a public key. If `key` is a string or `Buffer`, `format` is assumed to be `'pem'`; if `key` is a `KeyObject` with type `'private'`, the public key is derived from the given private key; otherwise, `key` must be an object with the properties described above.
+		Creates and returns a new key object containing a public key.
+		If `key` is a string or `Buffer`, `format` is assumed to be `'pem'`;
+		if `key` is a `KeyObject` with type `'private'`, the public key is derived from the given private key;
+		otherwise, `key` must be an object with the properties described above.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createpublickey_key
 	**/
@@ -174,28 +187,34 @@ extern class Crypto {
 	static function createSecretKey(key: Buffer):KeyObject;
 
 	/**
-		Creates and returns a `Sign` object that uses the given `algorithm`. Use `Crypto.getHashes()` to obtain the names of the available digest algorithms. Optional `options` argument controls the `stream.Writable` behavior.
+		Creates and returns a `Sign` object that uses the given `algorithm`.
+		Use `Crypto.getHashes()` to obtain the names of the available digest algorithms.
+		Optional `options` argument controls the `stream.Writable` behavior.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createsign_algorithm_options
 	**/
 	static function createSign(algorithm: String, ?options: Writable<Dynamic>):Sign;
 
 	/**
-		Creates and returns a `Verify` object that uses the given `algorithm`. Use `Crypto.getHashes()` to obtain an array of names of the available signing algorithms. Optional `options` argument controls the `stream.Writable` behavior.
+		Creates and returns a `Verify` object that uses the given `algorithm`.
+		Use `Crypto.getHashes()` to obtain an array of names of the available signing algorithms.
+		Optional `options` argument controls the `stream.Writable` behavior.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createverify_algorithm_options
 	**/
 	static function createVerify(algorithm:String, ?options: Writable<Dynamic>):Verify;
 
 	/**
-		Generates a new asymmetric key pair of the given `type`. RSA, DSA, EC, Ed25519 and Ed448 are currently supported.
+		Generates a new asymmetric key pair of the given `type`.
+		RSA, DSA, EC, Ed25519 and Ed448 are currently supported.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_generatekeypair_type_options_callback
 	**/
 	static function generateKeyPair(type:String, options: GenerateKeyPairOptions, callback: Function):Void;
 
 	/**
-		Generates a new asymmetric key pair of the given `type`. RSA, DSA, EC, Ed25519 and Ed448 are currently supported.
+		Generates a new asymmetric key pair of the given `type`.
+		RSA, DSA, EC, Ed25519 and Ed448 are currently supported.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_generatekeypairsync_type_options
 	**/
@@ -230,14 +249,17 @@ extern class Crypto {
 	static function getFips():Void;
 
 	/**
-		Returns an array of the names of the supported hash algorithms, such as 'RSA-SHA256'. Hash algorithms are also called "digest" algorithms.
+		Returns an array of the names of the supported hash algorithms, such as 'RSA-SHA256'.
+		Hash algorithms are also called "digest" algorithms.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_gethashes
 	**/
 	static function getHashes():Array<String>;
 
 	/**
-		Provides an asynchronous Password-Based Key Derivation Function 2 (PBKDF2) implementation. A selected HMAC digest algorithm specified by `digest` is applied to derive a key of the requested byte length (`keylen`) from the `password`, `salt` and `iterations`.
+		Provides an asynchronous Password-Based Key Derivation Function 2 (PBKDF2) implementation.
+		A selected HMAC digest algorithm specified by `digest` is applied to derive a key of the requested byte length (`keylen`)
+		from the `password`, `salt` and `iterations`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_pbkdf2_password_salt_iterations_keylen_digest_callback
 	**/
@@ -247,7 +269,8 @@ extern class Crypto {
 	static function pbkdf2Sync(password: String, salt: String, iterations: Int, keylen: Int, digest: String):Buffer;
 
 	/**
-		Decrypts `buffer` with `private_key`. buffer was previously encrypted using the corresponding public key, for example using `Crypto.publicEncrypt()`.
+		Decrypts `buffer` with `private_key`.
+		`buffer` was previously encrypted using the corresponding public key, for example using `Crypto.publicEncrypt()`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_privatedecrypt_privatekey_buffer
 	**/
@@ -258,7 +281,8 @@ extern class Crypto {
 
 
 	/**
-		Encrypts `buffer` with `private_key`. The returned data can be decrypted using the corresponding public key, for example using `Crypto.publicDecrypt()`.
+		Encrypts `buffer` with `private_key`.
+		The returned data can be decrypted using the corresponding public key, for example using `Crypto.publicDecrypt()`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_privateencrypt_privatekey_buffer
 	**/
@@ -268,7 +292,8 @@ extern class Crypto {
 	static function privateEncrypt(private_key: KeyObject, buffer: Buffer):Buffer;
 
 	/**
-		Decrypts `buffer` with `key`. `buffer` was previously encrypted using the corresponding private key, for example using `Crypto.privateEncrypt()`.
+		Decrypts `buffer` with `key`.
+		`buffer` was previously encrypted using the corresponding private key, for example using `Crypto.privateEncrypt()`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_publicdecrypt_key_buffer
 	**/
@@ -278,7 +303,8 @@ extern class Crypto {
 	static function publicDecrypt(key:KeyObject, buffer:Buffer): Buffer;
 
 	/**
-		Encrypts the content of `buffer` with `key` and returns a new `Buffer` with encrypted content. The returned data can be decrypted using the corresponding private key, for example using `Crypto.privateDecrypt()`.
+		Encrypts the content of `buffer` with `key` and returns a new `Buffer` with encrypted content.
+		The returned data can be decrypted using the corresponding private key, for example using `Crypto.privateDecrypt()`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_publicencrypt_key_buffer
 	**/
@@ -288,7 +314,8 @@ extern class Crypto {
 	static function publicEncrypt(key: KeyObject, buffer: Buffer):Buffer;
 
 	/**
-		Generates cryptographically strong pseudo-random data. The `size` argument is a number indicating the number of bytes to generate.
+		Generates cryptographically strong pseudo-random data.
+		The `size` argument is a number indicating the number of bytes to generate.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_randombytes_size_callback
 	**/
@@ -304,7 +331,8 @@ extern class Crypto {
 	static function randomFillSync(buffer: Buffer, offset: Int, size: Int):Buffer;
 
 	/**
-		This function is similar to `Crypto.randomBytes()` but requires the first argument to be a `Buffer` that will be filled. It also requires that a callback is passed in.
+		This function is similar to `Crypto.randomBytes()` but requires the first argument to be a `Buffer` that will be filled.
+		It also requires that a callback is passed in.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_randomfill_buffer_offset_size_callback
 	**/
@@ -313,7 +341,9 @@ extern class Crypto {
 	static function randomFill(buffer: Buffer, offset: Int, size: Int, callback: Function):Buffer;
 
 	/**
-		Provides an asynchronous `scrypt` implementation. Scrypt is a password-based key derivation function that is designed to be expensive computationally and memory-wise in order to make brute-force attacks unrewarding.
+		Provides an asynchronous `scrypt` implementation.
+		Scrypt is a password-based key derivation function that is designed to be expensive computationally and memory-wise
+		in order to make brute-force attacks unrewarding.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_scrypt_password_salt_keylen_options_callback
 	**/
@@ -323,7 +353,9 @@ extern class Crypto {
 	static function scrypt(password: String, salt: String, keylen: Int, ?options: ScryptOptions, callback: Function):Void;
 
 	/**
-		Provides a synchronous `scrypt` implementation. Scrypt is a password-based key derivation function that is designed to be expensive computationally and memory-wise in order to make brute-force attacks unrewarding.
+		Provides a synchronous `scrypt` implementation.
+		Scrypt is a password-based key derivation function that is designed to be expensive computationally and memory-wise
+		in order to make brute-force attacks unrewarding.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_scryptsync_password_salt_keylen_options
 	**/
@@ -340,14 +372,16 @@ extern class Crypto {
 	static function setEngine(engine:String, ?flags:Int):Void;
 
 	/**
-		Enables the FIPS compliant crypto provider in a FIPS-enabled Node.js build. Throws an error if FIPS mode is not available.
+		Enables the FIPS compliant crypto provider in a FIPS-enabled Node.js build.
+		Throws an error if FIPS mode is not available.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_setfips_bool
 	**/
 	static function setFips(v: Bool): Void;
 
 	/**
-		Calculates and returns the signature for `data` using the given private key and algorithm. If `algorithm` is none, then the algorithm is dependent upon the key type (especially Ed25519 and Ed448).
+		Calculates and returns the signature for `data` using the given private key and algorithm.
+		If `algorithm` is none, then the algorithm is dependent upon the key type (especially Ed25519 and Ed448).
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_sign_algorithm_data_key
 	**/
@@ -357,14 +391,17 @@ extern class Crypto {
 	static function sign(algorithm: Option<String>, data: Buffer, key: KeyObject): Buffer;
 
 	/**
-		This function is based on a constant-time algorithm. Returns true if `a` is equal to `b`, without leaking timing information that would allow an attacker to guess one of the values. This is suitable for comparing HMAC digests or secret values like authentication cookies or capability urls.
+		This function is based on a constant-time algorithm.
+		Returns true if `a` is equal to `b`, without leaking timing information that would allow an attacker to guess one of the values.
+		This is suitable for comparing HMAC digests or secret values like authentication cookies or capability urls.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_timingsafeequal_a_b
 	**/
 	static function timingSafeEqual(a: Buffer, b: Buffer): Bool;
 
 	/**
-		Verifies the given signature for data using the given key and algorithm. If algorithm is null or undefined, then the algorithm is dependent upon the key type (especially Ed25519 and Ed448).
+		Verifies the given signature for data using the given key and algorithm.
+		If algorithm is null or undefined, then the algorithm is dependent upon the key type (especially Ed25519 and Ed448).
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_verify_algorithm_data_key_signature
 	**/
@@ -493,7 +530,8 @@ typedef PrivateDecryptPrivateKey = {
 	var oaeHash: String;
 
 	/**
-		 An optional padding value defined in `Crypto.Constants`, which may be: `Crypto.Constants.RSA_NO_PADDING`, `Crypto.Constants.RSA_PKCS1_PADDING`, or `Crypto.Constants.RSA_PKCS1_OAEP_PADDING`.
+		 An optional padding value defined in `Crypto.Constants`,
+		 which may be: `Crypto.Constants.RSA_NO_PADDING`, `Crypto.Constants.RSA_PKCS1_PADDING`, or `Crypto.Constants.RSA_PKCS1_OAEP_PADDING`.
 	**/
 	var padding: Int;
 }
@@ -513,7 +551,8 @@ typedef PrivateEncryptPrivateKey = {
 	var passphrase: EitherType<String, Buffer>;
 
 	/**
-		 An optional padding value defined in `Crypto.Constants`, which may be: `Crypto.Constants.RSA_NO_PADDING` or `Crypto.Constants.RSA_PKCS1_PADDING`.
+		 An optional padding value defined in `Crypto.Constants`,
+		 which may be: `Crypto.Constants.RSA_NO_PADDING` or `Crypto.Constants.RSA_PKCS1_PADDING`.
 	**/
 	var padding: Int;
 }
@@ -528,7 +567,8 @@ typedef PublicDecryptKey = {
 	var passphrase: EitherType<String, Buffer>;
 
 	/**
-		 An optional padding value defined in `Crypto.Constants`, which may be: `Crypto.Constants.RSA_NO_PADDING` or `Crypto.Constants.RSA_PKCS1_PADDING`.
+		 An optional padding value defined in `Crypto.Constants`,
+		 which may be: `Crypto.Constants.RSA_NO_PADDING` or `Crypto.Constants.RSA_PKCS1_PADDING`.
 	**/
 	var padding: Int;
 }
@@ -552,7 +592,8 @@ typedef PublicEncryptKey = {
 	var passphrase: EitherType<String, Buffer>;
 
 	/**
-		 An optional padding value defined in `Crypto.Constants`, which may be: `Crypto.Constants.RSA_NO_PADDING`, `Crypto.Constants.RSA_PKCS1_PADDING`, or `Crypto.Constants.RSA_PKCS1_OAEP_PADDING`.
+		 An optional padding value defined in `Crypto.Constants`,
+		 which may be: `Crypto.Constants.RSA_NO_PADDING`, `Crypto.Constants.RSA_PKCS1_PADDING`, or `Crypto.Constants.RSA_PKCS1_OAEP_PADDING`.
 	**/
 	var padding: Int;
 }
