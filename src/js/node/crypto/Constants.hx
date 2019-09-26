@@ -23,7 +23,7 @@
 package js.node.crypto;
 
 /**
-	@see https://nodejs.org/dist/latest-v12.x/docs/api/all.html#crypto_crypto_constants_1
+	@see https://nodejs.org/api/crypto.html#crypto_crypto_constants_1
 **/
 @:jsRequire("crypto", "Constants")
 extern class Constants {
@@ -31,7 +31,7 @@ extern class Constants {
 	/**
 		OpenSSL Options
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/all.html#crypto_openssl_options
+		@see https://nodejs.org/api/crypto.html#crypto_openssl_options
 	**/
 	static var SSL_OP_ALL(default, null):Int;
 	static var SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION(default, null):Int;
@@ -71,7 +71,7 @@ extern class Constants {
 	/**
 		OpenSSL Engine Constants
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/all.html#crypto_openssl_engine_constants
+		@see https://nodejs.org/api/crypto.html#crypto_openssl_engine_constants
 	**/
 	static var ENGINE_METHOD_RSA(default, null):Int;
 	static var ENGINE_METHOD_DSA(default, null):Int;
@@ -88,7 +88,7 @@ extern class Constants {
 	/**
 		Other OpenSSL Constants
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/all.html#crypto_other_openssl_constants
+		@see https://nodejs.org/api/crypto.html#crypto_other_openssl_constants
 	**/
 	static var DH_CHECK_P_NOT_SAFE_PRIME(default, null):Int;
 	static var DH_CHECK_P_NOT_PRIME(default, null):Int;

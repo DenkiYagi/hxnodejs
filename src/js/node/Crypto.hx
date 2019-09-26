@@ -64,7 +64,7 @@ import js.node.stream.Writable;
 	The crypto module provides cryptographic functionality that includes
 	a set of wrappers for OpenSSL's hash, HMAC, cipher, decipher, sign, and verify functions.
 
-	@see https://nodejs.org/dist/latest-v12.x/docs/api/crypto.html#crypto_crypto
+	@see https://nodejs.org/api/crypto.html#crypto_crypto
 **/
 @:jsRequire("crypto")
 extern class Crypto {
