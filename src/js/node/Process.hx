@@ -111,29 +111,7 @@ import js.Promise;
 
 		@see https://nodejs.org/api/process.html#process_event_warning
 	**/
-	var Warning:ProcessEvent<ProcessWarningEvent->Void> = "warning";
-}
-
-/**
-	Options object used by `ProcessEvent.Warning`.
-**/
-typedef ProcessWarningEvent = {
-	/**
-		The name of the warning.
-
-		Default: `'Warning'`.
-	**/
-	var name:String;
-
-	/**
-		A system-provided description of the warning.
-	**/
-	var message:String;
-
-	/**
-		A stack trace to the location in the code where the warning was issued
-	**/
-	var stack:String;
+	var Warning:ProcessEvent<Error->Void> = "warning";
 }
 
 /**
@@ -203,7 +181,7 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_config
 	**/
-	var config:Dynamic<Dynamic>;
+	var config:DynamicAccess<Dynamic>;
 
 	/**
 		If the Node.js process is spawned with an IPC channel (see the Child Process and Cluster documentation), the
@@ -364,7 +342,8 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_kill_pid_signal
 	**/
-	function kill(pid:Float, ?signal:EitherType<String, Float>):Void;
+	@:overload(function(pid:Float, ?signal:String):Void {})
+	function kill(pid:Float, ?signal:Float):Void;
 
 	/**
 		The `process.mainModule` property provides an alternative way of retrieving `require.main`.
@@ -439,7 +418,8 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_send_message_sendhandle_options_callback
 	**/
-	function send(message:Dynamic, ?sendHandle:EitherType<Server, Socket>, ?options:ChildProcessSendOptions, ?callback:Error->Void):Bool;
+	@:overload(function(message:Dynamic, ?sendHandle:Server, ?options:ChildProcessSendOptions, ?callback:Error->Void):Bool {})
+	function send(message:Dynamic, ?sendHandle:Socket, ?options:ChildProcessSendOptions, ?callback:Error->Void):Bool;
 
 	/**
 		The `process.setegid()` method sets the effective group identity of the process.
@@ -644,4 +624,91 @@ typedef Release = {
 /**
 	Object used by `Process.resourceUsage`.
 **/
-typedef ResourceUsage = {}
+typedef ResourceUsage = {
+	/**
+		Maps to `ru_utime` computed in microseconds.
+		It is the same value as `process.cpuUsage().user`.
+	**/
+	var userCPUTime:Int;
+
+	/**
+		Maps to `ru_stime` computed in microseconds.
+		It is the same value as `process.cpuUsage().system`.
+	**/
+	var systemCPUTime:Int;
+
+	/**
+		Maps to `ru_maxrss` which is the maximum resident set size used in kilobytes.
+	**/
+	var maxRSS:Int;
+
+	/**
+		Maps to `ru_ixrss` but is not supported by any platform.
+	**/
+	var sharedMemorySize:Int;
+
+	/**
+		Maps to `ru_idrss` but is not supported by any platform.
+	**/
+	var unsharedDataSize:Int;
+
+	/**
+		Maps to `ru_isrss` but is not supported by any platform.
+	**/
+	var unsharedStackSize:Int;
+
+	/**
+		Maps to `ru_minflt` which is the number of minor page faults for the process.
+	**/
+	var minorPageFault:Int;
+
+	/**
+		Maps to `ru_majflt` which is the number of major page faults for the process.
+		This field is not supported on Windows.
+	**/
+	var majorPageFault:Int;
+
+	/**
+		Maps to `ru_nswap` but is not supported by any platform.
+	**/
+	var swappedOut:Int;
+
+	/**
+		Maps to `ru_inblock` which is the number of times the file system had to perform input.
+	**/
+	var fsRead:Int;
+
+	/**
+		Maps to `ru_oublock` which is the number of times the file system had to perform output.
+	**/
+	var fsWrite:Int;
+
+	/**
+		Mps to `ru_msgsnd` but is not supported by any platform.
+	**/
+	var ipcSent:Int;
+
+	/**
+		Maps to `ru_msgrcv` but is not supported by any platform.
+	**/
+	var ipcReceived:Int;
+
+	/**
+		Maps to `ru_nsignals` but is not supported by any platform.
+	**/
+	var signalsCount:Int;
+
+	/**
+		Maps to `ru_nvcsw` which is the number of times a CPU context switch resulted due to a process voluntarily
+		giving up the processor before its time slice was completed (usually to await availability of a resource).
+		This field is not supported on Windows.
+	**/
+	var voluntaryContextSwitches:Int;
+
+	/**
+		Maps to `ru_nivcsw` which is the number of times a CPU context switch resulted due to a higher priority process
+		becoming runnable or because the current process exceeded its time slice.
+		This field is not supported on Windows.
+	**/
+	var involuntaryContextSwitches:Int;
+}
