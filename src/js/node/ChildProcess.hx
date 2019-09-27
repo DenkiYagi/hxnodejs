@@ -26,10 +26,78 @@ import haxe.DynamicAccess;
 import haxe.extern.EitherType;
 import js.node.child_process.ChildProcess as ChildProcessObject;
 #if haxe4
+import js.lib.ArrayBufferView;
 import js.lib.Error;
 #else
+import js.html.ArrayBufferView;
 import js.Error;
 #end
+
+/**
+	The `child_process` module provides the ability to spawn child processes in a manner that is similar, but not
+	identical, to `popen(3)`.
+
+	@see https://nodejs.org/api/child_process.html#child_process_child_process
+**/
+@:jsRequire("child_process")
+extern class ChildProcess {
+	/**
+		Spawns a shell then executes the `command` within that shell, buffering any generated output.
+
+		@see https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback
+	**/
+	static function exec(command:String, ?options:ChildProcessExecOptions, ?callback:ChildProcessExecCallback):ChildProcessObject;
+
+	/**
+		The `child_process.execFile()` function is similar to `child_process.exec()` except that it does not spawn a
+		shell by default.
+
+		@see https://nodejs.org/api/child_process.html#child_process_child_process_execfile_file_args_options_callback
+	**/
+	static function execFile(file:String, ?args:Array<String>, ?options:ChildProcessExecFileOptions, ?callback:ChildProcessExecCallback):ChildProcessObject;
+
+	/**
+		The `child_process.fork()` method is a special case of `child_process.spawn()` used specifically to spawn new
+		Node.js processes.
+
+		@see https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
+	**/
+	static function fork(modulePath:String, ?args:Array<String>, ?options:ChildProcessForkOptions):ChildProcessObject;
+
+	/**
+		The `child_process.spawn()` method spawns a new process using the given `command`, with command line arguments
+		in `args`.
+
+		@see https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
+	**/
+	static function spawn(command:String, ?args:Array<String>, ?options:ChildProcessSpawnOptions):ChildProcessObject;
+
+	/**
+		The `child_process.execFileSync()` method is generally identical to `child_process.execFile()` with the
+		exception that the method will not return until the child process has fully closed.
+
+		@see https://nodejs.org/api/child_process.html#child_process_child_process_execfilesync_file_args_options
+	**/
+	@:overload(function(file:String, ?args:Array<String>, ?options:ChildProcessExecFileSyncOptions):Buffer {})
+	static function execFileSync(file:String, ?args:Array<String>, ?options:ChildProcessExecFileSyncOptions):String;
+
+	/**
+		The `child_process.execSync()` method is generally identical to `child_process.exec()` with the exception that
+		the method will not return until the child process has fully closed.
+
+		@see https://nodejs.org/api/child_process.html#child_process_child_process_execsync_command_options
+	**/
+	@:overload(function(command:String, ?options:ChildProcessExecSyncOptions):Buffer {})
+	static function execSync(command:String, ?options:ChildProcessExecSyncOptions):String;
+
+	/**
+		The `child_process.spawnSync()` method is generally identical to `child_process.spawn()` with the exception that
+		the function will not return until the child process has fully closed.
+
+		@see https://nodejs.org/api/child_process.html#child_process_child_process_spawnsync_command_args_options
+	**/
+	static function spawnSync(command:String, ?args:Array<String>, ?options:ChildProcessSpawnSyncOptions):ChildProcessSpawnSyncResult;
+}
 
 /**
 	Common options for all `ChildProcess` methods.
@@ -37,224 +105,72 @@ import js.Error;
 private typedef ChildProcessCommonOptions = {
 	/**
 		Current working directory of the child process.
+
+		Default: `null`.
 	**/
 	@:optional var cwd:String;
 
 	/**
-		Environment key-value pairs
+		Environment key-value pairs.
+
+		Default: `process.env`.
 	**/
 	@:optional var env:DynamicAccess<String>;
 
 	/**
-		Sets the user identity of the process. See setuid(2).
+		Sets the user identity of the process (see `setuid(2)`).
 	**/
 	@:optional var uid:Int;
 
 	/**
-		Sets the group identity of the process. See setgid(2).
+		Sets the group identity of the process (see `setgid(2)`).
 	**/
 	@:optional var gid:Int;
-
-	/**
-		Shell to execute the command with.
-		Default: '/bin/sh' on UNIX, 'cmd.exe' on Windows.
-
-		The shell should understand the -c switch on UNIX or /s /c on Windows.
-		On Windows, command line parsing should be compatible with cmd.exe.
-	**/
-	@:optional var shell:EitherType<Bool, String>;
 }
 
 /**
-	Common options for `spawn` and `spawnSync` methods.
+	Options for `ChildProcess.exec` and `ChildProcess.execFile` methods.
 **/
-private typedef ChildProcessSpawnOptionsBase = {
+private typedef ChildProcessExecOptions = {
 	> ChildProcessCommonOptions,
 
 	/**
-		Child's stdio configuration.
-	**/
-	@:optional var stdio:ChildProcessSpawnOptionsStdio;
-}
-
-/**
-	Options for the `spawn` method.
-**/
-typedef ChildProcessSpawnOptions = {
-	> ChildProcessSpawnOptionsBase,
-
-	/**
-		The child will be a process group leader.
-	**/
-	@:optional var detached:Bool;
-}
-
-/**
-	Options for the `spawnSync` method.
-**/
-typedef ChildProcessSpawnSyncOptions = {
-	> ChildProcessSpawnOptionsBase,
-	> ChildProcessExecOptionsBase,
-
-	@:optional var input:EitherType<String, Buffer>;
-}
-
-/**
-	The `stdio` option is an array where each index corresponds to a fd in the child.
-	The value is one of the following:
-
-		* 'pipe' - Create a pipe between the child process and the parent process.
-				   The parent end of the pipe is exposed to the parent as a property on the child_process object as ChildProcess.stdio[fd].
-				   Pipes created for fds 0 - 2 are also available as ChildProcess.stdin, ChildProcess.stdout and ChildProcess.stderr, respectively.
-
-		* 'ipc' - Create an IPC channel for passing messages/file descriptors between parent and child.
-				  A ChildProcess may have at most one IPC stdio file descriptor. Setting this option enables the ChildProcess.send() method.
-				  If the child writes JSON messages to this file descriptor, then this will trigger ChildProcess.on('message').
-				  If the child is a Node.js program, then the presence of an IPC channel will enable process.send() and process.on('message').
-
-		* 'ignore' - Do not set this file descriptor in the child. Note that Node will always open fd 0 - 2 for the processes it spawns.
-					 When any of these is ignored node will open /dev/null and attach it to the child's fd.
-
-		* Stream object - Share a readable or writable stream that refers to a tty, file, socket, or a pipe with the child process.
-						  The stream's underlying file descriptor is duplicated in the child process to the fd that corresponds to the index
-						  in the stdio array. Note that the stream must have an underlying descriptor (file streams do not until the 'open'
-						  event has occurred).
-
-		* Positive integer - The integer value is interpreted as a file descriptor that is is currently open in the parent process.
-							 It is shared with the child process, similar to how Stream objects can be shared.
-
-		* null - Use default value. For stdio fds 0, 1 and 2 (in other words, stdin, stdout, and stderr) a pipe is created.
-				 For fd 3 and up, the default is 'ignore'.
-
-	 As a shorthand, the stdio argument may also be one of the following strings, rather than an array:
-		ignore - ['ignore', 'ignore', 'ignore']
-		pipe - ['pipe', 'pipe', 'pipe']
-		inherit - [process.stdin, process.stdout, process.stderr] or [0,1,2]
-**/
-typedef ChildProcessSpawnOptionsStdio = EitherType<ChildProcessSpawnOptionsStdioSimple, ChildProcessSpawnOptionsStdioFull>;
-
-/**
-	A shorthand for the `stdio` argument in `ChildProcessSpawnOptions`
-**/
-@:enum abstract ChildProcessSpawnOptionsStdioSimple(String) from String to String {
-	/**
-		Equivalent to ['ignore', 'ignore', 'ignore']
-	**/
-	var Ignore = "ignore";
-
-	/**
-		Equivalent to ['pipe', 'pipe', 'pipe']
-	**/
-	var Pipe = "pipe";
-
-	/**
-		Equivalent to [process.stdin, process.stdout, process.stderr] or [0,1,2]
-	**/
-	var Inherit = "inherit";
-}
-
-/**
-	Enumeration of possible `stdio` behaviours.
-**/
-@:enum abstract ChildProcessSpawnOptionsStdioBehaviour(String) from String to String {
-	/**
-		Create a pipe between the child process and the parent process.
-		The parent end of the pipe is exposed to the parent as a property on the child_process object as ChildProcess.stdio[fd].
-		Pipes created for fds 0 - 2 are also available as ChildProcess.stdin, ChildProcess.stdout and ChildProcess.stderr, respectively.
-	**/
-	var Pipe = "pipe";
-
-	/**
-		Create an IPC channel for passing messages/file descriptors between parent and child.
-		A ChildProcess may have at most one IPC stdio file descriptor.
-
-		Setting this option enables the ChildProcess.send() method.
-
-		If the child writes JSON messages to this file descriptor, then this will trigger
-		ChildProcess.on('message').
-
-		If the child is a Node.js program, then the presence of an IPC channel will
-		enable process.send() and process.on('message').
-	**/
-	var Ipc = "ipc";
-
-	/**
-		Do not set this file descriptor in the child.
-		Note that Node will always open fd 0 - 2 for the processes it spawns.
-		When any of these is ignored node will open /dev/null and attach it to the child's fd.
-	**/
-	var Ignore = "ignore";
-}
-
-// see https://github.com/HaxeFoundation/haxe/issues/3499
-// typedef ChildProcessSpawnOptionsStdioFull = Array<EitherType<ChildProcessSpawnOptionsStdioBehaviour,EitherType<IStream,Int>>>;
-typedef ChildProcessSpawnOptionsStdioFull = Array<Dynamic>;
-
-/**
-	Common options for `exec` and `execFile` methods.
-**/
-private typedef ChildProcessExecOptionsBase = {
-	> ChildProcessCommonOptions,
-
-	/**
-		Default: 'utf8'
+		Default: `'utf8'`.
 	**/
 	@:optional var encoding:String;
 
 	/**
-		If greater than 0, then it will kill the child process if it runs longer than timeout milliseconds.
+		Shell to execute the command with.
+
+		Default: `'/bin/sh'` on Unix, `process.env.ComSpec` on Windows.
 	**/
-	@:optional var timeout:Int;
+	@:optional var shell:String;
 
 	/**
-		The child process is killed with `killSignal` (default: 'SIGTERM').
+		Default: `0`.
 	**/
-	@:optional var killSignal:String;
+	@:optional var timeout:Float;
 
 	/**
-		The largest amount of data allowed on stdout or stderr.
-		If this value is exceeded then the child process is killed.
-		Default: 200*1024
+		Largest amount of data in bytes allowed on stdout or stderr.
+		If exceeded, the child process is terminated and any output is truncated.
+		See caveat at `maxBuffer` and Unicode.
+
+		Default: `1024 * 1024`.
 	**/
-	@:optional var maxBuffer:Int;
-}
-
-/**
-	Options for the `exec` method.
-**/
-typedef ChildProcessExecOptions = {
-	> ChildProcessExecOptionsBase,
-}
-
-/**
-	Options for the `execFile` method.
-**/
-typedef ChildProcessExecFileOptions = {
-	> ChildProcessExecOptionsBase,
-}
-
-/**
-	Options for the `fork` method.
-**/
-typedef ChildProcessForkOptions = {
-	> ChildProcessCommonOptions,
+	@:optional var maxBuffer:Float;
 
 	/**
-		Executable used to create the child process
+		Default: `'SIGTERM'`.
 	**/
-	@:optional var execPath:String;
+	@:optional var killSignal:EitherType<String, Int>;
 
 	/**
-		List of string arguments passed to the executable (Default: process.execArgv)
-	**/
-	@:optional var execArgv:Array<String>;
+		Hide the subprocess console window that would normally be created on Windows systems.
 
-	/**
-		If `true`, stdin, stdout, and stderr of the child will be piped to the parent,
-		otherwise they will be inherited from the parent, see the "pipe" and "inherit"
-		options for `ChildProcessSpawnOptions.stdio` for more details (default is `false`)
+		Default: `false`.
 	**/
-	@:optional var silent:Bool;
+	@:optional var windowsHide:Bool;
 }
 
 /**
@@ -263,29 +179,220 @@ typedef ChildProcessForkOptions = {
 @:native("Error")
 extern class ChildProcessExecError extends Error {
 	/**
-		the exit code of the child proces.
+		The `error.code` property will be the exit code of the child process.
 	**/
 	var code(default, null):Int;
 
 	/**
-		the signal that terminated the process.
+		The `error.signal` property will be set to the signal that terminated the process.
 	**/
 	var signal(default, null):String;
 }
 
 /**
 	A callback type for `ChildProcess.exec`.
-	It receives three arguments: `error`, `stdout`, `stderr`.
-
-	On success, error will be `null`. On error, `error` will be an instance of `Error`
-	and `error.code` will be the exit code of the child process, and `error.signal` will be set
-	to the signal that terminated the process (see `ChildProcessExecError`).
 **/
-typedef ChildProcessExecCallback = #if (haxe_ver >= 4) (error : Null<ChildProcessExecError>, stdout : EitherType<Buffer, String>, stderr : EitherType<Buffer,
-	String>) -> Void; #else Null<ChildProcessExecError>->EitherType<Buffer, String>->EitherType<Buffer, String>->Void; #end
+#if haxe4
+typedef ChildProcessExecCallback = (error:Null<ChildProcessExecError>, stdout:EitherType<String, Buffer>, stderr:EitherType<String, Buffer>) -> Void;
+#else
+typedef ChildProcessExecCallback = Null<ChildProcessExecError>->EitherType<String, Buffer>->EitherType<String, Buffer>->Void;
+#end
+
+typedef ChildProcessExecFileOptions = {
+	> ChildProcessExecOptions,
+
+	/**
+		No quoting or escaping of arguments is done on Windows.
+		Ignored on Unix.
+
+		Default: `false`.
+	**/
+	@:optional var windowsVerbatimArguments:Bool;
+}
 
 /**
-	Object returned from the `spawnSync` method.
+	Options for the `ChildProcess.fork` method.
+**/
+typedef ChildProcessForkOptions = {
+	> ChildProcessCommonOptions,
+
+	/**
+		Prepare child to run independently of its parent process.
+		Specific behavior depends on the platform, see `options.detached`).
+	**/
+	@:optional var detached:Bool;
+
+	/**
+		Executable used to create the child process.
+	**/
+	@:optional var execPath:String;
+
+	/**
+		List of string arguments passed to the executable.
+
+		Default: `process.execArgv`.
+	**/
+	@:optional var execArgv:Array<String>;
+
+	/**
+		If `true`, stdin, stdout, and stderr of the child will be piped to the parent, otherwise they will be inherited
+		from the parent, see the `'pipe'` and `'inherit'` options for `child_process.spawn()`'s stdio for more details.
+
+		Default: `false`.
+	**/
+	@:optional var silent:Bool;
+
+	/**
+		See `child_process.spawn()`'s stdio.
+		When this option is provided, it overrides `silent`.
+		If the array variant is used, it must contain exactly one item with value `'ipc'` or an error will be thrown.
+		For instance `[0, 1, 2, 'ipc']`.
+	**/
+	@:optional var stdio:EitherType<Array<Dynamic>, String>;
+
+	/**
+		No quoting or escaping of arguments is done on Windows.
+		Ignored on Unix.
+
+		Default: `false`.
+	**/
+	@:optional var windowsVerbatimArguments:Bool;
+}
+
+private typedef ChildProcessSpawnCommonOptions = {
+	> ChildProcessCommonOptions,
+
+	/**
+		Explicitly set the value of `argv[0]` sent to the child process.
+		This will be set to `command` if not specified.
+	**/
+	@:optional var argv0:String;
+
+	/**
+		Child's stdio configuration (see `options.stdio`).
+	**/
+	@:optional var stdio:EitherType<Array<Dynamic>, String>;
+
+	/**
+		If `true`, runs `command` inside of a shell.
+		Uses `'/bin/sh'` on Unix, and `process.env.ComSpec` on Windows.
+		A different shell can be specified as a string.
+
+		Default: `false` (no shell).
+	**/
+	@:optional var shell:EitherType<Bool, String>;
+
+	/**
+		No quoting or escaping of arguments is done on Windows.
+		Ignored on Unix.
+		This is set to `true` automatically when `shell` is specified and is CMD.
+
+		Default: `false`.
+	**/
+	@:optional var windowsVerbatimArguments:Bool;
+
+	/**
+		Hide the subprocess console window that would normally be created on Windows systems.
+
+		Default: `false`.
+	**/
+	@:optional var windowsHide:Bool;
+}
+
+/**
+	Options for the `ChildProcess.spawn` method.
+**/
+typedef ChildProcessSpawnOptions = {
+	> ChildProcessSpawnCommonOptions,
+
+	/**
+		Prepare child to run independently of its parent process.
+		Specific behavior depends on the platform, see `options.detached`).
+	**/
+	@:optional var detached:Bool;
+}
+
+/**
+	Common options for all `ChildProcess` sync methods.
+**/
+private typedef ChildProcessCommonSyncOptions = {
+	/**
+		The value which will be passed as stdin to the spawned process.
+		Supplying this value will override `stdio[0]`.
+	**/
+	@:optional var input:EitherType<String, EitherType<Buffer, ArrayBufferView>>;
+
+	/**
+		Child's stdio configuration.
+		`stderr` by default will be output to the parent process' stderr unless `stdio` is specified.
+
+		Default: `'pipe'`.
+	**/
+	@:optional var stdio:EitherType<Array<Dynamic>, String>;
+}
+
+/**
+	Options for the `ChildProcess.execFileSync` method.
+**/
+typedef ChildProcessExecFileSyncOptions = {
+	> ChildProcessCommonSyncOptions,
+	> ChildProcessExecOptions,
+	/**
+		If `true`, runs `command` inside of a shell.
+		Uses `'/bin/sh'` on Unix, and `process.env.ComSpec` on Windows.
+		A different shell can be specified as a string.
+
+		Default: `false` (no shell).
+	**/
+	// @:optional var shell:EitherType<Bool, String>;
+}
+
+/**
+	Options for the `ChildProcess.execSync` method.
+**/
+typedef ChildProcessExecSyncOptions = {
+	> ChildProcessCommonSyncOptions,
+	> ChildProcessExecOptions,
+}
+
+/**
+	Options for the `ChildProcess.spawnSync` method.
+**/
+typedef ChildProcessSpawnSyncOptions = {
+	> ChildProcessSpawnCommonOptions,
+
+	/**
+		In milliseconds the maximum amount of time the process is allowed to run.
+
+		Default: `undefined`.
+	**/
+	@:optional var timeout:Float;
+
+	/**
+		The signal value to be used when the spawned process will be killed.
+
+		Default: `'SIGTERM'`.
+	**/
+	@:optional var killSignal:EitherType<String, Int>;
+
+	/**
+		Largest amount of data in bytes allowed on stdout or stderr.
+		If exceeded, the child process is terminated and any output is truncated.
+
+		Default: `1024 * 1024`.
+	**/
+	@:optional var maxBuffer:Float;
+
+	/**
+		The encoding used for all stdio inputs and outputs.
+
+		Default: `'buffer'`.
+	**/
+	@:optional var encoding:String;
+}
+
+/**
+	Object returned from the `ChildProcess.spawnSync` method.
 **/
 typedef ChildProcessSpawnSyncResult = {
 	/**
@@ -322,97 +429,4 @@ typedef ChildProcessSpawnSyncResult = {
 		The error object if the child process failed or timed out
 	**/
 	var error:Error;
-}
-
-@:jsRequire("child_process")
-extern class ChildProcess {
-	/**
-		Launches a new process with the given `command`, with command line arguments in `args`.
-		If omitted, `args` defaults to an empty `Array`.
-
-		The third argument is used to specify additional options, which defaults to:
-			{ cwd: null,
-			  env: process.env
-			}
-
-		Note that if spawn receives an empty options object, it will result in spawning the process with an empty
-		environment rather than using `process.env`. This due to backwards compatibility issues with a deprecated API.
-	**/
-	@:overload(function(command:String, ?options:ChildProcessSpawnOptions):ChildProcessObject {})
-	@:overload(function(command:String, args:Array<String>, ?options:ChildProcessSpawnOptions):ChildProcessObject {})
-	static function spawn(command:String, ?args:Array<String>):ChildProcessObject;
-
-	/**
-		Runs a command in a shell and buffers the output.
-
-		`command` is the command to run, with space-separated arguments.
-
-		The default `options` are:
-			{ encoding: 'utf8',
-			  timeout: 0,
-			  maxBuffer: 200*1024,
-			  killSignal: 'SIGTERM',
-			  cwd: null,
-			  env: null }
-	**/
-	@:overload(function(command:String, options:ChildProcessExecOptions, callback:ChildProcessExecCallback):ChildProcessObject {})
-	static function exec(command:String, callback:ChildProcessExecCallback):ChildProcessObject;
-
-	/**
-		This is similar to `exec` except it does not execute a subshell but rather the specified file directly.
-		This makes it slightly leaner than `exec`
-	**/
-	@:overload(function(file:String, args:Array<String>, options:ChildProcessExecFileOptions, ?callback:ChildProcessExecCallback):ChildProcessObject {})
-	@:overload(function(file:String, options:ChildProcessExecFileOptions, ?callback:ChildProcessExecCallback):ChildProcessObject {})
-	@:overload(function(file:String, args:Array<String>, ?callback:ChildProcessExecCallback):ChildProcessObject {})
-	static function execFile(file:String, ?callback:ChildProcessExecCallback):ChildProcessObject;
-
-	/**
-		This is a special case of the `spawn` functionality for spawning Node processes.
-		In addition to having all the methods in a normal `ChildProcess` instance,
-		the returned object has a communication channel built-in.
-		See `send` for details.
-	**/
-	@:overload(function(modulePath:String, args:Array<String>, options:ChildProcessForkOptions):ChildProcessObject {})
-	@:overload(function(modulePath:String, options:ChildProcessForkOptions):ChildProcessObject {})
-	static function fork(modulePath:String, ?args:Array<String>):ChildProcessObject;
-
-	/**
-		Synchronous version of `spawn`.
-
-		`spawnSync` will not return until the child process has fully closed.
-		When a timeout has been encountered and `killSignal` is sent, the method won't return until the process
-		has completely exited. That is to say, if the process handles the SIGTERM signal and doesn't exit,
-		your process will wait until the child process has exited.
-	**/
-	@:overload(function(command:String, args:Array<String>, ?options:ChildProcessSpawnSyncOptions):ChildProcessSpawnSyncResult {})
-	static function spawnSync(command:String, ?options:ChildProcessSpawnSyncOptions):ChildProcessSpawnSyncResult;
-
-	/**
-		Synchronous version of `execFile`.
-
-		`execFileSync` will not return until the child process has fully closed.
-		When a timeout has been encountered and `killSignal` is sent, the method won't return until the process
-		has completely exited. That is to say, if the process handles the SIGTERM signal and doesn't exit,
-		your process will wait until the child process has exited.
-
-		If the process times out, or has a non-zero exit code, this method will throw.
-		The Error object will contain the entire result from `spawnSync`
-	**/
-	@:overload(function(command:String, ?options:ChildProcessSpawnSyncOptions):EitherType<String, Buffer> {})
-	@:overload(function(command:String, args:Array<String>, ?options:ChildProcessSpawnSyncOptions):EitherType<String, Buffer> {})
-	static function execFileSync(command:String, ?args:Array<String>):EitherType<String, Buffer>;
-
-	/**
-		Synchronous version of `exec`.
-
-		`execSync` will not return until the child process has fully closed.
-		When a timeout has been encountered and `killSignal` is sent, the method won't return until the process
-		has completely exited. That is to say, if the process handles the SIGTERM signal and doesn't exit,
-		your process will wait until the child process has exited.
-
-		If the process times out, or has a non-zero exit code, this method will throw.
-		The Error object will contain the entire result from `spawnSync`
-	**/
-	static function execSync(command:String, ?options:ChildProcessSpawnSyncOptions):EitherType<String, Buffer>;
 }
