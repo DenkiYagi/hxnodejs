@@ -24,6 +24,8 @@ package js.node.zlib;
 
 /**
 	Compress data using gzip.
+
+	@see https://nodejs.org/api/zlib.html#zlib_class_zlib_gzip
 **/
 @:jsRequire("zlib", "Gzip")
 extern class Gzip extends Zlib {}

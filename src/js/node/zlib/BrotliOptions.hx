@@ -22,30 +22,32 @@
 
 package js.node.zlib;
 
+import js.node.zlib.*;
+
 /**
-	Not exported by the zlib module.
-	It is documented here because it is the base class of the compressor/decompressor classes.
+	Each Brotli-based class takes an `options` object. All options are optional.
+
+	@see https://nodejs.org/api/zlib.html#zlib_class_brotlioptions
 **/
-extern class Zlib extends js.node.stream.Transform<Zlib> {
+typedef BrotliOptions = {
 	/**
-		Flush pending data.
-
-		`kind` defaults to `Zlib.Z_FULL_FLUSH`.
-
-		Don't call this frivolously, premature flushes negatively impact the effectiveness of the compression algorithm.
+		default: `Zlib.BROTLI_OPERATION_PROCESS`
 	**/
-	@:overload(function(kind:Int, callback:Void->Void):Void {})
-	function flush(callback:Void->Void):Void;
+	@:optional var flush:Int;
 
 	/**
-		Dynamically update the compression level and compression strategy.
-		Only applicable to deflate algorithm.
+		default: `Zlib.BROTLI_OPERATION_FINISH`
 	**/
-	function params(level:Int, strategy:Int, callback:Void->Void):Void;
+	@:optional var finishFlush:Int;
 
 	/**
-		Reset the compressor/decompressor to factory defaults.
-		Only applicable to the inflate and deflate algorithms.
+		default: `16*1024`
 	**/
-	function reset():Void;
+	@:optional var chunkSize:Int;
+
+	/**
+		Key-value object containing indexed Brotli parameters.
+	**/
+	@:optional var params:BrotliOptions;
 }
+

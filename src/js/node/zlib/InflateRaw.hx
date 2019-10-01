@@ -24,6 +24,8 @@ package js.node.zlib;
 
 /**
 	Decompress a raw deflate stream.
+
+	@see https://nodejs.org/api/zlib.html#zlib_class_zlib_inflateraw
 **/
 @:jsRequire("zlib", "InflateRaw")
 extern class InflateRaw extends Zlib {}

@@ -23,9 +23,53 @@
 package js.node.zlib;
 
 /**
-	Compress data using deflate, and do not append a `zlib` header.
+	Each zlib-based class takes an `options` object. All options are optional.
 
-	@see https://nodejs.org/api/zlib.html#zlib_class_zlib_deflateraw
+	@see https://nodejs.org/api/zlib.html#zlib_class_options
 **/
-@:jsRequire("zlib", "DeflateRaw")
-extern class DeflateRaw extends Zlib {}
+typedef Options = {
+	/**
+		default: `Zlib.Z_NO_FLUSH`
+	**/
+	@:optional var flush:Int;
+
+	/**
+		default: `Zlib.Z_FINISH`
+	**/
+	@:optional var finishFlush:Int;
+
+	/**
+		default: 16*1024
+	**/
+	@:optional var chunkSize:Int;
+
+	/**
+	**/
+	@:optional var windowBits:Int;
+
+	/**
+		compression only
+	**/
+	@:optional var level:Int;
+
+	/**
+		compression only
+	**/
+	@:optional var memLevel:Int;
+
+	/**
+		compression only
+	**/
+	@:optional var strategy:Int;
+
+	/**
+		deflate/inflate only, empty dictionary by default
+	**/
+	@:optional var dictionary:Buffer;
+
+	/**
+		If `true`, returns an object with `buffer` and `engine`
+	**/
+	@:optional var info:Bool;
+}
+

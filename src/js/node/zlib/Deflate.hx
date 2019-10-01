@@ -24,6 +24,8 @@ package js.node.zlib;
 
 /**
 	Compress data using deflate.
+
+	@see https://nodejs.org/api/zlib.html#zlib_class_zlib_deflate
 **/
 @:jsRequire("zlib", "Deflate")
 extern class Deflate extends Zlib {}

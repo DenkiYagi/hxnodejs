@@ -24,6 +24,8 @@ package js.node.zlib;
 
 /**
 	Decompress either a Gzip- or Deflate-compressed stream by auto-detecting the header.
+
+	@see https://nodejs.org/api/zlib.html#zlib_class_zlib_unzip
 **/
 @:jsRequire("zlib", "Unzip")
 extern class Unzip extends Zlib {}
