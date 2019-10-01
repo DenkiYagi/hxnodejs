@@ -396,37 +396,37 @@ typedef ChildProcessSpawnSyncOptions = {
 **/
 typedef ChildProcessSpawnSyncResult = {
 	/**
-		Pid of the child process
+		Pid of the child process.
 	**/
-	var pid:Int;
+	var pid:Float;
 
 	/**
-		Array of results from stdio output
+		Array of results from stdio output.
 	**/
 	var output:Array<EitherType<Buffer, String>>;
 
 	/**
-		The contents of output[1]
+		The contents of `output[1]`.
 	**/
 	var stdout:EitherType<Buffer, String>;
 
 	/**
-		The contents of output[2]
+		The contents of `output[2]`.
 	**/
 	var stderr:EitherType<Buffer, String>;
 
 	/**
-		The exit code of the child process
+		The exit code of the subprocess, or `null` if the subprocess terminated due to a signal.
 	**/
-	var status:Int;
+	var status:Null<Float>;
 
 	/**
-		The signal used to kill the child process
+		The signal used to kill the subprocess, or `null` if the subprocess did not terminate due to a signal.
 	**/
-	var signal:String;
+	var signal:Null<String>;
 
 	/**
-		The error object if the child process failed or timed out
+		The error object if the child process failed or timed out.
 	**/
 	var error:Error;
 }
