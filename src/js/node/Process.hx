@@ -22,6 +22,7 @@
 
 package js.node;
 
+import haxe.Constraints.Function;
 import haxe.DynamicAccess;
 import haxe.extern.EitherType;
 import haxe.extern.Rest;
@@ -212,7 +213,7 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_debugport
 	**/
-	var debugPort:Float;
+	var debugPort:Int;
 
 	/**
 		If the Node.js process is spawned with an IPC channel (see the Child Process and Cluster documentation), the
@@ -236,8 +237,10 @@ extern class Process extends EventEmitter<Process> {
 		@see https://nodejs.org/api/process.html#process_process_emitwarning_warning_options
 		@see https://nodejs.org/api/process.html#process_process_emitwarning_warning_type_code_ctor
 	**/
-	@:overload(function(warning:EitherType<String, Error>, ?type:String, ?code:String, ?ctor:Function):Void {})
-	function emitWarning(warning:EitherType<String, Error>, ?options:EmitWarningOptions):Void;
+	@:overload(function(warning:String, ?options:EmitWarningOptions):Void {})
+	@:overload(function(warning:Error, ?options:EmitWarningOptions):Void {})
+	@:overload(function(warning:String, ?type:String, ?code:String, ?ctor:Null<Error>->Void):Void {})
+	function emitWarning(warning:Error, ?type:String, ?code:String, ?ctor:Null<Error>->Void):Void;
 
 	/**
 		The `process.env` property returns an object containing the user environment.
@@ -335,15 +338,15 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_initgroups_user_extragroup
 	**/
-	function initgroups(user:EitherType<String, Float>, extra_group:EitherType<String, Float>):Void;
+	function initgroups(user:EitherType<String, Int>, extra_group:EitherType<String, Int>):Void;
 
 	/**
 		The `process.kill()` method sends the `signal` to the process identified by `pid`.
 
 		@see https://nodejs.org/api/process.html#process_process_kill_pid_signal
 	**/
-	@:overload(function(pid:Float, ?signal:String):Void {})
-	function kill(pid:Float, ?signal:Float):Void;
+	@:overload(function(pid:Int, ?signal:String):Void {})
+	function kill(pid:Int, ?signal:Int):Void;
 
 	/**
 		The `process.mainModule` property provides an alternative way of retrieving `require.main`.
@@ -365,7 +368,7 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_nexttick_callback_args
 	**/
-	function nextTick(callback:Void->Void, args:Rest<Dynamic>):Void;
+	function nextTick(callback:Function, args:Rest<Dynamic>):Void;
 
 	/**
 		The `process.noDeprecation` property indicates whether the `--no-deprecation` flag is set on the current Node.js
@@ -418,8 +421,8 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_send_message_sendhandle_options_callback
 	**/
-	@:overload(function(message:Dynamic, ?sendHandle:Server, ?options:ChildProcessSendOptions, ?callback:Error->Void):Bool {})
-	function send(message:Dynamic, ?sendHandle:Socket, ?options:ChildProcessSendOptions, ?callback:Error->Void):Bool;
+	@:overload(function(message:Dynamic, ?sendHandle:Server, ?options:ChildProcessSendOptions, ?callback:Null<Error>->Void):Bool {})
+	function send(message:Dynamic, ?sendHandle:Socket, ?options:ChildProcessSendOptions, ?callback:Null<Error>->Void):Bool;
 
 	/**
 		The `process.setegid()` method sets the effective group identity of the process.
@@ -427,7 +430,7 @@ extern class Process extends EventEmitter<Process> {
 		@see https://nodejs.org/api/process.html#process_process_setegid_id
 	**/
 	@:overload(function(id:String):Void {})
-	function setegid(id:Float):Void;
+	function setegid(id:Int):Void;
 
 	/**
 		The `process.seteuid()` method sets the effective user identity of the process.
@@ -435,7 +438,7 @@ extern class Process extends EventEmitter<Process> {
 		@see https://nodejs.org/api/process.html#process_process_seteuid_id
 	**/
 	@:overload(function(id:String):Void {})
-	function seteuid(id:Float):Void;
+	function seteuid(id:Int):Void;
 
 	/**
 		The `process.setgid()` method sets the group identity of the process.
@@ -443,7 +446,7 @@ extern class Process extends EventEmitter<Process> {
 		@see https://nodejs.org/api/process.html#process_process_setgid_id
 	**/
 	@:overload(function(id:String):Void {})
-	function setgid(id:Float):Void;
+	function setgid(id:Int):Void;
 
 	/**
 		The `process.setgroups()` method sets the supplementary group IDs for the Node.js process.
@@ -566,7 +569,7 @@ typedef EmitWarningOptions = {
 
 		Default: `process.emitWarning`.
 	**/
-	@:optional var ctor:Function;
+	@:optional var ctor:Null<Error>->Void;
 
 	/**
 		Additional text to include with the error.
