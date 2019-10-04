@@ -85,7 +85,7 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_channel
 	**/
-	var channel:DynamicAccess<String>;
+	var channel:Dynamic;
 
 	/**
 		The `subprocess.connected` property indicates whether it is still possible to send and receive messages from a
@@ -124,7 +124,7 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_pid
 	**/
-	var pid(default, null):Int;
+	var pid:Int;
 
 	/**
 		Calling `subprocess.ref()` after making a call to `subprocess.unref()` will restore the removed reference count
@@ -147,14 +147,14 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_stderr
 	**/
-	var stderr(default, null):IReadable;
+	var stderr(default, null):Null<IReadable>;
 
 	/**
 		A Writable Stream that represents the child process's `stdin`.
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_stdin
 	**/
-	var stdin(default, null):IWritable;
+	var stdin(default, null):Null<IWritable>;
 
 	/**
 		A sparse array of pipes to the child process, corresponding with positions in the `stdio` option passed to
@@ -169,7 +169,7 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_stdout
 	**/
-	var stdout(default, null):IReadable;
+	var stdout(default, null):Null<IReadable>;
 
 	/**
 		By default, the parent will wait for the detached child to exit.
