@@ -71,7 +71,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/child_process.html#child_process_event_message
 	**/
-	var Message:ChildProcessEvent<DynamicAccess<Dynamic>->Dynamic->Void> = "message";
+	var Message:ChildProcessEvent<Dynamic->Dynamic->Void> = "message";
 }
 
 /**
