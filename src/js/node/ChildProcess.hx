@@ -149,7 +149,7 @@ private typedef ChildProcessExecOptions = {
 	/**
 		Default: `0`.
 	**/
-	@:optional var timeout:Float;
+	@:optional var timeout:Int;
 
 	/**
 		Largest amount of data in bytes allowed on stdout or stderr.
@@ -158,7 +158,7 @@ private typedef ChildProcessExecOptions = {
 
 		Default: `1024 * 1024`.
 	**/
-	@:optional var maxBuffer:Float;
+	@:optional var maxBuffer:Int;
 
 	/**
 		Default: `'SIGTERM'`.
@@ -366,7 +366,7 @@ typedef ChildProcessSpawnSyncOptions = {
 
 		Default: `undefined`.
 	**/
-	@:optional var timeout:Float;
+	@:optional var timeout:Int;
 
 	/**
 		The signal value to be used when the spawned process will be killed.
@@ -381,7 +381,7 @@ typedef ChildProcessSpawnSyncOptions = {
 
 		Default: `1024 * 1024`.
 	**/
-	@:optional var maxBuffer:Float;
+	@:optional var maxBuffer:Int;
 
 	/**
 		The encoding used for all stdio inputs and outputs.
@@ -398,7 +398,7 @@ typedef ChildProcessSpawnSyncResult = {
 	/**
 		Pid of the child process.
 	**/
-	var pid:Float;
+	var pid:Int;
 
 	/**
 		Array of results from stdio output.
@@ -418,7 +418,7 @@ typedef ChildProcessSpawnSyncResult = {
 	/**
 		The exit code of the subprocess, or `null` if the subprocess terminated due to a signal.
 	**/
-	var status:Null<Float>;
+	var status:Null<Int>;
 
 	/**
 		The signal used to kill the subprocess, or `null` if the subprocess did not terminate due to a signal.

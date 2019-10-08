@@ -42,7 +42,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/child_process.html#child_process_event_close
 	**/
-	var Close:ChildProcessEvent<Float->String->Void> = "close";
+	var Close:ChildProcessEvent<Int->String->Void> = "close";
 
 	/**
 		The `'disconnect'` event is emitted after calling the `subprocess.disconnect()` method in parent process or
@@ -64,7 +64,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/child_process.html#child_process_event_exit
 	**/
-	var Exit:ChildProcessEvent<Float->String->Void> = "exit";
+	var Exit:ChildProcessEvent<Int->String->Void> = "exit";
 
 	/**
 		The `'message'` event is triggered when a child process uses `process.send()` to send messages.
@@ -109,7 +109,7 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_kill_signal
 	**/
 	@:overload(function(?signal:String):Void {})
-	function kill(?signal:Float):Void;
+	function kill(?signal:Int):Void;
 
 	/**
 		The `subprocess.killed` property indicates whether the child process successfully received a signal from
