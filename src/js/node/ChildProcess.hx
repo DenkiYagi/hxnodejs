@@ -210,6 +210,33 @@ typedef ChildProcessExecFileOptions = {
 	@:optional var windowsVerbatimArguments:Bool;
 }
 
+@:enum abstract ChildProcessStdioSimple(String) from String to String {
+	/**
+		Equivalent to `['pipe', 'pipe', 'pipe']`.
+	**/
+	var Pipe = "pipe";
+
+	/**
+		Equivalent to `['ignore', 'ignore', 'ignore']`.
+	**/
+	var Ignore = "ignore";
+
+	/**
+		Equivalent to `['inherit', 'inherit', 'inherit']` or `[0, 1, 2]`.
+	**/
+	var Inherit = "inherit";
+}
+
+// see https://github.com/HaxeFoundation/haxe/issues/3499
+// @:enum abstract ChildProcessSpawnOptionsStdioBehaviour(String) from String to String {
+// 	var Pipe = "pipe";
+// 	var Ipc = "ipc";
+// 	var Ignore = "ignore";
+// }
+// typedef ChildProcessStdioFull = Array<EitherType<ChildProcessStdioBehaviour,EitherType<IStream,Int>>>;
+typedef ChildProcessStdioFull = Array<Dynamic>;
+typedef ChildProcessStdio = EitherType<ChildProcessStdioSimple, ChildProcessStdioFull>;
+
 /**
 	Options for the `ChildProcess.fork` method.
 **/
@@ -248,7 +275,7 @@ typedef ChildProcessForkOptions = {
 		If the array variant is used, it must contain exactly one item with value `'ipc'` or an error will be thrown.
 		For instance `[0, 1, 2, 'ipc']`.
 	**/
-	@:optional var stdio:EitherType<Array<Dynamic>, String>;
+	@:optional var stdio:ChildProcessStdio;
 
 	/**
 		No quoting or escaping of arguments is done on Windows.
@@ -271,7 +298,7 @@ private typedef ChildProcessSpawnCommonOptions = {
 	/**
 		Child's stdio configuration (see `options.stdio`).
 	**/
-	@:optional var stdio:EitherType<Array<Dynamic>, String>;
+	@:optional var stdio:ChildProcessStdio;
 
 	/**
 		If `true`, runs `command` inside of a shell.
@@ -328,7 +355,7 @@ private typedef ChildProcessCommonSyncOptions = {
 
 		Default: `'pipe'`.
 	**/
-	@:optional var stdio:EitherType<Array<Dynamic>, String>;
+	@:optional var stdio:ChildProcessStdio;
 }
 
 /**
