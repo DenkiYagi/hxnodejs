@@ -85,7 +85,7 @@ import js.node.cluster.Worker;
 }
 
 /**
-	Structure emitted by 'listening' event.
+	Options for the `Cluster.Listening` event.
 **/
 typedef ListeningEventAddress = {
 	var address:String;
@@ -93,7 +93,7 @@ typedef ListeningEventAddress = {
 	var addressType:ListeningEventAddressType;
 }
 
-@:enum abstract ListeningEventAddressType(haxe.extern.EitherType<Int, String>) to haxe.extern.EitherType<Int, String> {
+@:enum abstract ListeningEventAddressType(EitherType<Int, String>) to EitherType<Int, String> {
 	var TCPv4 = 4;
 	var TCPv6 = 6;
 	var Unix = -1;
@@ -103,8 +103,15 @@ typedef ListeningEventAddress = {
 
 @:jsRequire("cluster")
 @:enum extern abstract ClusterSchedulingPolicy(Int) {
-	var SCHED_NONE;
+	/**
+		The scheduling policy for round-robin.
+	**/
 	var SCHED_RR;
+
+	/**
+		The scheduling policy to leave it to the operating system.
+	**/
+	var SCHED_NONE;
 }
 
 /**
