@@ -32,94 +32,115 @@ import js.lib.Error;
 import js.Error;
 #end
 
+/**
+	Enumeration of events emitted by the `Worker` class.
+**/
 @:enum abstract WorkerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
-	var Message:WorkerEvent<Dynamic->Dynamic->Void> = "message";
-	var Online:WorkerEvent<Void->Void> = "online";
-	var Listening:WorkerEvent<ListeningEventAddress->Void> = "listening";
+	/**
+		Similar to the `cluster.on('disconnect')` event, but specific to this worker.
+
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_disconnect
+	**/
 	var Disconnect:WorkerEvent<Void->Void> = "disconnect";
-	var Exit:WorkerEvent<Int->String->Void> = "exit";
+
+	/**
+		This event is the same as the one provided by `child_process.fork()`.
+
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_error
+	**/
 	var Error:WorkerEvent<Error->Void> = "error";
+
+	/**
+		Similar to the cluster.on('exit') event, but specific to this worker.
+
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_exit
+	**/
+	var Exit:WorkerEvent<Int->String->Void> = "exit";
+
+	/**
+		Similar to the `cluster.on('listening')` event, but specific to this worker.
+
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_listening
+	**/
+	var Listening:WorkerEvent<ListeningEventAddress->Void> = "listening";
+
+	/**
+		Similar to the `'message'` event of `cluster`, but specific to this worker.
+
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_message
+	**/
+	var Message:WorkerEvent<Dynamic->Dynamic->Void> = "message";
+
+	/**
+		Similar to the `cluster.on('online')` event, but specific to this worker.
+
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_online
+	**/
+	var Online:WorkerEvent<Void->Void> = "online";
 }
 
 /**
-	A Worker object contains all public information and method about a worker.
-	In the master it can be obtained using `Cluster.workers`.
-	In a worker it can be obtained using `Cluster.worker`.
+	A `Worker` object contains all public information and method about a worker.
+
+	@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_class_worker
 **/
 extern class Worker extends EventEmitter<Worker> {
 	/**
-		Each new worker is given its own unique id, this id is stored in the `id`.
+		In a worker, this function will close all servers, wait for the `'close'` event on those servers, and then
+		disconnect the IPC channel.
 
-		While a worker is alive, this is the key that indexes it in `Cluster.workers`
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_worker_disconnect
 	**/
-	var id(default, null):String;
+	function disconnect():Worker;
 
 	/**
-		All workers are created using `ChildProcess.fork`, the returned object from this function is stored as `process`.
-		In a worker, the global process is stored.
+		This property is `true` if the worker exited due to `.kill()` or `.disconnect()`.
 
-		Note that workers will call `process.exit(0)` if the 'disconnect' event occurs on process
-		and `suicide` is not true. This protects against accidental disconnection.
-	**/
-	var process:ChildProcess;
-
-	/**
-		Set by calling `kill` or `disconnect`, until then it is undefined.
-
-		Lets you distinguish between voluntary and accidental exit, the master may choose
-		not to respawn a worker based on this value.
-
-		(an alias to `exitedAfterDisconnect` in newer node.js versions)
-	**/
-	var suicide:Null<Bool>;
-
-	/**
-		Set by calling `kill` or `disconnect`. Until then, it is undefined.
-
-		Lets you distinguish between voluntary and accidental exit, the master may choose
-		not to respawn a worker based on this value.
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_worker_exitedafterdisconnect
 	**/
 	var exitedAfterDisconnect:Null<Bool>;
 
 	/**
-		This function is equal to the `send` methods provided by `ChildProcess.fork`.
-		In the master you should use this function to send a `message` to a specific worker.
+		Each new worker is given its own unique id, this id is stored in the `id`.
 
-		In a worker you can also use `process.send`, it is the same function.
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_worker_id
 	**/
-	@:overload(function(message:Dynamic, sendHandle:Dynamic, ?callback:Error->Void):Bool {})
-	function send(message:Dynamic, ?callback:Error->Void):Bool;
+	var id(default, null):Int;
 
 	/**
-		This function will kill the worker. In the master, it does this by disconnecting the `worker.process`,
-		and once disconnected, killing with `signal`. In the worker, it does it by disconnecting the channel,
-		and then exiting with code 0.
+		This function returns `true` if the worker is connected to its master via its IPC channel, `false` otherwise.
 
-		Causes `suicide` to be set.
-	**/
-	function kill(?signal:String):Void;
-
-	/**
-		In a worker, this function will close all servers, wait for the 'close' event on those servers,
-		and then disconnect the IPC channel.
-
-		In the master, an internal message is sent to the worker causing it to call `disconnect` on itself.
-
-		Causes `suicide` to be set.
-	**/
-	function disconnect():Void;
-
-	/**
-		This function returns true if the worker is connected to its master via its IPC channel, false otherwise
-
-		A worker is connected to its master after it's been created.
-		It is disconnected after the 'disconnect' event is emitted.
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_worker_isconnected
 	**/
 	function isConnected():Bool;
 
 	/**
-		This function returns true if the worker's process has terminated (either because of exiting or being signaled).
-		Otherwise, it returns false.
+		This function returns `true` if the worker's process has terminated (either because of exiting or being
+		signaled).
+
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_worker_isdead
 	**/
 	function isDead():Bool;
+
+	/**
+		This function will kill the worker.
+
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_worker_kill_signal_sigterm
+	**/
+	function kill(?signal:String):Void;
+
+	/**
+		All workers are created using `child_process.fork()`, the returned object from this function is stored as
+		`.process`.
+
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_worker_process
+	**/
+	var process:ChildProcess;
+
+	/**
+		Send a message to a worker or master, optionally with a handle.
+
+		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_worker_send_message_sendhandle_callback
+	**/
+	function send(message:Dynamic, ?sendHandle:Dynamic, ?callback:Null<Error>->Void):Bool;
 }
