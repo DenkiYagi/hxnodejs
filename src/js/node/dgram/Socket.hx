@@ -36,81 +36,43 @@ import js.Error;
 **/
 @:enum abstract SocketEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		Emitted when a new datagram is available on a socket.
-		Listener arguments:
-			msg - received data
-			rinfo - sender's address information and the number of bytes in the datagram
-	**/
-	var Message:SocketEvent<MessageListener> = "message";
+		The `'close'` event is emitted after a socket is closed with `close()`.
 
-	/**
-		Emitted when a socket starts listening for datagrams.
-		This happens as soon as UDP sockets are created.
-	**/
-	var Listening:SocketEvent<Void->Void> = "listening";
-
-	/**
-		Emitted when a socket is closed with `close`.
-		No new message events will be emitted on this socket.
+		@see https://nodejs.org/api/dgram.html#dgram_event_close
 	**/
 	var Close:SocketEvent<Void->Void> = "close";
 
 	/**
-		Emitted when an error occurs.
+		The `'connect'` event is emitted after a socket is associated to a remote address as a result of a successful
+		`connect()` call.
+
+		@see https://nodejs.org/api/dgram.html#dgram_event_connect
+	**/
+	var Connect:SocketEvent<Void->Void> = "connect";
+
+	/**
+		The `'error'` event is emitted whenever any error occurs.
+
+		@see https://nodejs.org/api/dgram.html#dgram_event_error
 	**/
 	var Error:SocketEvent<Error->Void> = "error";
+
+	/**
+		The `'listening'` event is emitted whenever a socket begins listening for datagram messages.
+
+		@see https://nodejs.org/api/dgram.html#dgram_event_listening
+	**/
+	var Listening:SocketEvent<Void->Void> = "listening";
+
+	/**
+		The `'message'` event is emitted when a new datagram is available on a socket.
+
+		@see https://nodejs.org/api/dgram.html#dgram_event_message
+	**/
+	var Message:SocketEvent<MessageListener> = "message";
 }
 
-/**
-	Enumeration of possible datagram socket types.
-**/
-@:enum abstract SocketType(String) from String to String {
-	var Udp4 = "udp4";
-	var Udp6 = "udp6";
-}
-
-/**
-	Options object used by `Dgram.createSocket`.
-**/
-typedef SocketOptions = {
-	/**
-		The family of socket.
-	**/
-	var type:SocketType;
-
-	/**
-		When `true` `socket.bind()` will reuse the address, even if another process has already bound a socket on it.
-
-		Default: `false`.
-	**/
-	@:optional var reuseAddr:Bool;
-
-	/**
-		Setting `ipv6Only` to `true` will disable dual-stack support, i.e., binding to address `::` won't make `0.0.0.0`
-		be bound.
-
-		Default: `false`.
-	**/
-	@:optional var ipv6Only:Bool;
-
-	/**
-		Sets the `SO_RCVBUF` socket value.
-	**/
-	@:optional var recvBufferSize:Int;
-
-	/**
-		Sets the `SO_SNDBUF` socket value.
-	**/
-	@:optional var sendBufferSize:Int;
-
-	/**
-		Custom lookup function.
-
-		Default: `dns.lookup()`.
-	**/
-	@:optional var lookup:Function;
-}
-
+// TODO: fix SocketAdress
 typedef MessageListener = Buffer->SocketAdress->Void;
 
 /**
@@ -242,4 +204,54 @@ extern class Socket extends EventEmitter<Socket> {
 		If the socket is `ref`d calling `ref` again will have no effect.
 	**/
 	function ref():Void;
+}
+
+/**
+	Enumeration of possible datagram socket types.
+**/
+@:enum abstract SocketType(String) from String to String {
+	var Udp4 = "udp4";
+	var Udp6 = "udp6";
+}
+
+/**
+	Options object used by `Dgram.createSocket`.
+**/
+typedef SocketOptions = {
+	/**
+		The family of socket.
+	**/
+	var type:SocketType;
+
+	/**
+		When `true` `socket.bind()` will reuse the address, even if another process has already bound a socket on it.
+
+		Default: `false`.
+	**/
+	@:optional var reuseAddr:Bool;
+
+	/**
+		Setting `ipv6Only` to `true` will disable dual-stack support, i.e., binding to address `::` won't make `0.0.0.0`
+		be bound.
+
+		Default: `false`.
+	**/
+	@:optional var ipv6Only:Bool;
+
+	/**
+		Sets the `SO_RCVBUF` socket value.
+	**/
+	@:optional var recvBufferSize:Int;
+
+	/**
+		Sets the `SO_SNDBUF` socket value.
+	**/
+	@:optional var sendBufferSize:Int;
+
+	/**
+		Custom lookup function.
+
+		Default: `dns.lookup()`.
+	**/
+	@:optional var lookup:Function;
 }
