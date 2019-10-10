@@ -36,89 +36,121 @@ import js.Error;
 	Enumeration of events emitted by `Server` in addition to its parent classes.
 **/
 @:enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+
 	/**
-		This event is emitted after a new connection has been successfully handshaked.
+		The `'keylog'` event is emitted when key material is generated or received by a connection
+		to this server (typically before handshake has completed, but not necessarily).
+		This keying material can be stored for debugging, as it allows captured TLS traffic to be decrypted.
+
+		@see https://nodejs.org/api/tls.html#tls_event_keylog
 	**/
-	var SecureConnection:ServerEvent<TLSSocket->Void> = "secureConnection";
+	var Keylog:ServerEvent<Bool->TLSSocket->Void> = "keylog";
 
 	/**
-		When a client connection emits an 'error' event before secure connection is established -
-		it will be forwarded here.
+		The `'newSession'` event is emitted upon creation of a new TLS session.
+		This may be used to store sessions in external storage.
+		The data should be provided to the `'resumeSession'` callback.
 
-		Listener arguments:
-			exception - error object
-			securePair - the `TLSSocket` that the error originated from
-	**/
-	var ClientError:ServerEvent<Error->TLSSocket->Void> = "clientError";
-
-	/**
-		Emitted on creation of TLS session.
-		May be used to store sessions in external storage.
-
-		`callback` must be invoked eventually, otherwise no data will be sent or received from secure connection.
-
-		Listener arguments:
-			sessionId
-			sessionData
-			callback
+		@see https://nodejs.org/api/tls.html#tls_event_newsession
 	**/
 	var NewSession:ServerEvent<Buffer->Buffer->(Void->Void)->Void> = "newSession";
 
 	/**
-		Emitted when client wants to resume previous TLS session.
+		The `'OCSPRequest'` event is emitted when the client sends a certificate status request.
 
-		Event listener may perform lookup in external storage using given sessionId,
-		and invoke callback(null, sessionData) once finished.
+		@see https://nodejs.org/api/tls.html#tls_event_ocsprequest
+	**/
+	var OCSPRequest:ServerEvent<Buffer->Buffer->(Error->?Buffer->Void)->Void> = "OCSPRequest";
 
-		If session can't be resumed (i.e. doesn't exist in storage) one may call callback(null, null).
 
-		Calling callback(err) will terminate incoming connection and destroy socket.
+	/**
+		The `'resumeSession'` event is emitted when the client requests to resume a previous TLS session.
 
-		Listener arguments:
-			sessionId
-			callback
+		@see https://nodejs.org/api/tls.html#tls_event_resumesession
 	**/
 	var ResumeSession:ServerEvent<Buffer->(Error->?Buffer->Void)->Void> = "resumeSession";
 
 	/**
-		Emitted when the client sends a certificate status request.
-		You could parse server's current certificate to obtain OCSP url and certificate id,
-		and after obtaining OCSP response invoke `callback(null, resp)`, where `resp` is a `Buffer` instance.
-		Both certificate and issuer are a Buffer DER-representations of the primary and issuer's certificates.
-		They could be used to obtain OCSP certificate id and OCSP endpoint url.
+		The `'secureConnection'` event is emitted after the handshaking process for a new connection has successfully completed.
 
-		Alternatively, `callback(null, null)` could be called, meaning that there is no OCSP response.
-
-		Calling `callback(err)` will result in a `socket.destroy(err)` call.
+		@see https://nodejs.org/api/tls.html#tls_event_secureconnection
 	**/
-	var OCSPRequest:ServerEvent<Buffer->Buffer->(Error->?Buffer->Void)->Void> = "OCSPRequest";
+	var SecureConnection:ServerEvent<TLSSocket->Void> = "secureConnection";
+
+	/**
+		The 'ClientError' event is emitted when an error occurs before a secure connection is established.
+
+		@see https://nodejs.org/api/tls.html#tls_event_tlsclienterror
+	**/
+	var ClientError:ServerEvent<Error->TLSSocket->Void> = "tlsClientError";
 }
 
 /**
-	This class is a subclass of `net.Server` and has the same methods on it.
-	Instead of accepting just raw TCP connections, this accepts encrypted connections using TLS or SSL.
+	Accepts encrypted connections using TLS or SSL.
+
+	@see https://nodejs.org/api/tls.html#tls_class_tls_server
 **/
 @:jsRequire("tls", "Server")
 extern class Server extends js.node.net.Server {
 	/**
-		Returns `Buffer` instance holding the keys currently used for encryption/decryption of the TLS Session Tickets.
+		The `Server.addContext()` method adds a secure context that will be used
+		if the client request's SNI name matches the supplied `hostname` (or wildcard).
+
+		@see https://nodejs.org/api/tls.html#tls_server_addcontext_hostname_context
+	**/
+	function addContext(hostname:String, credentials:SecureContextOptions):Void;
+
+	/**
+		Returns the bound address, the address family name, and port of the server as reported by the operating system.
+		See `net.Server.address()` for more information.
+
+		@see https://nodejs.org/api/tls.html#tls_server_address
+	**/
+    function address():Dynamic;
+
+	/**
+		The server.close() method stops the server from accepting new connections.
+
+		@see https://nodejs.org/api/tls.html#tls_server_close_callback
+	**/
+    function close(callback:haxe.Constraints.Function):Server;
+
+	/**
+		Returns the current number of concurrent connections on the server.
+
+		@see https://nodejs.org/api/tls.html#tls_server_connections
+	**/
+	@:deprecated
+	static var connections(default, null):Int;
+
+	/**
+		Returns the session ticket keys.
+
+		@see https://nodejs.org/api/tls.html#tls_server_getticketkeys
 	**/
 	function getTicketKeys():Buffer;
 
 	/**
-		Updates the keys for encryption/decryption of the TLS Session Tickets.
+		Starts the server listening for encrypted connections.
+		This method is identical to `Server.listen()` from `Net.Server`.
 
-		NOTE: the buffer should be 48 bytes long. See server `ticketKeys` option for
-		more information on how it is going to be used.
-
-		NOTE: the change is effective only for the future server connections. Existing or currently pending
-		server connections will use previous keys.
+		@see https://nodejs.org/api/tls.html#tls_server_listen
 	**/
-	function setTicketKeys(keys:Buffer):Void;
+    function listen():Void;
 
 	/**
-		Add secure context that will be used if client request's SNI hostname
-		is matching passed hostname (wildcards can be used).
+		The `Server.setSecureContext()` method replaces the secure context of an existing server.
+		Existing connections to the server are not interrupted.
+
+		@see https://nodejs.org/api/tls.html#tls_server_setsecurecontext_options
 	**/
-	function addContext(hostname:String, credentials:SecureContextOptions):Void;
+    function setSecureContext(options:SecureContextOptions):Void;
+
+
+	/**
+		Sets the session ticket keys.
+
+		@see  https://nodejs.org/api/tls.html#tls_server_setticketkeys_keys
+	**/
+	function setTicketKeys(keys:Buffer):Void;
 }

@@ -38,43 +38,84 @@ import js.Error;
 **/
 @:enum abstract TLSSocketEvent<T:Function>(Event<T>) to Event<T> {
 	/**
-		This event is emitted after a new connection has been successfully handshaked.
+		The `keylog` event is emitted on a client `tls.TLSSocket` when key material is generated or received by the socket.
+		This keying material can be stored for debugging, as it allows captured TLS traffic to be decrypted.
+		It may be emitted multiple times, before or after the handshake completes.
 
-		The listener will be called no matter if the server's certificate was authorized or not.
+		@see https://nodejs.org/api/tls.html#tls_event_keylog_1
+	**/
+	var Keylog:TLSSocketEvent<Bool->Void> = "keylog";
 
-		It is up to the user to test `TLSSocket.authorized` to see if the server certificate
-		was signed by one of the specified CAs. If `TLSSocket.authorized` is false then the error
-		can be found in `TLSSocket.authorizationError`. Also if NPN was used - you can
-		check `TLSSocket.npnProtocol` for negotiated protocol.
+	/**
+		The `'OCSPResponse'` event is emitted if the `requestOCSP` option was set
+		when the `tls.TLSSocket` was created and an OCSP response has been received.
+
+		@see https://nodejs.org/api/tls.html#tls_event_ocspresponse
+	**/
+	var OCSPResponse:TLSSocketEvent<Buffer->Void> = "OCSPResponse";
+
+	/**
+		The `'secureConnect'` event is emitted after the handshaking process for a new connection has successfully completed.
+		The listener callback will be called regardless of whether or not the server's certificate has been authorized.
+		It is the client's responsibility to check the `TLSSocket.authorized` property to determine
+		if the server certificate was signed by one of the specified CAs.
+		If `tlsSocket.authorized == false`, then the error can be found by examining the `tlsSocket.authorizationError` property.
+		If ALPN was used, the `tlsSocket.alpnProtocol` property can be checked to determine the negotiated protocol.
+
+		@see https://nodejs.org/api/tls.html#tls_event_secureconnect
 	**/
 	var SecureConnect:TLSSocketEvent<Void->Void> = "secureConnect";
 
 	/**
-		This event will be emitted if `requestOCSP` option was set.
+		The `'session'` event is emitted on a client `tls.TLSSocket` when a new session or TLS ticket is available.
+		This may or may not be before the handshake is complete, depending on the TLS protocol version that was negotiated.
+		The event is not emitted on the server, or if a new session was not created, for example, when the connection was resumed.
+		For some TLS protocol versions the event may be emitted multiple times,
+		in which case all the sessions can be used for resumption.
 
-		`response` is a `Buffer` object, containing server's OCSP response.
-
-		Traditionally, the response is a signed object from the server's CA
-		that contains information about server's certificate revocation status.
+		@see https://nodejs.org/api/tls.html#tls_event_session
 	**/
-	var OCSPResponse:TLSSocketEvent<Buffer->Void> = "OCSPResponse";
+	var Session:TLSSocketEvent<Buffer->Void> = "session";
 }
 
+/**
+	An option type for constructor of `TLSSocket`.
+**/
 typedef TLSSocketOptions = {
+	// import
+	// * rejectunauthorized
+	// * NPNProtocols
+	// * requestCert
+	// * SNICallback
+	// * session
+	// * requestOCSP
 	> TlsServerOptionsBase,
 	> TlsClientOptionsBase,
+
+	/**
+		See `Tls.createServer()`
+	**/
+	@:optional var enableTrace:Bool;
+
+	/**
+		If true the TLS socket will be instantiated in server-mode
+	**/
+	@:optional var isServer:Bool;
+
+	/**
+		A `net.Server` instance
+	**/
+	@:optional var server:js.node.net.Server;
+
+	/**
+		See `Tls.createServer()`
+	**/
+	@:optional var ALPNProtocols:Array<Buffer>;
 
 	/**
 		An optional TLS context object from `Tls.createSecureContext`
 	**/
 	@:optional var secureContext:SecureContext;
-
-	/**
-		If true - TLS socket will be instantiated in server-mode
-	**/
-	@:optional var isServer:Bool;
-
-	@:optional var server:js.node.net.Server;
 }
 
 /**
@@ -86,89 +127,166 @@ typedef TLSSocketOptions = {
 @:jsRequire("tls", "TLSSocket")
 extern class TLSSocket extends js.node.net.Socket {
 	/**
-		Construct a new TLSSocket object from existing TCP socket.
+		Construct a new `tls.TLSSocket` object from an existing TCP socket.
+
+		@see https://nodejs.org/api/tls.html#tls_new_tls_tlssocket_socket_options
 	**/
-	function new(socket:js.node.net.Socket, options:TLSSocketOptions);
+	@:overload(function(socket:js.node.net.Socket, ?options:TLSSocketOptions):Void {})
+	function new(socket:js.node.stream.Duplex<Dynamic>, ?options:TLSSocketOptions);
 
 	/**
-		true if the peer certificate was signed by one of the specified CAs, otherwise false
+		Returns the bound `address`, the address `family` name, and `port` of the underlying socket as reported by the operating system:
+		`{ port: 12346, family: 'IPv4', address: '127.0.0.1' }`
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_address
 	**/
-	var authorized(default, null):Bool;
+	function address():js.node.net.Socket.SocketAdress;
 
 	/**
-		The reason why the peer's certificate has not been verified.
+		Returns the reason why the peer's certificate was not been verified. This property is set only when `TLSSocket.authorized == false`.
 
-		This property becomes available only when `authorized` is false.
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_authorizationerror
 	**/
 	var authorizationError(default, null):Null<String>;
 
 	/**
-		Negotiated protocol name.
+		Returns `true` if the peer certificate was signed by one of the CAs specified when creating the `tls.TLSSocket` instance, otherwise `false`.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_authorized
 	**/
-	var npnProtocol(default, null):String;
+	var authorized(default, null):Bool;
 
 	/**
-		Returns an object representing the peer's certificate.
+		Disables TLS renegotiation for this `TLSSocket` instance.
+		Once called, attempts to renegotiate will trigger an `'error'` event on the `TLSSocket`.
 
-		The returned object has some properties corresponding to the field of the certificate.
-		If `detailed` argument is true - the full chain with issuer property will be returned,
-		if false - only the top certificate without issuer property.
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_disablerenegotiation
 	**/
-	function getPeerCertificate(?detailed:Bool):Dynamic; // TODO: is there a well defined structure for this?
+	function disableRenegotiation():Void;
 
 	/**
-		Returns an object representing the cipher name and the SSL/TLS protocol version of the current connection.
+		When enabled, TLS packet trace information is written to `stderr`.
+		This can be used to debug TLS connection problems.
 
-		Example: { name: 'AES256-SHA', version: 'TLSv1/SSLv3' }
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_enabletrace
+	**/
+	function enableTrace():Void;
 
-		See SSL_CIPHER_get_name() and SSL_CIPHER_get_version() in http://www.openssl.org/docs/ssl/ssl.html#DEALING_WITH_CIPHERS for more information.
+	/**
+		Always returns `true`.
+		This may be used to distinguish TLS sockets from regular `net.Socket` instances.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_encrypted
+	**/
+	@:native("encrypted")
+	var encrypted_(default, null):Bool;
+
+	/**
+		Returns an object representing the local certificate. The returned object has some properties corresponding to the fields of the certificate.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_getcertificate
+	**/
+	function getCertificate(): Dynamic;
+
+	/**
+		Returns an object containing information on the negotiated cipher suite.
+		For example: `{ name: 'AES256-SHA', version: 'TLSv1.2' }`.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_getcipher
 	**/
 	function getCipher():{name:String, version:String};
 
 	/**
-		Initiate TLS renegotiation process.
+		Returns an object representing the type, name, and size of parameter of an ephemeral key exchange
+		in Perfect Forward Secrecy on a client connection.
+		It returns an empty object when the key exchange is not ephemeral.
+		As this is only supported on a client socket; `null` is returned if called on a server socket.
+		The supported types are `'DH'` and `'ECDH'`.
+		The `name` property is available only when type is `'ECDH'`.
 
-		The `options` may contain the following fields: rejectUnauthorized, requestCert (See `Tls.createServer` for details).
+		For example: `{ type: 'ECDH', name: 'prime256v1', size: 256 }`.
 
-		`callback(err)` will be executed with null as err, once the renegotiation is successfully completed.
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_getephemeralkeyinfo
+	**/
+	function getEphemeralKeyInfo(): Dynamic;
 
-		NOTE: Can be used to request peer's certificate after the secure connection has been established.
-		ANOTHER NOTE: When running as the server, socket will be destroyed with an error after handshakeTimeout timeout.
+	/**
+		As the Finished messages are message digests of the complete handshake (with a total of 192 bits for TLS 1.0 and more for SSL 3.0),
+		they can be used for external authentication procedures when the authentication provided by SSL/TLS is not desired or is not enough.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_getfinished
+	**/
+	function getFinished(): Dynamic;
+
+	/**
+		Returns an object representing the peer's certificate.
+		If the peer does not provide a certificate, an empty object will be returned.
+		If the socket has been destroyed, `null` will be returned.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_getpeercertificate_detailed
+	**/
+	function getPeerCertificate(?detailed:Bool):Dynamic; // TODO: is there a well defined structure for this?
+
+	/**
+		As the `Finished` messages are message digests of the complete handshake (with a total of 192 bits for TLS 1.0 and more for SSL 3.0),
+		they can be used for external authentication procedures when the authentication provided by SSL/TLS is not desired or is not enough.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_getpeerfinished
+	**/
+	function getPeerFinished():Null<Buffer>;
+
+	/**
+		Returns a string containing the negotiated SSL/TLS protocol version of the current connection.
+		The value `'None'` will be returned for connected sockets that have not completed the handshaking process.
+		The value `null` will be returned for server sockets or disconnected client sockets.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_getprotocol
+	**/
+	function getProtocol():haxe.ds.Option<String>;
+
+	/**
+		Returns the TLS session data or `null` if no session was negotiated.
+		On the client, the data can be provided to the session option of `Tls.connect()` to resume the connection.
+		On the server, it may be useful for debugging.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_getsession
+	**/
+	function getSession():Buffer;
+
+	/**
+		see https://www.openssl.org/docs/man1.1.1/man3/SSL_get_shared_sigalgs.html for more information.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_getsharedsigalgs
+	**/
+	function getSharedSignals():Array<Dynamic>; // TODO: use more concrete type, not Dynamic
+
+	/**
+		For a client, returns the TLS session ticket if one is available, or `null`. For a server, always returns `null`.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_gettlsticket
+	**/
+	function getTLSTicket():Null<Buffer>;
+
+	/**
+		see https://nodejs.org/api/tls.html#tls_session_resumption for more information.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_issessionreused
+	**/
+	function isSessionReused():Bool;
+
+	/**
+		The `TlsSocket.renegotiate()` method initiates a TLS renegotiation process.
+		Upon completion, the `callback` function will be passed a single argument that is either an `Error` (if the request failed) or `null`.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_renegotiate_options_callback
 	**/
 	function renegotiate(options:{?rejectUnauthorized:Bool, ?requestCert:Bool}, ?callback:Error->Void):Bool;
 
 	/**
-		Set maximum TLS fragment size (default and maximum value is: 16384, minimum is: 512).
+		The `TlsSocket.setMaxSendFragment()` method sets the maximum TLS fragment size.
+		Returns `true` if setting the limit succeeded; `false` otherwise.
 
-		Returns true on success, false otherwise.
-
-		Smaller fragment size decreases buffering latency on the client: large fragments are buffered by the TLS layer
-		until the entire fragment is received and its integrity is verified; large fragments can span multiple roundtrips,
-		and their processing can be delayed due to packet loss or reordering. However, smaller fragments add
-		extra TLS framing bytes and CPU overhead, which may decrease overall server throughput.
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_setmaxsendfragment_size
 	**/
 	function setMaxSendFragment(size:Int):Bool;
-
-	/**
-		Returns a string containing the negotiated SSL/TLS protocol version of the current connection.
-
-		'unknown' will be returned for connected sockets that have not completed the handshaking process.
-		`null` will be returned for server sockets or disconnected client sockets.
-	**/
-	function getProtocol():String;
-
-	/**
-		Return ASN.1 encoded TLS session or null if none was negotiated.
-		Could be used to speed up handshake establishment when reconnecting to the server.
-	**/
-	function getSession():Null<Buffer>;
-
-	/**
-		NOTE: Works only with client TLS sockets.
-
-		Useful only for debugging, for session reuse provide session option to tls.connect.
-
-		Return TLS session ticket or null if none was negotiated.
-	**/
-	function getTLSTicket():Null<Buffer>;
 }

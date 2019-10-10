@@ -154,8 +154,10 @@ typedef TlsConnectOptions = {
 }
 
 /**
-	The tls module uses OpenSSL to provide Transport Layer Security
-	and/or Secure Socket Layer: encrypted stream communication.
+	The tls module provides an implementation of the Transport Layer Security (TLS) and
+	Secure Socket Layer (SSL) protocols that is built on top of OpenSSL.
+
+	@see https://nodejs.org/api/tls.html#tls_tls_ssl
 **/
 @:jsRequire("tls")
 extern class Tls {
