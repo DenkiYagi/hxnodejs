@@ -22,6 +22,7 @@
 
 package js.node.dgram;
 
+import js.lib.Uint8Array;
 import haxe.Constraints.Function;
 import js.node.events.EventEmitter;
 import js.node.net.Socket.SocketAdress;
@@ -76,22 +77,9 @@ import js.Error;
 typedef MessageListener = Buffer->SocketAdress->Void;
 
 /**
-	Options for `Socket.bind` method.
-**/
-typedef SocketBindOptions = {
-	var port:Int;
-	@:optional var address:String;
-
-	/**
-		If false (default), then cluster workers will use the same underlying handle, allowing connection handling
-		duties to be shared. When true, the handle is not shared, and attempted port sharing results in an error.
-	**/
-	@:optional var exclusive:Bool;
-}
-
-/**
 	Encapsulates the datagram functionality.
-	It should be created via `Dgram.createSocket`.
+
+	@see https://nodejs.org/api/dgram.html#dgram_class_dgram_socket
 **/
 @:jsRequire("dgram", "Socket")
 extern class Socket extends EventEmitter<Socket> {
@@ -99,54 +87,100 @@ extern class Socket extends EventEmitter<Socket> {
 	private function new(options:SocketOptions, ?callback:MessageListener);
 
 	/**
-		The destination `port` and `address` must be specified.
-		A string may be supplied for the `address` parameter, and it will be resolved with DNS.
+		Tells the kernel to join a `multicast` group at the given `multicastAddress` and multicastInterface using the
+		`IP_ADD_MEMBERSHIP` socket option.
 
-		If the `address` is omitted or is an empty string, '0.0.0.0' or '::0' is used instead.
-		Depending on the network configuration, those defaults may or may not work; it's best to be
-		explicit about the destination address.
-
-		If the socket has not been previously bound with a call to `bind`, it gets assigned a random
-		port number and is bound to the "all interfaces" address ('0.0.0.0' for udp4 sockets, '::0' for udp6 sockets.)
-
-		An optional `callback` may be specified to detect DNS errors or for determining when it's safe
-		to reuse the buf object. Note that DNS lookups delay the time to send for at least one tick.
-		The only way to know for sure that the datagram has been sent is by using a `callback`.
+		@see https://nodejs.org/api/dgram.html#dgram_socket_addmembership_multicastaddress_multicastinterface
 	**/
-	function send(buf:Buffer, offset:Int, length:Int, port:Int, address:String, ?callback:Error->Int->Void):Void;
-
-	/**
-		Listen for datagrams on a named `port` and optional `address`.
-		If `port` is not specified, the OS will try to bind to a random port.
-		If `address` is not specified, the OS will try to listen on all addresses.
-		After binding is done, a "listening" event is emitted and the `callback` (if specified) is called.
-		Specifying both a "listening" event listener and `callback` is not harmful but not very useful.
-
-		A bound datagram socket keeps the node process running to receive datagrams.
-
-		If binding fails, an "error" event is generated. In rare case (e.g. binding a closed socket),
-		an `Error` may be thrown by this method.
-	**/
-	@:overload(function(options:SocketBindOptions, ?callback:Void->Void):Void {})
-	@:overload(function(port:Int, address:String, ?callback:Void->Void):Void {})
-	@:overload(function(port:Int, ?callback:Void->Void):Void {})
-	function bind(?callback:Void->Void):Void;
-
-	/**
-		Close the underlying socket and stop listening for data on it.
-
-		If a `callback` is provided, it is added as a listener for the 'close' event.
-	**/
-	function close(?callback:Void->Void):Void;
+	function addMembership(multicastAddress:String, ?multicastInterface:String):Void;
 
 	/**
 		Returns an object containing the address information for a socket.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_address
 	**/
 	function address():SocketAdress;
 
 	/**
-		Sets or clears the SO_BROADCAST socket option.
-		When this option is set, UDP packets may be sent to a local interface's broadcast address.
+		For UDP sockets, causes the `dgram.Socket` to listen for datagram messages on a named `port` and optional
+		`address`.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_bind_port_address_callback
+	**/
+	@:overload(function(?port:Int, ?address:String, ?callback:Void->Void):Void {})
+	function bind(options:SocketBindOptions, ?callback:Void->Void):Void;
+
+	/**
+		Close the underlying socket and stop listening for data on it.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_close_callback
+	**/
+	function close(?callback:Void->Void):Void;
+
+	/**
+		Associates the dgram.Socket to a remote address and port.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_connect_port_address_callback
+	**/
+	function connect(port:Int, ?address:String, ?callback:Void->Void):Void;
+
+	/**
+		A synchronous function that disassociates a connected `dgram.Socket` from its remote address.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_disconnect
+	**/
+	function disconnect():Void;
+
+	/**
+		Instructs the kernel to leave a multicast group at `multicastAddress` using the `IP_DROP_MEMBERSHIP` socket
+		option.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_dropmembership_multicastaddress_multicastinterface
+	**/
+	function dropMembership(multicastAddress:String, ?multicastInterface:String):Void;
+
+	/**
+		The `SO_RCVBUF` socket receive buffer size in bytes.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_getrecvbuffersize
+	**/
+	function getRecvBufferSize():Int;
+
+	/**
+		The `SO_SNDBUF` socket send buffer size in bytes.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_getsendbuffersize
+	**/
+	function getSendBufferSize():Int;
+
+	/**
+		By default, binding a socket will cause it to block the Node.js process from exiting as long as the socket is open.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_ref
+	**/
+	function ref():Void;
+
+	/**
+		Returns an object containing the `address`, `family`, and `port` of the remote endpoint.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_remoteaddress
+	**/
+	function remoteAddress():SocketAdress;
+
+	/**
+		Broadcasts a datagram on the socket.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_send_msg_offset_length_port_address_callback
+	**/
+	@:overload(function(msg:Buffer, ?offset:Int, ?length:Int, ?port:Int, ?address:String, ?callback:Error->Void):Void {})
+	@:overload(function(msg:Uint8Array, ?offset:Int, ?length:Int, ?port:Int, ?address:String, ?callback:Error->Void):Void {})
+	@:overload(function(msg:String, ?offset:Int, ?length:Int, ?port:Int, ?address:String, ?callback:Error->Void):Void {})
+	function send(msg:Array<Dynamic>, ?offset:Int, ?length:Int, ?port:Int, ?address:String, ?callback:Error->Void):Void;
+
+	/**
+		Sets or clears the `SO_BROADCAST` socket option.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_setbroadcast_flag
 	**/
 	function setBroadcast(flag:Bool):Void;
 
@@ -177,33 +211,10 @@ extern class Socket extends EventEmitter<Socket> {
 	function setMulticastLoopback(flag:Bool):Void;
 
 	/**
-		Tells the kernel to join a multicast group with IP_ADD_MEMBERSHIP socket option.
-
-		If `multicastInterface` is not specified, the OS will try to add membership to all valid interfaces.
-	**/
-	function addMembership(multicastAddress:String, ?multicastInterface:String):Void;
-
-	/**
-		Opposite of `addMembership` - tells the kernel to leave a multicast group with IP_DROP_MEMBERSHIP socket option.
-		This is automatically called by the kernel when the socket is closed or process terminates,
-		so most apps will never need to call this.
-
-		If `multicastInterface` is not specified, the OS will try to drop membership to all valid interfaces.
-	**/
-	function dropMembership(multicastAddress:String, ?multicastInterface:String):Void;
-
-	/**
 		Calling `unref` on a socket will allow the program to exit if this is the only active socket in the event system.
 		If the socket is already `unref`d calling `unref` again will have no effect.
 	**/
 	function unref():Void;
-
-	/**
-		Opposite of `unref`, calling `ref` on a previously `unref`d socket will not let
-		the program exit if it's the only socket left (the default behavior).
-		If the socket is `ref`d calling `ref` again will have no effect.
-	**/
-	function ref():Void;
 }
 
 /**
@@ -254,4 +265,14 @@ typedef SocketOptions = {
 		Default: `dns.lookup()`.
 	**/
 	@:optional var lookup:Function;
+}
+
+/**
+	Options object used by `Socket.bind` method.
+**/
+typedef SocketBindOptions = {
+	@:optional var port:Int;
+	@:optional var address:String;
+	@:optional var exclusive:Bool;
+	@:optional var fd:Int;
 }
