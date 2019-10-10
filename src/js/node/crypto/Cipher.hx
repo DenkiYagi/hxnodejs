@@ -22,18 +22,19 @@
 
 package js.node.crypto;
 
+import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.stream.Transform;
 
 /**
 	Instances of the Cipher class are used to encrypt data.
+
 	@see https://nodejs.org/api/crypto.html#crypto_class_cipher
 **/
 extern class Cipher extends js.node.stream.Transform<Cipher> {
 	/**
-		Any remaining enciphered contents. If `outputEncoding~ is specified, a string is returned. If an `outputEncoding` is not provided, a `Buffer` is returned.
-
-		Once the `Cipher.final()` method has been called, the `Cipher` object can no longer be used to encrypt data. Attempts to call `Cipher.final()` more than once will result in an error being thrown.
+		Once the `Cipher.final()` method has been called, the Cipher object can no longer be used to encrypt data.
+		Attempts to call `Cipher.final()` more than once will result in an error being thrown.
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_final_outputencoding
 	**/
@@ -41,15 +42,14 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 	function finalContents(output_encoding:String):String;
 
 	/**
-		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported), the `Cipher.setAAD()` method sets the value used for the additional authenticated data (AAD) input parameter.
+		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported),
+		the `Cipher.setAAD()` method sets the value used for the additional authenticated data (AAD) input parameter.
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_setaad_buffer_options
 	**/
 	function setAAD(buffer:Buffer, ?options: Transform<Cipher>):Void;
 
 	/**
-		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported), the `Cipher.getAuthTag()` method returns a Buffer containing the authentication tag that has been computed from the given data.
-
 		The `Cipher.getAuthTag()` method should only be called after encryption has been completed using the `Cipher.final()` method.
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_getauthtag
@@ -57,7 +57,8 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 	function getAuthTag():Buffer;
 
 	/**
-		When using block encryption algorithms, the Cipher class will automatically add padding to the input data to the appropriate block size. To disable the default padding call `Cipher.setAutoPadding(false)`.
+		When using block encryption algorithms, the `Cipher` class will automatically add padding to the input data to the appropriate block size.
+		To disable the default padding call `Cipher.setAutoPadding(false)`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_setautopadding_autopadding
 	**/
@@ -65,11 +66,18 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 	function setAutoPadding(auto_padding:Bool):Void;
 
 	/**
-		Updates the cipher with `data`. If the `input_encoding` argument is given, the `data` argument is a string using the specified encoding. If the `input_encoding` argument is not given, data must be a `Buffer`. If data is a `Buffer`, then `input_encoding` is ignored.
+		Updates the cipher with `data`.
+		If the `input_encoding` argument is given, the `data` argument is a string using the specified encoding.
+		If the `input_encoding` argument is not given, data must be a `Buffer` or `ArrayBufferView`.
+		If data is a `Buffer` or `ArrayBufferView`, then `input_encoding` is ignored.
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_setautopadding_autopadding
 	**/
-	@:overload(function(data:Buffer):Buffer {})
-	@:overload(function(data:String, input_encoding:String):Buffer {})
-	function update(data:String, input_encoding:String, output_encoding:String):String;
+
+	@:overload(function(data:String, input_encoding:String, ?output_encoding:String):Buffer {})
+	@:overload(function(data:String, input_encoding:String, ?output_encoding:String):String {})
+	@:overload(function(data:Buffer, ?output_encoding:String):Buffer {})
+	@:overload(function(data:Buffer, ?output_encoding:String):String {})
+	@:overload(function(data:ArrayBufferView, ?output_encoding:String):Buffer {})
+	function update(data:ArrayBufferView, ?output_encoding:String):String;
 }

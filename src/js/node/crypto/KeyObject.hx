@@ -34,33 +34,33 @@ import js.node.Buffer;
 **/
 extern class KeyObject {
 	/**
-		 For asymmetric keys, this property represents the type of the key.
+		For asymmetric keys, this property represents the type of the key.
 
-		 @see https://nodejs.org/api/crypto.html#crypto_keyobject_asymmetrickeytype
+		@see https://nodejs.org/api/crypto.html#crypto_keyobject_asymmetrickeytype
 	**/
     var asymmetricKeyType: String;
 
 	/**
-		 For symmetric keys, this function allocates a `Buffer` containing the key material and ignores any options.
+		For symmetric keys, this function allocates a `Buffer` containing the key material and ignores any options.
 
-		 @see https://nodejs.org/api/crypto.html#crypto_keyobject_export_options
+		@see https://nodejs.org/api/crypto.html#crypto_keyobject_export_options
 	**/
 	@:overload(function(?options: ExportPrivateKeyOptions):String {})
 	static function export(?options: ExportPublicKeyOptions): Buffer;
 
 	/**
-		 For secret keys, this property represents the size of the key in bytes.
-		 This property is undefined for asymmetric keys.
+		For secret keys, this property represents the size of the key in bytes.
+		This property is undefined for asymmetric keys.
 
-		 @see https://nodejs.org/api/crypto.html#crypto_keyobject_symmetrickeysize
+		@see https://nodejs.org/api/crypto.html#crypto_keyobject_symmetrickeysize
 	**/
     var symmetricKeySize: Int;
 
 	/**
-		 Depending on the type of this `KeyObject`,
-		 this property is either `'secret'` for secret (symmetric) keys, `'public'` for public (asymmetric) keys or `'private'` for private (asymmetric) keys.
+		Depending on the type of this `KeyObject`,
+		this property is either `'secret'` for secret (symmetric) keys, `'public'` for public (asymmetric) keys or `'private'` for private (asymmetric) keys.
 
-		 @see https://nodejs.org/api/crypto.html#crypto_keyobject_type
+		@see https://nodejs.org/api/crypto.html#crypto_keyobject_type
 	**/
     var type: String;
 }
@@ -71,12 +71,12 @@ extern class KeyObject {
 typedef ExportPublicKeyOptions = {
 
 	/**
-		 Must be one of `'pkcs1'` (RSA only) or `'spki'`.
+		Must be one of `'pkcs1'` (RSA only) or `'spki'`.
 	**/
 	var type: String;
 
 	/**
-		 Must be `'pem'` or `'der'`.
+		Must be `'pem'` or `'der'`.
 	**/
 	var format: String;
 }
@@ -86,22 +86,22 @@ typedef ExportPublicKeyOptions = {
 **/
 typedef ExportPrivateKeyOptions = {
 	/**
-		 Must be one of `'pkcs1'` (RSA only), `'pkcs8'` or `'sec1'` (EC only).
+		Must be one of `'pkcs1'` (RSA only), `'pkcs8'` or `'sec1'` (EC only).
 	**/
 	var type: String;
 
 	/**
-		 Must be `'pem'` or `'der'`.
+		Must be `'pem'` or `'der'`.
 	**/
 	var format: String;
 
 	/**
-		 If specified, the private key will be encrypted with the given cipher and passphrase using PKCS#5 v2.0 password based encryption.
+		If specified, the private key will be encrypted with the given cipher and passphrase using PKCS#5 v2.0 password based encryption.
 	**/
     var cipher: String;
 
 	/**
-		 The passphrase to use for encryption, see `cipher`.
+		The passphrase to use for encryption, see `cipher`.
 	**/
     var passphrase: EitherType<String, Buffer>;
 }

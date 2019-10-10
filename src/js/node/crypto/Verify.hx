@@ -22,11 +22,12 @@
 
 package js.node.crypto;
 
+import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.stream.Writable;
 
 /**
-	The Verify class is a utility for verifying signatures. It can be used in one of two ways:
+	The `Verify` class is a utility for verifying signatures. It can be used in one of two ways:
 
 	* As a writable stream where written data is used to validate against the supplied signature, or
 	* Using the verify.update() and verify.verify() methods to verify the signature.
@@ -37,18 +38,22 @@ import js.node.stream.Writable;
 **/
 extern class Verify extends Writable<Sign> {
 	/**
-		Updates the `Verify` content with the given data, the encoding of which is given in input_encoding. If `input_encoding` is not provided, and the `data` is a string, an encoding of `'utf8'` is enforced. If data is a `Buffer`, then `input_encoding` is ignored.
+		Updates the `Verify` content with the given data, the encoding of which is given in input_encoding.
+		If `input_encoding` is not provided, and the `data` is a string, an encoding of `'utf8'` is enforced.
+		If data is a `Buffer` or `Arraybufferview`, then `input_encoding` is ignored.
 
 		@see https://nodejs.org/api/crypto.html#crypto_verify_update_data_inputencoding
 	**/
 	@:overload(function(data:Buffer):Void {})
+	@:overload(function(data:ArrayBufferView):Void {})
 	function update(data:String, ?input_encoding:String):Void;
 
 	/**
-		Verifies the provided data using the given object and signature.
+		Verifies the provided data using the given `object` and `signature`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_verify_verify_object_signature_signatureencoding
 	**/
 	@:overload(function(object:String, signature:Buffer):Bool {})
+	@:overload(function(object:String, signature:ArrayBufferView):Bool {})
 	function verify(object:String, signature:String, signature_format:String):Bool;
 }

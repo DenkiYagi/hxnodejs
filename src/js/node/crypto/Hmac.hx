@@ -36,7 +36,8 @@ import js.node.Buffer;
 **/
 extern class Hmac extends js.node.stream.Transform<Hmac> {
 	/**
-		Calculates the HMAC digest of all of the data passed using `Hmac.update()`. If `encoding` is provided a string is returned; otherwise a `Buffer` is returned,
+		Calculates the HMAC digest of all of the data passed using `Hmac.update()`.
+		If `encoding` is provided a string is returned; otherwise a `Buffer` is returned,
 
 		@see https://nodejs.org/api/crypto.html#crypto_hmac_digest_encoding
 	**/
@@ -44,7 +45,8 @@ extern class Hmac extends js.node.stream.Transform<Hmac> {
 	function digest(encoding:String):String;
 
 	/**
-		Updates the Hmac content with the given data, the encoding of which is given in inputEncoding. If encoding is not provided, and the data is a string, an encoding of 'utf8' is enforced. If data is a Buffer, TypedArray, or DataView, then inputEncoding is ignored.
+		Updates the `Hmac` content with the given data, the encoding of which is given in `input_encoding`. If `encoding` is not provided, and the `data` is a string, an encoding of `'utf8'` is enforced.
+		If `data` is a `Buffer` or `ArrayBufferView`, then `input_encoding` is ignored.
 
 		@see https://nodejs.org/api/crypto.html#crypto_hmac_update_data_inputencoding
 	**/

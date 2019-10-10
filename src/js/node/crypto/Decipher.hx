@@ -22,6 +22,7 @@
 
 package js.node.crypto;
 
+import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.stream.Transform;
 import js.node.stream.Transform.TSelf;
@@ -33,8 +34,8 @@ import js.node.stream.Transform.TSelf;
 **/
 extern class Decipher extends js.node.stream.Transform<Decipher> {
 	/**
-		Returns any remaining deciphered contents. If `output_encoding` is specified, a string is returned. If an `output_encoding` is not provided, a `Buffer` is returned.
-		Once the `Decipher.final()` method has been called, the Decipher object can no longer be used to decrypt data. Attempts to call `Decipher.final()` more than once will result in an error being thrown.
+		Once the `Decipher.final()` method has been called, the `Decipher` object can no longer be used to decrypt data.
+		Attempts to call `Decipher.final()` more than once will result in an error being thrown.
 
 		@see https://nodejs.org/api/crypto.html#crypto_decipher_final_outputencoding
 	**/
@@ -42,21 +43,29 @@ extern class Decipher extends js.node.stream.Transform<Decipher> {
 	function finalContents(output_encoding:String):String;
 
 	/**
-		When using an authenticated encryption mode (GCM, CCM and OCB are currently supported), the decipher.setAAD() method sets the value used for the additional authenticated data (AAD) input parameter.
+		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported),
+		the `Decipher.setAAD()` method sets the value used for the additional authenticated data (AAD) input parameter.
 
 		@see https://nodejs.org/api/crypto.html#crypto_decipher_setaad_buffer_options
 	**/
-	function setAAD(buffer:Buffer, ?options: Transform<Decipher>):Void;
+	@:overload(function(buffer:Buffer, ?options: Transform<Decipher>):Void {})
+	function setAAD(buffer:ArrayBufferView, ?options: Transform<Decipher>):Void;
 
 	/**
-		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported), the `Decipher.setAuthTag()` method is used to pass in the received authentication tag. If no tag is provided, or if the cipher text has been tampered with, `Decipher.final()` will throw, indicating that the cipher text should be discarded due to failed authentication. If the tag length is invalid according to NIST SP 800-38D or does not match the value of the `authTagLength` option, `Decipher.setAuthTag()` will throw an error.
+		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported),
+		the `Decipher.setAuthTag()` method is used to pass in the received authentication tag.
+		If no tag is provided, or if the cipher text has been tampered with, `Decipher.final()` will throw,
+		indicating that the cipher text should be discarded due to failed authentication.
+		If the tag length is invalid according to NIST SP 800-38D or does not match the value of the `authTagLength` option,
+		`Decipher.setAuthTag()` will throw an error.
 
 		@see https://nodejs.org/api/crypto.html#crypto_decipher_setauthtag_buffer
 	**/
-	function setAuthTag(buffer:Buffer):Void;
+	@:overload(function(buffer:Buffer):Void {})
+	function setAuthTag(buffer:ArrayBufferView):Void;
 
 	/**
-		When data has been encrypted without standard block padding, calling decipher.setAutoPadding(false) will disable automatic padding to prevent decipher.final() from checking for and removing padding.
+		When data has been encrypted without standard block padding, calling `Decipher.setAutoPadding(false)` will disable automatic padding to prevent `Decipher.final()` from checking for and removing padding.
 
 		@see https://nodejs.org/api/crypto.html#crypto_decipher_setautopadding_autopadding
 	**/
@@ -64,11 +73,17 @@ extern class Decipher extends js.node.stream.Transform<Decipher> {
 	function setAutoPadding(auto_padding:Bool):Void;
 
 	/**
-		Updates the decipher with `data`. If the `input_encoding` argument is given, the data argument is a string using the specified encoding. If the `input_encoding` argument is not given, data must be a `Buffer`. If `data` is a `Buffer` then `input_encoding` is ignored.
+		Updates the decipher with `data`.
+		If the `input_encoding` argument is given, the data argument is a string using the specified encoding.
+		If the `input_encoding` argument is not given, data must be a `Buffer`.
+		If `data` is a `Buffer` or `Arraybufferview` then `input_encoding` is ignored.
 
 		@see https://nodejs.org/api/crypto.html#crypto_decipher_update_data_inputencoding_outputencoding
 	**/
-	@:overload(function(data:Buffer):Buffer {})
-	@:overload(function(data:String, input_encoding:String):Buffer {})
-	function update(data:String, input_encoding:String, output_encoding:String):String;
+	@:overload(function(data:String, input_encoding:String, ?output_encoding:String):Buffer {})
+	@:overload(function(data:String, input_encoding:String, ?output_encoding:String):String {})
+	@:overload(function(data:Buffer, ?output_encoding:String):Buffer {})
+	@:overload(function(data:Buffer, ?output_encoding:String):String {})
+	@:overload(function(data:ArrayBufferView, ?output_encoding:String):Buffer {})
+	function update(data:ArrayBufferView, ?output_encoding:String):String;
 }

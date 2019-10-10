@@ -22,6 +22,7 @@
 
 package js.node.crypto;
 
+import js.lib.ArrayBufferView;
 import js.node.Buffer;
 
 /**
@@ -36,7 +37,8 @@ import js.node.Buffer;
 **/
 extern class Hash extends js.node.stream.Transform<Hash> {
 	/**
-		Calculates the digest of all of the data passed to be hashed (using the `Hash.update()` method). If `encoding` is provided a string will be returned; otherwise a `Buffer` is returned.
+		Calculates the digest of all of the data passed to be hashed (using the `Hash.update()` method).
+		If `encoding` is provided a string will be returned; otherwise a `Buffer` is returned.
 
 		@see https://nodejs.org/api/crypto.html#crypto_hash_digest_encoding
 	**/
@@ -44,10 +46,12 @@ extern class Hash extends js.node.stream.Transform<Hash> {
 	function digest(encoding:String):String;
 
 	/**
-		Updates the hash content with the given data, the `encoding` of which is given in `input_encoding`. If `encoding` is not provided, and the `data` is a string, an encoding of `'utf8'` is enforced. If data is a `Buffer`, then `input_encoding` is ignored.
+		Updates the hash content with the given data, the `encoding` of which is given in `input_encoding`. If `encoding` is not provided, and the data is a string, an encoding of `'utf8'` is enforced.
+		If data is a `Buffer` or `Arraybufferview`, then `input_encoding` is ignored.
 
 		@see https://nodejs.org/api/crypto.html#crypto_hash_update_data_inputencoding
 	**/
 	@:overload(function(data:Buffer):Hash {})
+	@:overload(function(data:ArrayBufferView):Hash {})
 	function update(data:String, ?input_encoding:String):Hash;
 }

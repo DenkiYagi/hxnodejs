@@ -22,6 +22,7 @@
 
 package js.node.crypto;
 
+import js.lib.ArrayBufferView;
 import js.node.Buffer;
 
 /**
@@ -33,9 +34,12 @@ extern interface IDiffieHellman {
 	@:overload(function():Buffer {})
 	function generateKeys(encoding:String):String;
 
-	@:overload(function(other_public_key:Buffer):Buffer {})
-	@:overload(function(other_public_key:String, input_encoding:String):Buffer {})
-	function computeSecret(other_public_key:String, input_encoding:String, output_encoding:String):String;
+	@:overload(function(other_public_key:String, input_encoding:String, ?output_encoding:String):Buffer {})
+	@:overload(function(other_public_key:String, input_encoding:String, ?output_encoding:String):String {})
+	@:overload(function(other_public_key:Buffer, ?output_encoding:String):Buffer {})
+	@:overload(function(other_public_key:Buffer, ?output_encoding:String):String {})
+	@:overload(function(other_public_key:ArrayBufferView, ?output_encoding:String):Buffer {})
+	function computeSecret(other_public_key:ArrayBufferView, ?output_encoding:String):String;
 
 	@:overload(function():Buffer {})
 	function getPrime(encoding:String):String;
@@ -57,16 +61,24 @@ extern interface IDiffieHellman {
 **/
 extern class DiffieHellman implements IDiffieHellman {
 	/**
-		Computes the shared secret using `other_publicKey` as the other party's public key and returns the computed shared secret. The supplied key is interpreted using the specified `input_encoding`, and secret is encoded using specified `output_encoding`. If the `input_encoding` is not provided, `other_public_key` is expected to be a `Buffer`.
+		Computes the shared secret using `other_publicKey` as the other party's public key and returns the computed shared secret.
+		The supplied key is interpreted using the specified `input_encoding`, and secret is encoded using specified `output_encoding`.
+		If the `input_encoding` is not provided, `other_public_key` is expected to be a `Buffer`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_diffiehellman_computesecret_otherpublickey_inputencoding_outputencoding
 	**/
-	@:overload(function(other_public_key:Buffer):Buffer {})
-	@:overload(function(other_public_key:String, input_encoding:String):Buffer {})
-	function computeSecret(other_public_key:String, input_encoding:String, output_encoding:String):String;
+
+	@:overload(function(other_public_key:String, input_encoding:String, ?output_encoding:String):Buffer {})
+	@:overload(function(other_public_key:String, input_encoding:String, ?output_encoding:String):String {})
+	@:overload(function(other_public_key:Buffer, ?output_encoding:String):Buffer {})
+	@:overload(function(other_public_key:Buffer, ?output_encoding:String):String {})
+	@:overload(function(other_public_key:ArrayBufferView, ?output_encoding:String):Buffer {})
+	function computeSecret(other_public_key:ArrayBufferView, ?output_encoding:String):String;
 
 	/**
-		Generates private and public Diffie-Hellman key values, and returns the public key in the specified encoding. This key should be transferred to the other party. If encoding is provided a string is returned; otherwise a Buffer is returned.
+		Generates private and public Diffie-Hellman key values, and returns the public key in the specified `encoding`.
+		This key should be transferred to the other party.
+		If `encoding` is provided a string is returned; otherwise a `Buffer` is returned.
 
 		@see https://nodejs.org/api/crypto.html#crypto_diffiehellman_generatekeys_encoding
 	**/
@@ -74,7 +86,8 @@ extern class DiffieHellman implements IDiffieHellman {
 	function generateKeys(encoding:String):String;
 
 	/**
-		Returns the Diffie-Hellman generator in the specified encoding. If encoding is provided a string is returned; otherwise a Buffer is returned.
+		Returns the Diffie-Hellman generator in the specified `encoding`.
+		If `encoding` is provided a string is returned; otherwise a `Buffer` is returned.
 
 		@see https://nodejs.org/api/crypto.html#crypto_diffiehellman_getgenerator_encoding
 	**/
@@ -82,7 +95,8 @@ extern class DiffieHellman implements IDiffieHellman {
 	function getGenerator(encoding:String):String;
 
 	/**
-		Returns the Diffie-Hellman prime in the specified encoding. If `encoding` is provided a string is returned; otherwise a `Buffer` is returned.
+		Returns the Diffie-Hellman prime in the specified `encoding`.
+		If `encoding` is provided a string is returned; otherwise a `Buffer` is returned.
 
 		@see https://nodejs.org/api/crypto.html#crypto_diffiehellman_getprime_encoding
 	**/
@@ -90,7 +104,8 @@ extern class DiffieHellman implements IDiffieHellman {
 	function getPrime(encoding:String):String;
 
 	/**
-		Returns the Diffie-Hellman private key in the specified encoding. If `encoding` is provided a string is returned; otherwise a `Buffer` is returned.
+		Returns the Diffie-Hellman private key in the specified `encoding`.
+		If `encoding` is provided a string is returned; otherwise a `Buffer` is returned.
 
 		@see https://nodejs.org/api/crypto.html#crypto_diffiehellman_getprivatekey_encoding
 	**/
@@ -98,7 +113,8 @@ extern class DiffieHellman implements IDiffieHellman {
 	function getPrivateKey(encoding:String):String;
 
 	/**
-		Returns the Diffie-Hellman public key in the specified encoding. If `encoding` is provided a string is returned; otherwise a `Buffer` is returned.
+		Returns the Diffie-Hellman public key in the specified `encoding`.
+		If `encoding` is provided a string is returned; otherwise a `Buffer` is returned.
 
 		@see https://nodejs.org/api/crypto.html#crypto_diffiehellman_getpublickey_encoding
 	**/
@@ -106,20 +122,24 @@ extern class DiffieHellman implements IDiffieHellman {
 	function getPublicKey(encoding:String):String;
 
 	/**
-		Sets the Diffie-Hellman private key. If the encoding argument is provided, privateKey is expected to be a string. If no encoding is provided, privateKey is expected to be a Buffer, TypedArray, or DataView.
+		Sets the Diffie-Hellman private key. If the `encoding` argument is provided, `private_key` is expected to be a string.
+		If no `encoding` is provided, `private_key` is expected to be a `Buffer` or `ArrayBufferView` .
 
 		@see https://nodejs.org/api/crypto.html#crypto_diffiehellman_setprivatekey_privatekey_encoding
 	**/
-	@:overload(function(private_key:Buffer):Void {})
-	function setPrivateKey(private_key:String, encoding:String):Void;
+	@:overload(function(private_key:String, ?encode:String):Void {})
+	@:overload(function(private_key:Buffer, ?encode:String):Void {})
+	function setPrivateKey(private_key:ArrayBufferView, ?encoding:String):Void;
 
 	/**
-		Sets the Diffie-Hellman public key. If the `encoding` argument is provided, `public_key` is expected to be a string. If no `encoding` is provided, `public_key` is expected to be a `Buffer`.
+		Sets the Diffie-Hellman public key. If the `encoding` argument is provided, `public_key` is expected to be a string.
+		If no `encoding` is provided, `public_key` is expected to be a `Buffer` or `ArrayBufferView`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_diffiehellman_setpublickey_publickey_encoding
 	**/
-	@:overload(function(public_key:Buffer):Void {})
-	function setPublicKey(public_key:String, encoding:String):Void;
+	@:overload(function(public_key:String, ?encoding:String):Void {})
+	@:overload(function(public_key:Buffer, ?encoding:String):Void {})
+	function setPublicKey(public_key:ArrayBufferView, ?encoding:String):Void;
 
 	/**
 		A bit field containing any warnings and/or errors resulting from a check performed during initialization of the `DiffieHellman` object.

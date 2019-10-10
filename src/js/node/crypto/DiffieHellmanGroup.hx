@@ -22,6 +22,11 @@
 
 package js.node.crypto;
 
+/**
+	The `DiffieHellmanGroup` class takes a well-known modp group as its argument but otherwise works the same as DiffieHellman.
+
+	@see https://nodejs.org/api/crypto.html#crypto_class_diffiehellmangroup
+**/
 @:jsRequire("crypto", "DiffieHellmanGroup")
 extern class DiffieHellmanGroup {
     function new(name:String);
