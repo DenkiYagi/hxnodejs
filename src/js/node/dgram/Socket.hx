@@ -22,6 +22,7 @@
 
 package js.node.dgram;
 
+import haxe.Constraints.Function;
 import js.node.events.EventEmitter;
 import js.node.net.Socket.SocketAdress;
 #if haxe4
@@ -31,7 +32,7 @@ import js.Error;
 #end
 
 /**
-	Enumeration of events for the `Socket` object.
+	Enumeration of events emitted by `Socket` object.
 **/
 @:enum abstract SocketEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
@@ -60,10 +61,8 @@ import js.Error;
 	var Error:SocketEvent<Error->Void> = "error";
 }
 
-typedef MessageListener = Buffer->SocketAdress->Void;
-
 /**
-	Enumeration of possible datagram socket types
+	Enumeration of possible datagram socket types.
 **/
 @:enum abstract SocketType(String) from String to String {
 	var Udp4 = "udp4";
@@ -71,20 +70,48 @@ typedef MessageListener = Buffer->SocketAdress->Void;
 }
 
 /**
-	Options passed to the Socket consturctor.
+	Options object used by `Dgram.createSocket`.
 **/
 typedef SocketOptions = {
 	/**
-		Type of the socket. Either udp4 or udp6.
+		The family of socket.
 	**/
 	var type:SocketType;
 
 	/**
-		When true, `Socket.bind` will reuse the address, even if another process has already bound a socket on it.
-		Defaults to false.
+		When `true` `socket.bind()` will reuse the address, even if another process has already bound a socket on it.
+
+		Default: `false`.
 	**/
 	@:optional var reuseAddr:Bool;
+
+	/**
+		Setting `ipv6Only` to `true` will disable dual-stack support, i.e., binding to address `::` won't make `0.0.0.0`
+		be bound.
+
+		Default: `false`.
+	**/
+	@:optional var ipv6Only:Bool;
+
+	/**
+		Sets the `SO_RCVBUF` socket value.
+	**/
+	@:optional var recvBufferSize:Int;
+
+	/**
+		Sets the `SO_SNDBUF` socket value.
+	**/
+	@:optional var sendBufferSize:Int;
+
+	/**
+		Custom lookup function.
+
+		Default: `dns.lookup()`.
+	**/
+	@:optional var lookup:Function;
 }
+
+typedef MessageListener = Buffer->SocketAdress->Void;
 
 /**
 	Options for `Socket.bind` method.

@@ -22,22 +22,19 @@
 
 package js.node;
 
-import js.node.Buffer;
 import js.node.dgram.Socket;
 
 /**
-	Datagram sockets
+	The dgram module provides an implementation of UDP Datagram sockets.
+
+	@see https://nodejs.org/api/dgram.html#dgram_udp_datagram_sockets
 **/
 @:jsRequire("dgram")
 extern class Dgram {
 	/**
-		Creates a datagram `Socket` of the specified types.
+		Creates a `dgram.Socket` object.
 
-		Takes an optional `callback` which is added as a listener for 'message' events.
-
-		Call `socket.bind` if you want to receive datagrams. `socket.bind` will bind to
-		the "all interfaces" address on a random port (it does the right thing for both `udp4` and `udp6` sockets).
-		You can then retrieve the address and port with `socket.address().address` and `socket.address().port`.
+		@see https://nodejs.org/api/dgram.html#dgram_dgram_createsocket_options_callback
 	**/
 	@:overload(function(type:SocketType, ?callback:MessageListener):Socket {})
 	static function createSocket(options:SocketOptions, ?callback:MessageListener):Socket;
