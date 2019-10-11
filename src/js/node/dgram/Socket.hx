@@ -73,8 +73,16 @@ import js.Error;
 	var Message:SocketEvent<MessageListener> = "message";
 }
 
-// TODO: fix SocketAdress
-typedef MessageListener = Buffer->SocketAdress->Void;
+typedef RemoteSocketAdress = {
+	> SocketAdress,
+
+	/**
+		The message size.
+	**/
+	var size:Int;
+}
+
+typedef MessageListener = Buffer->RemoteSocketAdress->Void;
 
 /**
 	Encapsulates the datagram functionality.
