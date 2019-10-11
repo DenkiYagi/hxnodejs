@@ -540,6 +540,27 @@ extern class Process extends EventEmitter<Process> {
 	var versions:DynamicAccess<String>;
 }
 
+@:jsRequire("process", "hrtime")
+extern class HRTime {
+	/**
+		The `process.hrtime()` method returns the current high-resolution real time in a `[seconds, nanoseconds]` tuple
+		`Array`, where `nanoseconds` is the remaining part of the real time that can't be represented in second
+		precision.
+
+		@see https://nodejs.org/api/process.html#process_process_hrtime_time
+	**/
+	@:selfCall
+	function hrtime(?time:Array<Int>):Array<Int>;
+
+	/**
+		The `bigint` version of the `process.hrtime()` method returning the current high-resolution real time in
+		nanoseconds as a `bigint`.
+
+		@see https://nodejs.org/api/process.html#process_process_hrtime_bigint
+	**/
+	// function bigint():BigInt
+}
+
 /**
 	Object used by `Process.cpuUsage`.
 **/
