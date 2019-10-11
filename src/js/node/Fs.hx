@@ -22,6 +22,7 @@
 
 package js.node;
 
+import js.node.url.URL;
 import haxe.DynamicAccess;
 import haxe.extern.EitherType;
 #if haxe4
@@ -34,12 +35,6 @@ import js.node.fs.Stats;
 import js.node.fs.FSWatcher;
 import js.node.fs.ReadStream;
 import js.node.fs.WriteStream;
-
-/**
-	Most FS functions now support passing `String` and `Buffer`.
-	This type is used for path arguments and allows passing either of those.
-**/
-typedef FsPath = EitherType<String, Buffer>;
 
 /**
 	Possible options for `Fs.watchFile`.
@@ -63,28 +58,6 @@ typedef FsWatchFileOptions = {
 	can be either an integer or a string with octal number.
 **/
 typedef FsMode = EitherType<Int, String>;
-
-/**
-	Possible options for `Fs.writeFile` and `Fs.appendFile`.
-**/
-typedef FsWriteFileOptions = {
-	/**
-		Encoding for writing strings.
-		Defaults to 'utf8'.
-		Ignored if data is a buffer
-	**/
-	@:optional var encoding:String;
-
-	/**
-		default = 438 (aka 0666 in Octal)
-	**/
-	@:optional var mode:FsMode;
-
-	/**
-		default: 'w' for `Fs.writeFile`, 'a' for `Fs.appendFile`
-	**/
-	@:optional var flag:FsOpenFlag;
-}
 
 /**
 	Defaults:
@@ -172,91 +145,6 @@ typedef FsCreateWriteStreamOptions = {
 	var Dir = "dir";
 	var File = "file";
 	var Junction = "junction";
-}
-
-/**
-	Enumeration of possible flags for opening file.
-
-	The exclusive flag 'x' (O_EXCL flag in open(2)) ensures that path is newly created.
-	On POSIX systems, path is considered to exist even if it is a symlink to a non-existent file.
-	The exclusive flag may or may not work with network file systems.
-
-	On Linux, positional writes don't work when the file is opened in append mode.
-	The kernel ignores the position argument and always appends the data to the end of the file.
-**/
-@:enum abstract FsOpenFlag(String) from String to String {
-	/**
-		Open file for reading.
-		An exception occurs if the file does not exist.
-	**/
-	var Read = "r";
-
-	/**
-		Open file for reading and writing.
-		An exception occurs if the file does not exist.
-	**/
-	var ReadWrite = "r+";
-
-	/**
-		Open file for reading in synchronous mode. Instructs the operating system to bypass the local file system cache.
-
-		This is primarily useful for opening files on NFS mounts as it allows you to skip the potentially stale local cache.
-		It has a very real impact on I/O performance so don't use this flag unless you need it.
-
-		Note that this doesn't turn `Fs.open` into a synchronous blocking call.
-		If that's what you want then you should be using `Fs.openSync`
-	**/
-	var ReadSync = "rs";
-
-	/**
-		Open file for reading and writing, telling the OS to open it synchronously.
-		See notes for `ReadSync` about using this with caution.
-	**/
-	var ReadWriteSync = "rs+";
-
-	/**
-		Open file for writing.
-		The file is created (if it does not exist) or truncated (if it exists).
-	**/
-	var WriteCreate = "w";
-
-	/**
-		Like `WriteCreate` but fails if path exists.
-	**/
-	var WriteCheck = "wx";
-
-	/**
-		Open file for reading and writing.
-		The file is created (if it does not exist) or truncated (if it exists).
-	**/
-	var WriteReadCreate = "w+";
-
-	/**
-		Like `WriteReadCreate` but fails if path exists.
-	**/
-	var WriteReadCheck = "wx+";
-
-	/**
-		Open file for appending.
-		The file is created if it does not exist.
-	**/
-	var AppendCreate = "a";
-
-	/**
-		Like `AppendCreate` but fails if path exists.
-	**/
-	var AppendCheck = "ax";
-
-	/**
-		Open file for reading and appending.
-		The file is created if it does not exist.
-	 */
-	var AppendReadCreate = "a+";
-
-	/**
-		Like `AppendReadCreate` but fails if path exists.
-	**/
-	var AppendReadCheck = "ax+";
 }
 
 /**
@@ -466,20 +354,61 @@ typedef FsConstants = {
 }
 
 /**
-	File I/O is provided by simple wrappers around standard POSIX functions.
-	All the methods have asynchronous and synchronous forms.
+	The `fs` module provides an API for interacting with the file system in a manner closely modeled around standard
+	POSIX functions.
 
-	The asynchronous form always take a completion callback as its last argument.
-	The arguments passed to the completion callback depend on the method,
-	but the first argument is always reserved for an exception.
-
-	If the operation was completed successfully, then the first argument will be null.
-
-	When using the synchronous form any exceptions are immediately thrown.
-	You can use try/catch to handle exceptions or allow them to bubble up.
+	@see https://nodejs.org/api/fs.html#fs_file_system
 **/
 @:jsRequire("fs")
 extern class Fs {
+	/**
+		Tests a user's permissions for the file or directory specified by `path`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_access_path_mode_callback
+	**/
+	static function access(path:FsPath, ?mode:Int, ?callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronously tests a user's permissions for the file or directory specified by `path`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_accesssync_path_mode
+	**/
+	static function accessSync(path:FsPath, ?mode:Int):Void;
+
+	/**
+		Asynchronously append data to a file, creating the file if it does not yet exist.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_appendfile_path_data_options_callback
+	**/
+	@:overload(function(path:FsPath_, data:String, ?options:FsWriteFileOptions, callback:Null<Error>->Void):Void {})
+	@:overload(function(path:FsPath_, data:Buffer, ?options:FsWriteFileOptions, callback:Null<Error>->Void):Void {})
+	@:overload(function(path:FsPath_, data:String, ?options:String, callback:Null<Error>->Void):Void {})
+	static function appendFile(path:FsPath_, data:Buffer, ?options:String, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronously append data to a file, creating the file if it does not yet exist.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_appendfilesync_path_data_options
+	**/
+	@:overload(function(path:FsPath_, data:String, ?options:FsWriteFileOptions):Void {})
+	@:overload(function(path:FsPath_, data:Buffer, ?options:FsWriteFileOptions):Void {})
+	@:overload(function(path:FsPath_, data:String, ?options:String):Void {})
+	static function appendFileSync(path:FsPath_, data:Buffer, ?options:String):Void;
+
+	/**
+		Asynchronously changes the permissions of a file.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_chmod_path_mode_callback
+	**/
+	static function chmod(path:FsPath, mode:Int, callback:Null<Error>->Void):Void;
+
+	/**
+		For detailed information, see the documentation of the asynchronous version of this API: `fs.chmod()`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_chmodsync_path_mode
+	**/
+	static function chmodSync(path:FsPath, mode:Int):Void;
+
 	/**
 		An object containing commonly used constants for file system operations.
 	**/
@@ -544,16 +473,6 @@ extern class Fs {
 		Synchronous lchown(2).
 	**/
 	static function lchownSync(path:FsPath, uid:Int, gid:Int):Void;
-
-	/**
-		Asynchronous chmod(2).
-	**/
-	static function chmod(path:FsPath, mode:FsMode, callback:Error->Void):Void;
-
-	/**
-		Synchronous chmod(2).
-	**/
-	static function chmodSync(path:FsPath, mode:FsMode):Void;
 
 	/**
 		Asynchronous fchmod(2).
@@ -911,23 +830,6 @@ extern class Fs {
 	static function writeFileSync(filename:FsPath, data:String, options:EitherType<String, FsWriteFileOptions>):Void;
 
 	/**
-		Asynchronously append data to a file, creating the file if it not yet exists.
-		`data` can be a string or a buffer.
-	**/
-	@:overload(function(filename:FsPath, data:Buffer, callback:Error->Void):Void {})
-	@:overload(function(filename:FsPath, data:String, callback:Error->Void):Void {})
-	@:overload(function(filename:FsPath, data:Buffer, options:EitherType<String, FsWriteFileOptions>, callback:Error->Void):Void {})
-	static function appendFile(filename:FsPath, data:String, options:EitherType<String, FsWriteFileOptions>, callback:Error->Void):Void;
-
-	/**
-		The synchronous version of `appendFile`.
-	**/
-	@:overload(function(filename:FsPath, data:Buffer):Void {})
-	@:overload(function(filename:FsPath, data:String):Void {})
-	@:overload(function(filename:FsPath, data:Buffer, options:EitherType<String, FsWriteFileOptions>):Void {})
-	static function appendFileSync(filename:FsPath, data:String, options:EitherType<String, FsWriteFileOptions>):Void;
-
-	/**
 		Unstable. Use `watch` instead, if possible.
 
 		Watch for changes on `filename`.
@@ -986,26 +888,6 @@ extern class Fs {
 	static function existsSync(path:FsPath):Bool;
 
 	/**
-		Tests a user's permissions for the file or directory specified by `path`.
-
-		The `mode` argument is an optional integer that specifies the accessibility checks to be performed.
-		The following constants define the possible values of `mode`. It is possible to create a mask consisting
-		of the bitwise OR of two or more values.
-
-		* `Fs.constants.F_OK` - path is visible to the calling process. This is useful for determining if a file exists,
-		  but says nothing about `rwx` permissions. Default if no `mode` is specified.
-		* `Fs.constants.R_OK` - path can be read by the calling process.
-		* `Fs.constants.W_OK` - path can be written by the calling process.
-		* `Fs.constants.X_OK` - path can be executed by the calling process.
-		  This has no effect on Windows (will behave like `Fs.constants.F_OK`).
-
-		The final argument, `callback`, is a callback function that is invoked with a possible error argument.
-		If any of the accessibility checks fail, the error argument will be populated.
-	**/
-	@:overload(function(path:FsPath, callback:Error->Void):Void {})
-	static function access(path:FsPath, mode:Int, callback:Error->Void):Void;
-
-	/**
 		A mode flag for `access` and `accessSync` methods:
 
 		File is visible to the calling process.
@@ -1036,12 +918,6 @@ extern class Fs {
 	static var X_OK(default, null):Int;
 
 	/**
-		Synchronous version of `access`.
-		This throws if any accessibility checks fail, and does nothing otherwise.
-	**/
-	static function accessSync(path:FsPath, ?mode:Int):Void;
-
-	/**
 		Returns a new ReadStream object (See Readable Stream).
 
 		`options` can include `start` and `end` values to read a range of bytes from the file instead of the entire file.
@@ -1063,4 +939,113 @@ extern class Fs {
 		Modifying a file rather than replacing it may require a flags mode of r+ rather than the default mode w.
 	**/
 	static function createWriteStream(path:FsPath, ?options:FsCreateWriteStreamOptions):WriteStream;
+}
+
+/**
+	Most FS functions now support passing `String` and `Buffer`.
+	This type is used for path arguments and allows passing either of those.
+**/
+typedef FsPath = EitherType<String, EitherType<Buffer, URL>>;
+
+typedef FsPath_ = EitherType<FsPath, Int>;
+
+/**
+	Options object used by `Fs.appendFile` and `Fs.writeFile`.
+**/
+typedef FsWriteFileOptions = {
+	/**
+		Default: `'utf8'`.
+	**/
+	@:optional var encoding:Null<String>;
+
+	/**
+		Default: `0o666`.
+	**/
+	@:optional var mode:Int;
+
+	/**
+		Default: `'a'`.
+	**/
+	@:optional var flag:FsOpenFlag;
+}
+
+/**
+	Enumeration of possible flags for opening file.
+
+	@see https://nodejs.org/api/fs.html#fs_file_system_flags
+**/
+@:enum abstract FsOpenFlag(String) from String to String {
+	/**
+		Open file for appending.
+		The file is created if it does not exist.
+	**/
+	var AppendCreate = "a";
+
+	/**
+		Like `'a'` but fails if the path exists.
+	**/
+	var AppendCheck = "ax";
+
+	/**
+		Open file for reading and appending.
+		The file is created if it does not exist.
+	 */
+	var AppendReadCreate = "a+";
+
+	/**
+		Like `'a+'` but fails if the path exists.
+	**/
+	var AppendReadCheck = "ax+";
+
+	/**
+		Open file for appending in synchronous mode.
+		The file is created if it does not exist.
+	**/
+	var AppendCreateSync = "as";
+
+	/**
+		Open file for reading and appending in synchronous mode.
+		The file is created if it does not exist.
+	**/
+	var AppendReadCreateSync = "as+";
+
+	/**
+		Open file for reading.
+		An exception occurs if the file does not exist.
+	**/
+	var Read = "r";
+
+	/**
+		Open file for reading and writing.
+		An exception occurs if the file does not exist.
+	**/
+	var ReadWrite = "r+";
+
+	/**
+		Open file for reading and writing in synchronous mode.
+		Instructs the operating system to bypass the local file system cache.
+	**/
+	var ReadWriteSync = "rs+";
+
+	/**
+		Open file for writing.
+		The file is created (if it does not exist) or truncated (if it exists).
+	**/
+	var WriteCreate = "w";
+
+	/**
+		Like `'w'` but fails if the path exists.
+	**/
+	var WriteCheck = "wx";
+
+	/**
+		Open file for reading and writing.
+		The file is created (if it does not exist) or truncated (if it exists).
+	**/
+	var WriteReadCreate = "w+";
+
+	/**
+		Like `'w+'` but fails if the path exists.
+	**/
+	var WriteReadCheck = "wx+";
 }
