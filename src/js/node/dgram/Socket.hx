@@ -185,34 +185,53 @@ extern class Socket extends EventEmitter<Socket> {
 	function setBroadcast(flag:Bool):Void;
 
 	/**
-		Sets the IP_TTL socket option. TTL stands for "Time to Live," but in this context it specifies
-		the number of IP hops that a packet is allowed to go through. Each router or gateway that forwards
-		a packet decrements the TTL. If the TTL is decremented to 0 by a router, it will not be forwarded.
-		Changing TTL values is typically done for network probes or when multicasting.
+		Sets the default outgoing multicast interface of the socket to a chosen interface or back to system interface
+		selection.
 
-		The argument to `setTTL` is a number of hops between 1 and 255. The default on most systems is 64.
+		@see https://nodejs.org/api/dgram.html#dgram_socket_setmulticastinterface_multicastinterface
 	**/
-	function setTTL(ttl:Int):Void;
+	function setMulticastInterface(multicastInterface:String):Void;
 
 	/**
-		Sets the IP_MULTICAST_TTL socket option. TTL stands for "Time to Live," but in this context it specifies
-		the number of IP hops that a packet is allowed to go through, specifically for multicast traffic.
-		Each router or gateway that forwards a packet decrements the TTL. If the TTL is decremented to 0 by a router,
-		it will not be forwarded.
+		Sets or clears the `IP_MULTICAST_LOOP` socket option.
 
-		The argument to `setMulticastTTL` is a number of hops between 0 and 255. The default on most systems is 1.
-	**/
-	function setMulticastTTL(ttl:Int):Void;
-
-	/**
-		Sets or clears the IP_MULTICAST_LOOP socket option.
-		When this option is set, multicast packets will also be received on the local interface.
+		@see https://nodejs.org/api/dgram.html#dgram_socket_setmulticastloopback_flag
 	**/
 	function setMulticastLoopback(flag:Bool):Void;
 
 	/**
-		Calling `unref` on a socket will allow the program to exit if this is the only active socket in the event system.
-		If the socket is already `unref`d calling `unref` again will have no effect.
+		Sets the `IP_MULTICAST_TTL` socket option.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_setmulticastttl_ttl
+	**/
+	function setMulticastTTL(ttl:Int):Void;
+
+	/**
+		Sets the `SO_RCVBUF` socket option.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_setrecvbuffersize_size
+	**/
+	function setRecvBufferSize(size:Int):Void;
+
+	/**
+		Sets the `SO_SNDBUF` socket option.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_setsendbuffersize_size
+	**/
+	function setSendBufferSize(size:Int):Void;
+
+	/**
+		Sets the `IP_TTL` socket option.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_setttl_ttl
+	**/
+	function setTTL(ttl:Int):Void;
+
+	/**
+		By default, binding a socket will cause it to block the Node.js process from exiting as long as the socket is
+		open.
+
+		@see https://nodejs.org/api/dgram.html#dgram_socket_unref
 	**/
 	function unref():Void;
 }
