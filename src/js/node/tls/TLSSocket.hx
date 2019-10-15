@@ -225,7 +225,7 @@ extern class TLSSocket extends js.node.net.Socket {
 
 		@see https://nodejs.org/api/tls.html#tls_tlssocket_getpeercertificate_detailed
 	**/
-	function getPeerCertificate(?detailed:Bool):Dynamic; // TODO: is there a well defined structure for this?
+	function getPeerCertificate(?detailed:Bool):CertificateObject;
 
 	/**
 		As the `Finished` messages are message digests of the complete handshake (with a total of 192 bits for TLS 1.0 and more for SSL 3.0),
@@ -258,7 +258,7 @@ extern class TLSSocket extends js.node.net.Socket {
 
 		@see https://nodejs.org/api/tls.html#tls_tlssocket_getsharedsigalgs
 	**/
-	function getSharedSignals():Array<Dynamic>; // TODO: use more concrete type, not Dynamic
+	function getSharedSignals():Array<String>;
 
 	/**
 		For a client, returns the TLS session ticket if one is available, or `null`. For a server, always returns `null`.
@@ -290,3 +290,103 @@ extern class TLSSocket extends js.node.net.Socket {
 	**/
 	function setMaxSendFragment(size:Int):Bool;
 }
+
+/**
+	an field type of `subject` and `issuer` in `CertificateObject`
+	Example: `{C: 'UK', ST: 'BC', L: 'Metro', O: 'Node Fans', OU: 'Docs', CN: 'example.com'}`.
+**/
+typedef CertificateSubject = {
+	/**
+		Country
+	**/
+	@optional var C: String;
+	/**
+		StateOrProvince
+	**/
+	@optional var ST: String;
+	/**
+		Locality
+	**/
+	@optional var L: String;
+	/**
+		Organization
+	**/
+	@optional var O: String;
+	/**
+		OrganizationUnit
+	**/
+	@optional var OU: String;
+	/**
+		CommonName
+		The CommonName is typically a DNS name with TLS certificates
+	**/
+	@optional var CN: String;
+}
+
+/**
+	an return type of `getPeerCertificate` of `TLSSocket`
+
+	@see https://nodejs.org/api/tls.html#tls_certificate_object
+**/
+typedef CertificateObject = {
+	/**
+		The DER encoded X.509 certificate data.
+	**/
+	var raw: Buffer;
+
+	/**
+		The certificate subject.
+	**/
+	var subject: CertificateSubject;
+
+	/**
+		The certificate issuer.
+	**/
+	var issuer: CertificateSubject;
+
+	/**
+		The data-time the certificate is valid from.
+	**/
+	var valid_from: String;
+
+	/**
+		The data-time the certificate is valid to
+	**/
+	var valid_to: String;
+
+	/**
+		The certificate serial number, as a hex string. Example: `'B9B0D332A1AA5635'`.
+	**/
+	var serialNumber: String;
+
+	/**
+		The SHA-1 digest of the DER encoded certificate. It is returned as a `:` separated hexadecimal string. Example: `'2A:7A:C2:DD:...'`.
+	**/
+	var fingerprint: String;
+
+	/**
+		The SHA-256 digest of the DER encoded certificate. It is returned as a `:` separated hexadecimal string. Example: `'2A:7A:C2:DD:...'`.
+	**/
+	var fingerprint256: String;
+
+	/**
+		The extended key usage, a set of OIDs.
+	**/
+	@optional var ext_key_usage: Array<String>;
+
+	/**
+		A string containing concatenated names for the subject, an alternative to the `subject` names.
+	**/
+	@optional var subjectaltname: String;
+
+	/**
+		An array describing the AuthorityInfoAccess, used with OCSP.
+	**/
+	@optional var infoAccess: Array<String>;
+
+	/**
+		The issuer certificate object. For self-signed certificates, this may be a circular reference.
+	**/
+	@optional var issuerCertificate: CertificateObject;
+}
+
