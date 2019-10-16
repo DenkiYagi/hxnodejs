@@ -26,86 +26,104 @@ import haxe.extern.EitherType;
 
 typedef SecureContextOptions = {
 	/**
-		private key, certificate and CA certs of the server in PFX or PKCS12 format.
-	**/
-	@:optional var pfx:EitherType<String, Buffer>;
-
-	/**
-		passphrase for the private key or pfx.
-	**/
-	@:optional var passphrase:String;
-
-	/**
-		private key of the server in PEM format.
-	**/
-	@:optional var key:EitherType<String, Buffer>;
-
-	/**
-		certificate key of the server in PEM format.
-	**/
-	@:optional var cert:EitherType<String, Buffer>;
-
-	/**
-		trusted certificates in PEM format.
-		If this is omitted several well known "root" CAs will be used, like VeriSign.
-		These are used to authorize connections.
+		Optionally override the trusted CA certificates.
 	**/
 	@:optional var ca:Array<EitherType<String, Buffer>>;
 
 	/**
-		PEM encoded CRLs (Certificate Revocation List)
+		Cert chains in PEM format.
 	**/
-	@:optional var crl:EitherType<String, Array<String>>;
+	@:optional var cert:EitherType<String, Buffer>;
 
 	/**
-		ciphers to use or exclude.
+		Colon-separated list of supported signature algorithms.
+	**/
+	@:optional var sigalgs:String;
 
-		To mitigate BEAST attacks it is recommended that you use this option in conjunction with the `honorCipherOrder`
-		option described below to prioritize the non-CBC cipher.
-
-		Defaults to AES128-GCM-SHA256:RC4:HIGH:!MD5:!aNULL:!EDH.
-
-		Consult the OpenSSL cipher list format documentation for details on the format.
-		ECDH (Elliptic Curve Diffie-Hellman) ciphers are not yet supported.
+	/**
+		Cipher suite specification, replacing the default.
 	**/
 	@:optional var ciphers:String;
 
 	/**
-		named curve to use for ECDH key agreement or false to disable ECDH.
-
-		Defaults to prime256v1 (NIST P-256). Use `Crypto.getCurves` to obtain a list of available curve names.
-		On recent releases, openssl ecparam -list_curves will also display the name and description
-		of each available elliptic curve.
+		Name of an OpenSSL engine which can provide the client certificate.
 	**/
-	@:optional var ecdhCurve:String;
+	@:optional var clientCertEngine:String;
+
+	/**
+		PEM encoded CRLs (Certificate Revocation Lists)
+	**/
+	@:optional var crl:EitherType<EitherType<String, Array<String>>, EitherType<Buffer, Array<Buffer>>>;
 
 	/**
 		Diffie Hellman parameters, required for Perfect Forward Secrecy.
-
-		Use openssl dhparam to create it. Its key length should be greater than or equal to 1024 bits,
-		otherwise it throws an error. It is strongly recommended to use 2048 bits or more for stronger security.
-		If omitted or invalid, it is silently discarded and DHE ciphers won't be available.
 	**/
 	@:optional var dhparam:EitherType<String, Buffer>;
 
 	/**
-		The SSL method to use, e.g. SSLv3_method to force SSL version 3.
-		The possible values depend on your installation of OpenSSL and are defined in the constant SSL_METHODS.
+		A string describing a named curve or a colon separated list of curve NIDs or names,
+		for example `P-521:P-384:P-256`, to use for ECDH key agreement.
+	**/
+	@:optional var ecdhCurve:String;
+
+	/**
+		Attempt to use the server's cipher suite preferences instead of the client's.
+	**/
+	@:optional var honorCipherOrder:Bool;
+
+	/**
+		Private keys in PEM format.
+	**/
+	@:optional var key:EitherType<EitherType<String, Array<String>>, EitherType<EitherType<Buffer, Array<Buffer>>, Array<Dynamic>>>;
+
+	/**
+		Name of an OpenSSL engine to get private key from.
+	**/
+	@:optional var privateKeyEngine:String;
+
+	/**
+		Identifier of a private key managed by an OpenSSL engine.
+	**/
+	@:optional var privateKeyIdentifier:String;
+
+	/**
+		Optionally set the maximum TLS version to allow.
+	**/
+	@:optional var maxVersion:String;
+
+	/**
+		Optionally set the minumum TLS version to allow.
+	**/
+	@:optional var minVersion:String;
+
+	/**
+		Shared passphrase used for a single private key and/or a PFX.
+	**/
+	@:optional var passphrase:String;
+
+	/**
+		PFX or PKCS12 encoded private key and certificate chain.
+	**/
+	@:optional var pfx:EitherType<EitherType<String, Array<String>>, EitherType<EitherType<Buffer, Array<Buffer>>, Array<Dynamic>>>;
+
+	/**
+		Optionally affect the OpenSSL protocol behavior, which is not usually necessary.
+	**/
+	@:optional var secureOptions:Int;
+
+
+	/**
+		Legacy mechanism to select the TLS protocol version to use, it does not support independent control of the minimum and maximum version,
+		and does not support limiting the protocol to TLSv1.3.
+		Use minVersion and maxVersion instead.
 	**/
 	@:optional var secureProtocol:String;
 
 	/**
-		opaque identifier for session resumption.
-		If `requestCert` is true, the default is MD5 hash value generated from command-line.
-		Otherwise, the default is not provided.
+		Opaque identifier used by servers to ensure session state is not shared between applications.
+		Unused by clients.
 	**/
 	@:optional var sessionIdContext:String;
-
-	/**
-		When choosing a cipher, use the server's preferences instead of the client preferences.
-		Default: true.
-	**/
-	@:optional var honorCipherOrder:Bool;
 }
 
 extern class SecureContext {}

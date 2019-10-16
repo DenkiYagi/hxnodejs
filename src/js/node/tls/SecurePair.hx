@@ -29,17 +29,17 @@ import js.node.events.EventEmitter;
 **/
 @:enum abstract SecurePairEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		The event is emitted from the `SecurePair` once the pair has successfully established a secure connection.
+		The `'secure'` event is emitted by the `SecurePair` object once a secure connection has been established.
 
-		Similarly to the checking for the server 'secureConnection' event,
-		`SecurePair.cleartext.authorized` should be checked to confirm whether
-		the certificate used properly authorized.
+		@see https://nodejs.org/api/tls.html#tls_event_secure
 	**/
 	var Secure:SecurePairEvent<Void->Void> = "secure";
 }
 
 /**
 	Returned by `Tls.createSecurePair`.
+
+	@see https://nodejs.org/api/tls.html#tls_class_securepair
 **/
 extern class SecurePair extends EventEmitter<SecurePair> {
 	var cleartext(default, null):TLSSocket;
