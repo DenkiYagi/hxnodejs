@@ -23,22 +23,26 @@
 package js.node.tty;
 
 /**
-	A net.Socket subclass that represents the readable portion of a tty.
-	In normal circumstances, process.stdin will be the only tty.ReadStream instance
-	in any node program (only when isatty(0) is true).
+	Represents the readable side of a TTY.
+	In normal circumstances `process.stdin` will be the only `tty.ReadStream` instance in a Node.js process and
+	there should be no reason to create additional instances.
+
+	@see https://nodejs.org/api/tty.html#tty_class_tty_readstream
 **/
 @:jsRequire("tty", "ReadStream")
 extern class ReadStream extends js.node.net.Socket {
 	/**
-		A boolean that is initialized to false.
-		It represents the current "raw" state of the tty.ReadStream instance.
+		A `boolean` that is `true` if the TTY is currently configured to operate as a raw device.
+		Defaults to `false`.
+
+		@see https://nodejs.org/api/tty.html#tty_readstream_israw
 	**/
 	var isRaw(default, null):Bool;
 
 	/**
-		`mode` should be true or false.
-		This sets the properties of the tty.ReadStream to act either as a raw device or default.
-		`isRaw` will be set to the resulting mode.
+		Allows configuration of `tty.ReadStream` so that it operates as a raw device.
+
+		@see https://nodejs.org/api/tty.html#tty_readstream_setrawmode_mode
 	**/
 	function setRawMode(mode:Bool):Void;
 }
