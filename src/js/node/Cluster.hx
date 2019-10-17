@@ -22,6 +22,7 @@
 
 package js.node;
 
+import haxe.Constraints.Function;
 import haxe.DynamicAccess;
 import haxe.extern.EitherType;
 import js.node.events.EventEmitter;
@@ -34,23 +35,25 @@ import js.node.cluster.Worker;
 @:enum abstract ClusterEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted after the worker IPC channel has disconnected.
+		This can occur when a worker exits gracefully, is killed, or is disconnected manually (such as with
+		`worker.disconnect()`).
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_disconnect_1
+		@see https://nodejs.org/api/cluster.html#cluster_event_disconnect_1
 	**/
 	var Disconnect:ClusterEvent<Worker->Void> = "disconnect";
 
 	/**
 		When any of the workers die the cluster module will emit the `'exit'` event.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_exit_1
+		@see https://nodejs.org/api/cluster.html#cluster_event_exit_1
 	**/
 	var Exit:ClusterEvent<Worker->Float->String->Void> = "exit";
 
 	/**
-		When a new worker is forked the cluster module will emit a `'fork'` event. This can be used to log worker
-		activity, and create a custom timeout.
+		When a new worker is forked the cluster module will emit a `'fork'` event.
+		This can be used to log worker activity, and create a custom timeout.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_fork
+		@see https://nodejs.org/api/cluster.html#cluster_event_fork
 	**/
 	var Fork:ClusterEvent<Worker->Void> = "fork";
 
@@ -58,28 +61,31 @@ import js.node.cluster.Worker;
 		After calling `listen()` from a worker, when the `'listening'` event is emitted on the server a `'listening'`
 		event will also be emitted on `cluster` in the master.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_listening_1
+		@see https://nodejs.org/api/cluster.html#cluster_event_listening_1
 	**/
 	var Listening:ClusterEvent<Worker->ListeningEventAddress->Void> = "listening";
 
 	/**
 		Emitted when the cluster master receives a message from any worker.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_message_1
+		@see https://nodejs.org/api/cluster.html#cluster_event_message_1
 	**/
 	var Message:ClusterEvent<Worker->Dynamic->Dynamic> = "message";
 
 	/**
 		After forking a new worker, the worker should respond with an online message.
+		When the master receives an online message it will emit this event.
+		The difference between `'fork'` and `'online'` is that fork is emitted when the master forks a worker, and
+		`'online'` is emitted when the worker is running.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_online_1
+		@see https://nodejs.org/api/cluster.html#cluster_event_online_1
 	**/
 	var Online:ClusterEvent<Worker->Void> = "online";
 
 	/**
 		Emitted every time `.setupMaster()` is called.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_event_setup
+		@see https://nodejs.org/api/cluster.html#cluster_event_setup
 	**/
 	var Setup:ClusterEvent<ClusterSettings->Void> = "setup";
 }
@@ -116,8 +122,10 @@ typedef ListeningEventAddress = {
 
 /**
 	A single instance of Node.js runs in a single thread.
+	To take advantage of multi-core systems, the user will sometimes want to launch a cluster of Node.js processes to
+	handle the load.
 
-	@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_cluster
+	@see https://nodejs.org/api/cluster.html#cluster_cluster
 **/
 @:jsRequire("cluster")
 extern class Cluster extends EventEmitter<Cluster> {
@@ -131,36 +139,40 @@ extern class Cluster extends EventEmitter<Cluster> {
 	/**
 		Calls `.disconnect()` on each worker in `cluster.workers`.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_cluster_disconnect_callback
+		@see https://nodejs.org/api/cluster.html#cluster_cluster_disconnect_callback
 	**/
 	function disconnect(?callback:Void->Void):Void;
 
 	/**
 		Spawn a new worker process.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_cluster_fork_env
+		@see https://nodejs.org/api/cluster.html#cluster_cluster_fork_env
 	**/
 	function fork(?env:DynamicAccess<String>):Worker;
 
 	/**
 		True if the process is a master.
+		This is determined by the `process.env.NODE_UNIQUE_ID`.
+		If `process.env.NODE_UNIQUE_ID` is undefined, then `isMaster` is `true`.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_cluster_ismaster
+		@see https://nodejs.org/api/cluster.html#cluster_cluster_ismaster
 	**/
 	var isMaster(default, null):Bool;
 
 	/**
 		True if the process is not a master (it is the negation of `cluster.isMaster`).
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_cluster_isworker
+		@see https://nodejs.org/api/cluster.html#cluster_cluster_isworker
 	**/
 	var isWorker(default, null):Bool;
 
 	/**
 		The scheduling policy, either `cluster.SCHED_RR` for round-robin or `cluster.SCHED_NONE` to leave it to the
 		operating system.
+		This is a global setting and effectively frozen once either the first worker is spawned, or
+		`cluster.setupMaster()` is called, whichever comes first.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_cluster_schedulingpolicy
+		@see https://nodejs.org/api/cluster.html#cluster_cluster_schedulingpolicy
 	**/
 	var schedulingPolicy:ClusterSchedulingPolicy;
 
@@ -168,28 +180,32 @@ extern class Cluster extends EventEmitter<Cluster> {
 		After calling `.setupMaster()` (or `.fork()`) this settings object will contain the settings, including the
 		default values.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_cluster_settings
+		@see https://nodejs.org/api/cluster.html#cluster_cluster_settings
 	**/
 	var settings(default, null):ClusterSettings;
 
 	/**
 		`setupMaster` is used to change the default 'fork' behavior.
+		Once called, the settings will be present in `cluster.settings`.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_cluster_setupmaster_settings
+		@see https://nodejs.org/api/cluster.html#cluster_cluster_setupmaster_settings
 	**/
 	function setupMaster(?settings:ClusterSettings):Void;
 
 	/**
 		A reference to the current worker object.
+		Not available in the master process.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_cluster_worker
+		@see https://nodejs.org/api/cluster.html#cluster_cluster_worker
 	**/
 	var worker(default, null):Worker;
 
 	/**
 		A hash that stores the active worker objects, keyed by `id` field.
+		Makes it easy to loop through all the workers.
+		It is only available in the master process.
 
-		@see https://nodejs.org/dist/latest-v12.x/docs/api/cluster.html#cluster_cluster_workers
+		@see https://nodejs.org/api/cluster.html#cluster_cluster_workers
 	**/
 	var workers(default, null):DynamicAccess<Worker>;
 }
@@ -262,5 +278,5 @@ typedef ClusterSettings = {
 
 		Default: `false`.
 	**/
-	@:optional var windowsHide(default, null):Bool
+	@:optional var windowsHide(default, null):Bool;
 }
