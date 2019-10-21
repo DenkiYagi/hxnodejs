@@ -47,6 +47,8 @@ import js.Promise;
 @:enum abstract ProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The `'beforeExit'` is emitted when Node.js empties its event loop and has no additional work to schedule.
+		Normally, the Node.js process will exit when there is no work scheduled, but a listener registered on the
+		`'beforeExit'` event can make asynchronous calls, and thereby cause the Node.js process to continue.
 
 		@see https://nodejs.org/api/process.html#process_event_beforeexit
 	**/
@@ -61,7 +63,7 @@ import js.Promise;
 	var Disconnect:ProcessEvent<Void->Void> = "disconnect";
 
 	/**
-		The `'exit'` event is emitted when the Node.js process is about to exit.
+		The `'exit'` event is emitted when the Node.js process is about to exit as a result of either:
 
 		@see https://nodejs.org/api/process.html#process_event_exit
 	**/
@@ -94,6 +96,12 @@ import js.Promise;
 	/**
 		The `'uncaughtException'` event is emitted when an uncaught JavaScript exception bubbles all the way back to the
 		event loop.
+		By default, Node.js handles such exceptions by printing the stack trace to `stderr` and exiting with code 1,
+		overriding any previously set `process.exitCode`.
+		Adding a handler for the `'uncaughtException'` event overrides this default behavior.
+		Alternatively, change the `process.exitCode` in the `'uncaughtException'` handler which will result in the
+		process exiting with the provided exit code.
+		Otherwise, in the presence of such handler the process will exit with 0.
 
 		@see https://nodejs.org/api/process.html#process_event_uncaughtexception
 	**/
@@ -102,6 +110,10 @@ import js.Promise;
 	/**
 		The `'unhandledRejection'` event is emitted whenever a `Promise` is rejected and no error handler is attached to
 		the promise within a turn of the event loop.
+		When programming with Promises, exceptions are encapsulated as "rejected promises".
+		Rejections can be caught and handled using `promise.catch()` and are propagated through a `Promise` chain.
+		The `'unhandledRejection'` event is useful for detecting and keeping track of promises that were rejected whose
+		rejections have not yet been handled.
 
 		@see https://nodejs.org/api/process.html#process_event_unhandledrejection
 	**/
@@ -117,6 +129,8 @@ import js.Promise;
 
 /**
 	The `process` object is a `global` that provides information about, and control over, the current Node.js process.
+	As a global, it is always available to Node.js applications without using `require()`.
+	It can also be explicitly accessed using `require()`:
 
 	@see https://nodejs.org/api/process.html#process_process
 **/
@@ -147,6 +161,10 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		The `process.argv` property returns an array containing the command line arguments passed when the Node.js
 		process was launched.
+		The first element will be `process.execPath`.
+		See `process.argv0` if access to the original value of `argv[0]` is needed.
+		The second element will be the path to the JavaScript file being executed.
+		The remaining elements will be any additional command line arguments.
 
 		@see https://nodejs.org/api/process.html#process_process_argv
 	**/
@@ -163,6 +181,7 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		If the Node.js process was spawned with an IPC channel (see the Child Process documentation), the
 		`process.channel` property is a reference to the IPC channel.
+		If no IPC channel exists, this property is `undefined`.
 
 		@see https://nodejs.org/api/process.html#process_process_channel
 	**/
@@ -179,6 +198,7 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		The `process.config` property returns an `Object` containing the JavaScript representation of the configure
 		options used to compile the current Node.js executable.
+		This is the same as the `config.gypi` file that was produced when running the `./configure` script.
 
 		@see https://nodejs.org/api/process.html#process_process_config
 	**/
@@ -196,6 +216,8 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		The `process.cpuUsage()` method returns the user and system CPU time usage of the current process, in an object
 		with properties `user` and `system`, whose values are microsecond values (millionth of a second).
+		These values measure time spent in user and system code respectively, and may end up being greater than actual
+		elapsed time if multiple CPU cores are performing work for this process.
 
 		@see https://nodejs.org/api/process.html#process_process_cpuusage_previousvalue
 	**/
@@ -226,6 +248,9 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.dlopen()` method allows to dynamically load shared objects.
+		It is primarily used by `require()` to load C++ Addons, and should not be used directly, except in special
+		cases.
+		In other words, `require()` should be preferred over `process.dlopen()`, unless there are specific reasons.
 
 		@see https://nodejs.org/api/process.html#process_process_dlopen_module_filename_flags
 	**/
@@ -233,6 +258,7 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.emitWarning()` method can be used to emit custom or application specific process warnings.
+		These can be listened for by adding a handler to the `'warning'` event.
 
 		@see https://nodejs.org/api/process.html#process_process_emitwarning_warning_options
 		@see https://nodejs.org/api/process.html#process_process_emitwarning_warning_type_code_ctor
@@ -252,6 +278,9 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		The `process.execArgv` property returns the set of Node.js-specific command-line options passed when the Node.js
 		process was launched.
+		These options do not appear in the array returned by the `process.argv` property, and do not include the Node.js
+		executable, the name of the script, or any options following the script name.
+		These options are useful in order to spawn child processes with the same execution environment as the parent.
 
 		@see https://nodejs.org/api/process.html#process_process_execargv
 	**/
@@ -268,6 +297,9 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		The `process.exit()` method instructs Node.js to terminate the process synchronously with an exit status of
 		`code`.
+		If `code` is omitted, exit uses either the 'success' code `0` or the value of `process.exitCode` if it has been
+		set.
+		Node.js will not terminate until all the `'exit'` event listeners are called.
 
 		@see https://nodejs.org/api/process.html#process_process_exit_code
 	**/
@@ -304,6 +336,7 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.getgroups()` method returns an array with the supplementary group IDs.
+		POSIX leaves it unspecified if the effective group ID is included but Node.js ensures it always is.
 
 		@see https://nodejs.org/api/process.html#process_process_getgroups
 	**/
@@ -335,6 +368,8 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		The `process.initgroups()` method reads the `/etc/group` file and initializes the group access list, using all
 		groups of which the user is a member.
+		This is a privileged operation that requires that the Node.js process either have `root` access or the
+		`CAP_SETGID` capability.
 
 		@see https://nodejs.org/api/process.html#process_process_initgroups_user_extragroup
 	**/
@@ -350,6 +385,9 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.mainModule` property provides an alternative way of retrieving `require.main`.
+		The difference is that if the main module changes at runtime, `require.main` may still refer to the original
+		main module in modules that were required before the change occurred.
+		Generally, it's safe to assume that the two refer to the same module.
 
 		@see https://nodejs.org/api/process.html#process_process_mainmodule
 	**/
@@ -365,6 +403,10 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		`process.nextTick()` adds `callback` to the "next tick queue".
+		This queue is fully drained after the current operation on the JavaScript stack runs to completion and before
+		the event loop is allowed to continue.
+		It's possible to create an infinite loop if one were to recursively call `process.nextTick()`.
+		See the Event Loop guide for more background.
 
 		@see https://nodejs.org/api/process.html#process_process_nexttick_callback_args
 	**/
@@ -373,6 +415,8 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		The `process.noDeprecation` property indicates whether the `--no-deprecation` flag is set on the current Node.js
 		process.
+		See the documentation for the `'warning'` event and the `emitWarning()` method for more information about this
+		flag's behavior.
 
 		@see https://nodejs.org/api/process.html#process_process_nodeprecation
 	**/
@@ -410,6 +454,7 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The resource usage for the current process.
+		All of these values come from the `uv_getrusage` call which returns a `uv_rusage_t` struct.
 
 		@see https://nodejs.org/api/process.html#process_process_resourceusage
 	**/
@@ -418,6 +463,7 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		If Node.js is spawned with an IPC channel, the `process.send()` method can be used to send messages to the
 		parent process.
+		Messages will be received as a `'message'` event on the parent's `ChildProcess` object.
 
 		@see https://nodejs.org/api/process.html#process_process_send_message_sendhandle_options_callback
 	**/
@@ -426,6 +472,8 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.setegid()` method sets the effective group identity of the process.
+		The `id` can be passed as either a numeric ID or a group name string.
+		If a group name is specified, this method blocks while resolving the associated a numeric ID.
 
 		@see https://nodejs.org/api/process.html#process_process_setegid_id
 	**/
@@ -434,6 +482,8 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.seteuid()` method sets the effective user identity of the process.
+		The `id` can be passed as either a numeric ID or a username string.
+		If a username is specified, the method blocks while resolving the associated numeric ID.
 
 		@see https://nodejs.org/api/process.html#process_process_seteuid_id
 	**/
@@ -442,6 +492,8 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.setgid()` method sets the group identity of the process.
+		The `id` can be passed as either a numeric ID or a group name string.
+		If a group name is specified, this method blocks while resolving the associated numeric ID.
 
 		@see https://nodejs.org/api/process.html#process_process_setgid_id
 	**/
@@ -450,6 +502,7 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.setgroups()` method sets the supplementary group IDs for the Node.js process.
+		This is a privileged operation that requires the Node.js process to have `root` or the `CAP_SETGID` capability.
 
 		@see https://nodejs.org/api/process.html#process_process_setgroups_groups
 	**/
@@ -457,6 +510,8 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.setuid(id)` method sets the user identity of the process.
+		The `id` can be passed as either a numeric ID or a username string.
+		If a username is specified, the method blocks while resolving the associated numeric ID.
 
 		@see https://nodejs.org/api/process.html#process_process_setuid_id
 	**/
@@ -473,6 +528,8 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.stderr` property returns a stream connected to `stderr` (fd `2`).
+		It is a `net.Socket` (which is a Duplex stream) unless fd `2` refers to a file, in which case it is a Writable
+		stream.
 
 		@see https://nodejs.org/api/process.html#process_process_stderr
 	**/
@@ -480,6 +537,8 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.stdin` property returns a stream connected to `stdin` (fd `0`).
+		It is a `net.Socket` (which is a Duplex stream) unless fd `0` refers to a file, in which case it is a Readable
+		stream.
 
 		@see https://nodejs.org/api/process.html#process_process_stdin
 	**/
@@ -487,6 +546,8 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.stdout` property returns a stream connected to `stdout` (fd `1`).
+		It is a `net.Socket` (which is a Duplex stream) unless fd `1` refers to a file, in which case it is a Writable
+		stream.
 
 		@see https://nodejs.org/api/process.html#process_process_stdout
 	**/
@@ -495,6 +556,9 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		The `process.throwDeprecation` property indicates whether the `--throw-deprecation` flag is set on the current
 		Node.js process.
+		`process.throwDeprecation` is mutable, so whether or not deprecation warnings result in errors may be altered at
+		runtime.
+		See the documentation for the `'warning'` event and the `emitWarning()` method for more information.
 
 		@see https://nodejs.org/api/process.html#process_process_throwdeprecation
 	**/
@@ -502,6 +566,7 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.title` property returns the current process title (i.e. returns the current value of `ps`).
+		Assigning a new value to `process.title` modifies the current value of `ps`.
 
 		@see https://nodejs.org/api/process.html#process_process_title
 	**/
@@ -510,6 +575,7 @@ extern class Process extends EventEmitter<Process> {
 	/**
 		The `process.traceDeprecation` property indicates whether the `--trace-deprecation` flag is set on the current
 		Node.js process.
+		See the documentation for the `'warning'` event and the `emitWarning()` method for more information about this flag's behavior.
 
 		@see https://nodejs.org/api/process.html#process_process_tracedeprecation
 	**/
@@ -517,6 +583,9 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.umask()` method sets or returns the Node.js process's file mode creation mask.
+		Child processes inherit the mask from the parent process.
+		Invoked without an argument, the current mask is returned, otherwise the umask is set to the argument value and
+		the previous mask is returned.
 
 		@see https://nodejs.org/api/process.html#process_process_umask_mask
 	**/
@@ -536,6 +605,8 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.versions` property returns an object listing the version strings of Node.js and its dependencies.
+		`process.versions.modules` indicates the current ABI version, which is increased whenever a C++ API changes.
+		Node.js will refuse to load modules that were compiled against a different module ABI version.
 	**/
 	var versions:DynamicAccess<String>;
 }
