@@ -52,14 +52,14 @@ extern class WriteStream extends js.node.net.Socket {
 
 		@see https://nodejs.org/api/tty.html#tty_writestream_clearline_dir_callback
 	**/
-	function clearLine(dir:Int, ?callback:haxe.Constraints.Function):Bool;
+	function clearLine(dir:Int, ?callback:Void->Void):Bool;
 
 	/**
 		`WriteStream.clearScreenDown()` clears this `WriteStream` from the current cursor down.
 
 		@see https://nodejs.org/api/tty.html#tty_writestream_clearscreendown_callback
 	**/
-	function clearScreenDown(?callback:haxe.Constraints.Function):Bool;
+	function clearScreenDown(?callback:Void->Void):Bool;
 
 
 	/**
@@ -75,7 +75,7 @@ extern class WriteStream extends js.node.net.Socket {
 
 		@see https://nodejs.org/api/tty.html#tty_writestream_cursorto_x_y_callback
 	**/
-	function cursorTo(x:Int, ?y:Int, ?callback:haxe.Constraints.Function):Bool;
+	function cursorTo(x:Int, ?y:Int, ?callback:Void->Void):Bool;
 
 	/**
 		Use this to determine what colors the terminal supports.
@@ -102,14 +102,14 @@ extern class WriteStream extends js.node.net.Socket {
 
 		@see https://nodejs.org/api/tty.html#tty_writestream_hascolors_count_env
 	**/
-	function hasColors():Bool;
+	function hasColors(?count: Int, ?env:haxe.DynamicAccess<String>):Bool;
 
 	/**
 		`WriteStream.moveCursor()` moves this `WriteStream`'s cursor relative to its current position.
 
 		@see https://nodejs.org/api/tty.html#tty_writestream_movecursor_dx_dy_callback
 	**/
-	function moveCursor(dx:Int, dy:Int, ?callback:haxe.Constraints.Function):Bool;
+	function moveCursor(dx:Int, dy:Int, ?callback:Void->Void):Bool;
 
 	/**
 		A `number` specifying the number of rows the TTY currently has.

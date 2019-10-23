@@ -44,5 +44,5 @@ extern class ReadStream extends js.node.net.Socket {
 
 		@see https://nodejs.org/api/tty.html#tty_readstream_setrawmode_mode
 	**/
-	function setRawMode(mode:Bool):Void;
+	function setRawMode(mode:Bool):ReadStream;
 }
