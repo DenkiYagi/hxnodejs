@@ -39,6 +39,12 @@ extern class ReadStream extends js.node.net.Socket {
 	**/
 	var isRaw(default, null):Bool;
 
+	// This member has defined in base class, `js.node.stream.Duplex`.
+	/*
+		A boolean that is always true for tty.ReadStream instances.
+	*/
+	// var isTTY(default, null):Bool;
+
 	/**
 		Allows configuration of `tty.ReadStream` so that it operates as a raw device.
 

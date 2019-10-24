@@ -38,6 +38,27 @@ import js.node.events.EventEmitter;
 }
 
 /**
+	Enumeration of direction for `clearLine` method of `WriteStream`
+**/
+@:enum abstract Direction(Int) to Int {
+	/**
+		to the left from cursor
+	**/
+	var Left: Direction = -1;
+
+	/**
+		to the right from cursor
+	**/
+	var Right: Direction = 1;
+
+	/**
+		the entire line
+	**/
+	var Entire: Direction = 0;
+}
+
+
+/**
 	Represents the writable side of a TTY.
 	In normal circumstances, `process.stdout` and `process.stderr` will be the only `tty.WriteStream` instances created for a Node.js process and
 	there should be no reason to create additional instances.
@@ -52,7 +73,7 @@ extern class WriteStream extends js.node.net.Socket {
 
 		@see https://nodejs.org/api/tty.html#tty_writestream_clearline_dir_callback
 	**/
-	function clearLine(dir:Int, ?callback:Void->Void):Bool;
+	function clearLine(dir:Direction, ?callback:Void->Void):Bool;
 
 	/**
 		`WriteStream.clearScreenDown()` clears this `WriteStream` from the current cursor down.
@@ -103,6 +124,12 @@ extern class WriteStream extends js.node.net.Socket {
 		@see https://nodejs.org/api/tty.html#tty_writestream_hascolors_count_env
 	**/
 	function hasColors(?count: Int, ?env:haxe.DynamicAccess<String>):Bool;
+
+	// This member has defined in base class, `js.node.stream.Duplex`.
+	/*
+		A boolean that is always true for tty.ReadStream instances.
+	*/
+	// var isTTY(default, null):Bool;
 
 	/**
 		`WriteStream.moveCursor()` moves this `WriteStream`'s cursor relative to its current position.
