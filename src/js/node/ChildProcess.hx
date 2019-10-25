@@ -36,6 +36,7 @@ import js.Error;
 /**
 	The `child_process` module provides the ability to spawn child processes in a manner that is similar, but not
 	identical, to `popen(3)`.
+	This capability is primarily provided by the `child_process.spawn()` function:
 
 	@see https://nodejs.org/api/child_process.html#child_process_child_process
 **/
@@ -43,6 +44,8 @@ import js.Error;
 extern class ChildProcess {
 	/**
 		Spawns a shell then executes the `command` within that shell, buffering any generated output.
+		The `command` string passed to the exec function is processed directly by the shell and special characters (vary
+		based on `shell`) need to be dealt with accordingly:
 
 		@see https://nodejs.org/api/child_process.html#child_process_child_process_exec_command_options_callback
 	**/
@@ -51,6 +54,8 @@ extern class ChildProcess {
 	/**
 		The `child_process.execFile()` function is similar to `child_process.exec()` except that it does not spawn a
 		shell by default.
+		Rather, the specified executable `file` is spawned directly as a new process making it slightly more efficient
+		than `child_process.exec()`.
 
 		@see https://nodejs.org/api/child_process.html#child_process_child_process_execfile_file_args_options_callback
 	**/
@@ -59,6 +64,10 @@ extern class ChildProcess {
 	/**
 		The `child_process.fork()` method is a special case of `child_process.spawn()` used specifically to spawn new
 		Node.js processes.
+		Like `child_process.spawn()`, a ChildProcess object is returned.
+		The returned `ChildProcess` will have an additional communication channel built-in that allows messages to be
+		passed back and forth between the parent and child.
+		See `subprocess.send()` for details.
 
 		@see https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options
 	**/
@@ -67,6 +76,7 @@ extern class ChildProcess {
 	/**
 		The `child_process.spawn()` method spawns a new process using the given `command`, with command line arguments
 		in `args`.
+		If omitted, `args` defaults to an empty array.
 
 		@see https://nodejs.org/api/child_process.html#child_process_child_process_spawn_command_args_options
 	**/
@@ -75,6 +85,8 @@ extern class ChildProcess {
 	/**
 		The `child_process.execFileSync()` method is generally identical to `child_process.execFile()` with the
 		exception that the method will not return until the child process has fully closed.
+		When a timeout has been encountered and `killSignal` is sent, the method won't return until the process has
+		completely exited.
 
 		@see https://nodejs.org/api/child_process.html#child_process_child_process_execfilesync_file_args_options
 	**/
@@ -84,6 +96,10 @@ extern class ChildProcess {
 	/**
 		The `child_process.execSync()` method is generally identical to `child_process.exec()` with the exception that
 		the method will not return until the child process has fully closed.
+		When a timeout has been encountered and `killSignal` is sent, the method won't return until the process has
+		completely exited.
+		If the child process intercepts and handles the `SIGTERM` signal and doesn't exit, the parent process will wait
+		until the child process has exited.
 
 		@see https://nodejs.org/api/child_process.html#child_process_child_process_execsync_command_options
 	**/
@@ -93,6 +109,10 @@ extern class ChildProcess {
 	/**
 		The `child_process.spawnSync()` method is generally identical to `child_process.spawn()` with the exception that
 		the function will not return until the child process has fully closed.
+		When a timeout has been encountered and `killSignal` is sent, the method won't return until the process has
+		completely exited.
+		If the process intercepts and handles the `SIGTERM` signal and doesn't exit, the parent process will wait until
+		the child process has exited.
 
 		@see https://nodejs.org/api/child_process.html#child_process_child_process_spawnsync_command_args_options
 	**/

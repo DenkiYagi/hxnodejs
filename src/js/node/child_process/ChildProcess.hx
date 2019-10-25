@@ -22,7 +22,6 @@
 
 package js.node.child_process;
 
-import haxe.DynamicAccess;
 import js.node.events.EventEmitter;
 import js.node.Stream;
 import js.node.stream.Readable;
@@ -39,6 +38,7 @@ import js.Error;
 @:enum abstract ChildProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The `'close'` event is emitted when the stdio streams of a child process have been closed.
+		This is distinct from the `'exit'` event, since multiple processes might share the same stdio streams.
 
 		@see https://nodejs.org/api/child_process.html#child_process_event_close
 	**/
@@ -47,6 +47,8 @@ import js.Error;
 	/**
 		The `'disconnect'` event is emitted after calling the `subprocess.disconnect()` method in parent process or
 		`process.disconnect()` in child process.
+		After disconnecting it is no longer possible to send or receive messages, and the `subprocess.connected`
+		property is `false`.
 
 		@see https://nodejs.org/api/child_process.html#child_process_event_disconnect
 	**/
@@ -54,6 +56,9 @@ import js.Error;
 
 	/**
 		The `'error'` event is emitted whenever:
+		The `'exit'` event may or may not fire after an error has occurred.
+		When listening to both the `'exit'` and `'error'` events, it is important to guard against accidentally invoking
+		handler functions multiple times.
 
 		@see https://nodejs.org/api/child_process.html#child_process_event_error
 	**/
@@ -61,6 +66,10 @@ import js.Error;
 
 	/**
 		The `'exit'` event is emitted after the child process ends.
+		If the process exited, `code` is the final exit code of the process, otherwise `null`.
+		If the process terminated due to receipt of a signal, `signal` is the string name of the signal, otherwise
+		`null`.
+		One of the two will always be non-null.
 
 		@see https://nodejs.org/api/child_process.html#child_process_event_exit
 	**/
@@ -68,6 +77,7 @@ import js.Error;
 
 	/**
 		The `'message'` event is triggered when a child process uses `process.send()` to send messages.
+		The resulting message might not be the same as what is originally sent.
 
 		@see https://nodejs.org/api/child_process.html#child_process_event_message
 	**/
@@ -82,6 +92,7 @@ import js.Error;
 extern class ChildProcess extends EventEmitter<ChildProcess> {
 	/**
 		The `subprocess.channel` property is a reference to the child's IPC channel.
+		If no IPC channel currently exists, this property is `undefined`.
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_channel
 	**/
@@ -90,6 +101,7 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 	/**
 		The `subprocess.connected` property indicates whether it is still possible to send and receive messages from a
 		child process.
+		When subprocess.connected is false, it is no longer possible to send or receive messages.
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_connected
 	**/
@@ -98,6 +110,9 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 	/**
 		Closes the IPC channel between parent and child, allowing the child to exit gracefully once there are no other
 		connections keeping it alive.
+		After calling this method the `subprocess.connected` and `process.connected` properties in both the parent and
+		child (respectively) will be set to `false`, and it will be no longer possible to pass messages between the
+		processes.
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_disconnect
 	**/
@@ -105,6 +120,8 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 
 	/**
 		The `subprocess.kill()` method sends a signal to the child process.
+		If no argument is given, the process will be sent the `'SIGTERM'` signal.
+		See `signal(7)` for a list of available signals.
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_kill_signal
 	**/
@@ -114,6 +131,7 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 	/**
 		The `subprocess.killed` property indicates whether the child process successfully received a signal from
 		`subprocess.kill()`.
+		The `killed` property does not indicate that the child process has been terminated.
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_killed
 	**/
@@ -137,6 +155,7 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 	/**
 		When an IPC channel has been established between the parent and child ( i.e. when using `child_process.fork()`),
 		the `subprocess.send()` method can be used to send messages to the child process.
+		When the child process is a Node.js instance, these messages can be received via the `'message'` event.
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_send_message_sendhandle_options_callback
 	**/
@@ -159,6 +178,8 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 	/**
 		A sparse array of pipes to the child process, corresponding with positions in the `stdio` option passed to
 		`child_process.spawn()` that have been set to the value `'pipe'`.
+		`subprocess.stdio[0]`, `subprocess.stdio[1]`, and `subprocess.stdio[2]` are also available as
+		`subprocess.stdin`, `subprocess.stdout`, and `subprocess.stderr`, respectively.
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_stdio
 	**/
@@ -173,6 +194,9 @@ extern class ChildProcess extends EventEmitter<ChildProcess> {
 
 	/**
 		By default, the parent will wait for the detached child to exit.
+		To prevent the parent from waiting for a given `subprocess` to exit, use the `subprocess.unref()` method.
+		Doing so will cause the parent's event loop to not include the child in its reference count, allowing the parent
+		to exit independently of the child, unless there is an established IPC channel between the child and the parent.
 
 		@see https://nodejs.org/api/child_process.html#child_process_subprocess_unref
 	**/
