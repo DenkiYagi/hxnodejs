@@ -120,6 +120,31 @@ extern class ChildProcess {
 }
 
 /**
+	An error passed to the `ChildProcess.exec` callback.
+**/
+@:native("Error")
+extern class ChildProcessExecError extends Error {
+	/**
+		The `error.code` property will be the exit code of the child process.
+	**/
+	var code(default, null):Int;
+
+	/**
+		The `error.signal` property will be set to the signal that terminated the process.
+	**/
+	var signal(default, null):String;
+}
+
+/**
+	A callback type for `ChildProcess.exec`.
+**/
+#if haxe4
+typedef ChildProcessExecCallback = (error:Null<ChildProcessExecError>, stdout:EitherType<String, Buffer>, stderr:EitherType<String, Buffer>) -> Void;
+#else
+typedef ChildProcessExecCallback = Null<ChildProcessExecError>->EitherType<String, Buffer>->EitherType<String, Buffer>->Void;
+#end
+
+/**
 	Common options for all `ChildProcess` methods.
 **/
 private typedef ChildProcessCommonOptions = {
@@ -149,27 +174,11 @@ private typedef ChildProcessCommonOptions = {
 }
 
 /**
-	Options for `ChildProcess.exec` and `ChildProcess.execFile` methods.
+	Common options for `ChildProcess.exec`, `ChildProcess.execFile`, `ChildProcess.execFileSync` and
+	`ChildProcess.execSync`.
 **/
-private typedef ChildProcessExecOptions = {
+private typedef ChildProcessExecCommonOptions = {
 	> ChildProcessCommonOptions,
-
-	/**
-		Default: `'utf8'`.
-	**/
-	@:optional var encoding:String;
-
-	/**
-		Shell to execute the command with.
-
-		Default: `'/bin/sh'` on Unix, `process.env.ComSpec` on Windows.
-	**/
-	@:optional var shell:String;
-
-	/**
-		Default: `0`.
-	**/
-	@:optional var timeout:Int;
 
 	/**
 		Largest amount of data in bytes allowed on stdout or stderr.
@@ -194,32 +203,45 @@ private typedef ChildProcessExecOptions = {
 }
 
 /**
-	An error passed to the `ChildProcess.exec` callback.
+	Options for `ChildProcess.exec` method.
 **/
-@:native("Error")
-extern class ChildProcessExecError extends Error {
-	/**
-		The `error.code` property will be the exit code of the child process.
-	**/
-	var code(default, null):Int;
+private typedef ChildProcessExecOptions = {
+	> ChildProcessExecCommonOptions,
 
 	/**
-		The `error.signal` property will be set to the signal that terminated the process.
+		Default: `'utf8'`.
 	**/
-	var signal(default, null):String;
+	@:optional var encoding:String;
+
+	/**
+		Shell to execute the command with.
+		See Shell Requirements and Default Windows Shell.
+
+		Default: `'/bin/sh'` on Unix, `process.env.ComSpec` on Windows.
+	**/
+	@:optional var shell:String;
+
+	/**
+		Default: `0`.
+	**/
+	@:optional var timeout:Int;
 }
 
 /**
-	A callback type for `ChildProcess.exec`.
+	Options for `ChildProcess.execFile` method.
 **/
-#if haxe4
-typedef ChildProcessExecCallback = (error:Null<ChildProcessExecError>, stdout:EitherType<String, Buffer>, stderr:EitherType<String, Buffer>) -> Void;
-#else
-typedef ChildProcessExecCallback = Null<ChildProcessExecError>->EitherType<String, Buffer>->EitherType<String, Buffer>->Void;
-#end
-
 typedef ChildProcessExecFileOptions = {
-	> ChildProcessExecOptions,
+	> ChildProcessExecCommonOptions,
+
+	/**
+		Default: `'utf8'`.
+	**/
+	@:optional var encoding:String;
+
+	/**
+		Default: `0`.
+	**/
+	@:optional var timeout:Int;
 
 	/**
 		No quoting or escaping of arguments is done on Windows.
@@ -228,6 +250,16 @@ typedef ChildProcessExecFileOptions = {
 		Default: `false`.
 	**/
 	@:optional var windowsVerbatimArguments:Bool;
+
+	/**
+		If `true`, runs command inside of a shell.
+		Uses `'/bin/sh'` on Unix, and `process.env.ComSpec` on Windows.
+		A different shell can be specified as a string.
+		See Shell Requirements and Default Windows Shell.
+
+		Default: `false` (no shell).
+	**/
+	@:optional var shell:EitherType<Bool, String>;
 }
 
 @:enum abstract ChildProcessStdioSimple(String) from String to String {
@@ -306,6 +338,9 @@ typedef ChildProcessForkOptions = {
 	@:optional var windowsVerbatimArguments:Bool;
 }
 
+/**
+	Common options for `ChildProcess.spawn` and `ChildProcess.spawnSync`.
+**/
 private typedef ChildProcessSpawnCommonOptions = {
 	> ChildProcessCommonOptions,
 
@@ -383,7 +418,20 @@ private typedef ChildProcessCommonSyncOptions = {
 **/
 typedef ChildProcessExecFileSyncOptions = {
 	> ChildProcessCommonSyncOptions,
-	> ChildProcessExecOptions,
+	> ChildProcessExecCommonOptions,
+
+	/**
+		Default: `undefined`.
+	**/
+	@:optional var timeout:Int;
+
+	/**
+		The encoding used for all stdio inputs and outputs.
+
+		Default: `'buffer'`.
+	**/
+	@:optional var encoding:String;
+
 	/**
 		If `true`, runs `command` inside of a shell.
 		Uses `'/bin/sh'` on Unix, and `process.env.ComSpec` on Windows.
@@ -391,7 +439,7 @@ typedef ChildProcessExecFileSyncOptions = {
 
 		Default: `false` (no shell).
 	**/
-	// @:optional var shell:EitherType<Bool, String>;
+	@:optional var shell:EitherType<Bool, String>;
 }
 
 /**
@@ -399,13 +447,34 @@ typedef ChildProcessExecFileSyncOptions = {
 **/
 typedef ChildProcessExecSyncOptions = {
 	> ChildProcessCommonSyncOptions,
-	> ChildProcessExecOptions,
+	> ChildProcessExecCommonOptions,
+
+	/**
+		Shell to execute the command with.
+		See Shell Requirements and Default Windows Shell.
+
+		Default: `'/bin/sh'` on Unix, `process.env.ComSpec` on Windows.
+	**/
+	@:optional var shell:String;
+
+	/**
+		Default: `undefined`.
+	**/
+	@:optional var timeout:Int;
+
+	/**
+		The encoding used for all stdio inputs and outputs.
+
+		Default: `'buffer'`.
+	**/
+	@:optional var encoding:String;
 }
 
 /**
 	Options for the `ChildProcess.spawnSync` method.
 **/
 typedef ChildProcessSpawnSyncOptions = {
+	> ChildProcessCommonSyncOptions,
 	> ChildProcessSpawnCommonOptions,
 
 	/**
