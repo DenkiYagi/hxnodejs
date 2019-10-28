@@ -551,7 +551,6 @@ typedef ChildProcessSpawnSyncOptions = {
 
 	/**
 		Child's stdio configuration.
-		`stderr` by default will be output to the parent process' stderr unless `stdio` is specified.
 	**/
 	@:optional var stdio:ChildProcessStdio;
 
