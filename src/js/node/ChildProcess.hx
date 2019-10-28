@@ -150,8 +150,6 @@ typedef ChildProcessExecCallback = Null<ChildProcessExecError>->EitherType<Strin
 private typedef ChildProcessCommonOptions = {
 	/**
 		Current working directory of the child process.
-
-		Default: `null`.
 	**/
 	@:optional var cwd:String;
 
@@ -174,11 +172,28 @@ private typedef ChildProcessCommonOptions = {
 }
 
 /**
-	Common options for `ChildProcess.exec`, `ChildProcess.execFile`, `ChildProcess.execFileSync` and
-	`ChildProcess.execSync`.
+	Options for `ChildProcess.exec` method.
 **/
-private typedef ChildProcessExecCommonOptions = {
+private typedef ChildProcessExecOptions = {
 	> ChildProcessCommonOptions,
+
+	/**
+		Default: `'utf8'`.
+	**/
+	@:optional var encoding:String;
+
+	/**
+		Shell to execute the command with.
+		See Shell Requirements and Default Windows Shell.
+
+		Default: `'/bin/sh'` on Unix, `process.env.ComSpec` on Windows.
+	**/
+	@:optional var shell:String;
+
+	/**
+		Default: `0`.
+	**/
+	@:optional var timeout:Int;
 
 	/**
 		Largest amount of data in bytes allowed on stdout or stderr.
@@ -203,35 +218,10 @@ private typedef ChildProcessExecCommonOptions = {
 }
 
 /**
-	Options for `ChildProcess.exec` method.
-**/
-private typedef ChildProcessExecOptions = {
-	> ChildProcessExecCommonOptions,
-
-	/**
-		Default: `'utf8'`.
-	**/
-	@:optional var encoding:String;
-
-	/**
-		Shell to execute the command with.
-		See Shell Requirements and Default Windows Shell.
-
-		Default: `'/bin/sh'` on Unix, `process.env.ComSpec` on Windows.
-	**/
-	@:optional var shell:String;
-
-	/**
-		Default: `0`.
-	**/
-	@:optional var timeout:Int;
-}
-
-/**
 	Options for `ChildProcess.execFile` method.
 **/
 typedef ChildProcessExecFileOptions = {
-	> ChildProcessExecCommonOptions,
+	> ChildProcessCommonOptions,
 
 	/**
 		Default: `'utf8'`.
@@ -242,6 +232,27 @@ typedef ChildProcessExecFileOptions = {
 		Default: `0`.
 	**/
 	@:optional var timeout:Int;
+
+	/**
+		Largest amount of data in bytes allowed on stdout or stderr.
+		If exceeded, the child process is terminated and any output is truncated.
+		See caveat at `maxBuffer` and Unicode.
+
+		Default: `1024 * 1024`.
+	**/
+	@:optional var maxBuffer:Int;
+
+	/**
+		Default: `'SIGTERM'`.
+	**/
+	@:optional var killSignal:EitherType<String, Int>;
+
+	/**
+		Hide the subprocess console window that would normally be created on Windows systems.
+
+		Default: `false`.
+	**/
+	@:optional var windowsHide:Bool;
 
 	/**
 		No quoting or escaping of arguments is done on Windows.
@@ -339,9 +350,9 @@ typedef ChildProcessForkOptions = {
 }
 
 /**
-	Common options for `ChildProcess.spawn` and `ChildProcess.spawnSync`.
+	Options for the `ChildProcess.spawn` method.
 **/
-private typedef ChildProcessSpawnCommonOptions = {
+typedef ChildProcessSpawnOptions = {
 	> ChildProcessCommonOptions,
 
 	/**
@@ -354,6 +365,12 @@ private typedef ChildProcessSpawnCommonOptions = {
 		Child's stdio configuration (see `options.stdio`).
 	**/
 	@:optional var stdio:ChildProcessStdio;
+
+	/**
+		Prepare child to run independently of its parent process.
+		Specific behavior depends on the platform, see `options.detached`).
+	**/
+	@:optional var detached:Bool;
 
 	/**
 		If `true`, runs `command` inside of a shell.
@@ -382,22 +399,11 @@ private typedef ChildProcessSpawnCommonOptions = {
 }
 
 /**
-	Options for the `ChildProcess.spawn` method.
+	Options for the `ChildProcess.execFileSync` method.
 **/
-typedef ChildProcessSpawnOptions = {
-	> ChildProcessSpawnCommonOptions,
+typedef ChildProcessExecFileSyncOptions = {
+	> ChildProcessCommonOptions,
 
-	/**
-		Prepare child to run independently of its parent process.
-		Specific behavior depends on the platform, see `options.detached`).
-	**/
-	@:optional var detached:Bool;
-}
-
-/**
-	Common options for all `ChildProcess` sync methods.
-**/
-private typedef ChildProcessCommonSyncOptions = {
 	/**
 		The value which will be passed as stdin to the spawned process.
 		Supplying this value will override `stdio[0]`.
@@ -411,19 +417,29 @@ private typedef ChildProcessCommonSyncOptions = {
 		Default: `'pipe'`.
 	**/
 	@:optional var stdio:ChildProcessStdio;
-}
-
-/**
-	Options for the `ChildProcess.execFileSync` method.
-**/
-typedef ChildProcessExecFileSyncOptions = {
-	> ChildProcessCommonSyncOptions,
-	> ChildProcessExecCommonOptions,
 
 	/**
+		In milliseconds the maximum amount of time the process is allowed to run.
+
 		Default: `undefined`.
 	**/
 	@:optional var timeout:Int;
+
+	/**
+		The signal value to be used when the spawned process will be killed.
+
+		Default: `'SIGTERM'`.
+	**/
+	@:optional var killSignal:EitherType<String, Int>;
+
+	/**
+		Largest amount of data in bytes allowed on stdout or stderr.
+		If exceeded, the child process is terminated and any output is truncated.
+		See caveat at `maxBuffer` and Unicode.
+
+		Default: `1024 * 1024`.
+	**/
+	@:optional var maxBuffer:Int;
 
 	/**
 		The encoding used for all stdio inputs and outputs.
@@ -431,6 +447,13 @@ typedef ChildProcessExecFileSyncOptions = {
 		Default: `'buffer'`.
 	**/
 	@:optional var encoding:String;
+
+	/**
+		Hide the subprocess console window that would normally be created on Windows systems.
+
+		Default: `false`.
+	**/
+	@:optional var windowsHide:Bool;
 
 	/**
 		If `true`, runs `command` inside of a shell.
@@ -446,8 +469,21 @@ typedef ChildProcessExecFileSyncOptions = {
 	Options for the `ChildProcess.execSync` method.
 **/
 typedef ChildProcessExecSyncOptions = {
-	> ChildProcessCommonSyncOptions,
-	> ChildProcessExecCommonOptions,
+	> ChildProcessCommonOptions,
+
+	/**
+		The value which will be passed as stdin to the spawned process.
+		Supplying this value will override `stdio[0]`.
+	**/
+	@:optional var input:EitherType<String, EitherType<Buffer, ArrayBufferView>>;
+
+	/**
+		Child's stdio configuration.
+		`stderr` by default will be output to the parent process' stderr unless `stdio` is specified.
+
+		Default: `'pipe'`.
+	**/
+	@:optional var stdio:ChildProcessStdio;
 
 	/**
 		Shell to execute the command with.
@@ -458,9 +494,27 @@ typedef ChildProcessExecSyncOptions = {
 	@:optional var shell:String;
 
 	/**
+		In milliseconds the maximum amount of time the process is allowed to run.
+
 		Default: `undefined`.
 	**/
 	@:optional var timeout:Int;
+
+	/**
+		The signal value to be used when the spawned process will be killed.
+
+		Default: `'SIGTERM'`.
+	**/
+	@:optional var killSignal:EitherType<String, Int>;
+
+	/**
+		Largest amount of data in bytes allowed on stdout or stderr.
+		If exceeded, the child process is terminated and any output is truncated.
+		See caveat at `maxBuffer` and Unicode.
+
+		Default: `1024 * 1024`.
+	**/
+	@:optional var maxBuffer:Int;
 
 	/**
 		The encoding used for all stdio inputs and outputs.
@@ -468,14 +522,38 @@ typedef ChildProcessExecSyncOptions = {
 		Default: `'buffer'`.
 	**/
 	@:optional var encoding:String;
+
+	/**
+		Hide the subprocess console window that would normally be created on Windows systems.
+
+		Default: `false`.
+	**/
+	@:optional var windowsHide:Bool;
 }
 
 /**
 	Options for the `ChildProcess.spawnSync` method.
 **/
 typedef ChildProcessSpawnSyncOptions = {
-	> ChildProcessCommonSyncOptions,
-	> ChildProcessSpawnCommonOptions,
+	> ChildProcessCommonOptions,
+
+	/**
+		The value which will be passed as stdin to the spawned process.
+		Supplying this value will override `stdio[0]`.
+	**/
+	@:optional var input:EitherType<String, EitherType<Buffer, ArrayBufferView>>;
+
+	/**
+		Explicitly set the value of `argv[0]` sent to the child process.
+		This will be set to `command` if not specified.
+	**/
+	@:optional var argv0:String;
+
+	/**
+		Child's stdio configuration.
+		`stderr` by default will be output to the parent process' stderr unless `stdio` is specified.
+	**/
+	@:optional var stdio:ChildProcessStdio;
 
 	/**
 		In milliseconds the maximum amount of time the process is allowed to run.
@@ -505,6 +583,31 @@ typedef ChildProcessSpawnSyncOptions = {
 		Default: `'buffer'`.
 	**/
 	@:optional var encoding:String;
+
+	/**
+		If `true`, runs `command` inside of a shell.
+		Uses `'/bin/sh'` on Unix, and `process.env.ComSpec` on Windows.
+		A different shell can be specified as a string.
+
+		Default: `false` (no shell).
+	**/
+	@:optional var shell:EitherType<Bool, String>;
+
+	/**
+		No quoting or escaping of arguments is done on Windows.
+		Ignored on Unix.
+		This is set to `true` automatically when `shell` is specified and is CMD.
+
+		Default: `false`.
+	**/
+	@:optional var windowsVerbatimArguments:Bool;
+
+	/**
+		Hide the subprocess console window that would normally be created on Windows systems.
+
+		Default: `false`.
+	**/
+	@:optional var windowsHide:Bool;
 }
 
 /**
