@@ -48,8 +48,8 @@ extern class Decipher extends js.node.stream.Transform<Decipher> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_decipher_setaad_buffer_options
 	**/
-	@:overload(function(buffer:Buffer, ?options: Transform<Decipher>):Void {})
-	function setAAD(buffer:ArrayBufferView, ?options: Transform<Decipher>):Void;
+	@:overload(function(buffer:Buffer, ?options: Transform<Decipher>):Decipher {})
+	function setAAD(buffer:ArrayBufferView, ?options: Transform<Decipher>):Decipher;
 
 	/**
 		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported),
@@ -61,16 +61,16 @@ extern class Decipher extends js.node.stream.Transform<Decipher> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_decipher_setauthtag_buffer
 	**/
-	@:overload(function(buffer:Buffer):Void {})
-	function setAuthTag(buffer:ArrayBufferView):Void;
+	@:overload(function(buffer:Buffer):Decipher {})
+	function setAuthTag(buffer:ArrayBufferView):Decipher;
 
 	/**
 		When data has been encrypted without standard block padding, calling `Decipher.setAutoPadding(false)` will disable automatic padding to prevent `Decipher.final()` from checking for and removing padding.
 
 		@see https://nodejs.org/api/crypto.html#crypto_decipher_setautopadding_autopadding
 	**/
-	@:overload(function():Void {})
-	function setAutoPadding(auto_padding:Bool):Void;
+	@:overload(function():Decipher {})
+	function setAutoPadding(auto_padding:Bool):Decipher;
 
 	/**
 		Updates the decipher with `data`.
@@ -87,3 +87,4 @@ extern class Decipher extends js.node.stream.Transform<Decipher> {
 	@:overload(function(data:ArrayBufferView, ?output_encoding:String):Buffer {})
 	function update(data:ArrayBufferView, ?output_encoding:String):String;
 }
+

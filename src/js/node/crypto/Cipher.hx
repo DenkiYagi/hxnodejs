@@ -47,7 +47,7 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_setaad_buffer_options
 	**/
-	function setAAD(buffer:Buffer, ?options: Transform<Cipher>):Void;
+	function setAAD(buffer:Buffer, ?options: Transform<Cipher>):Cipher;
 
 	/**
 		The `Cipher.getAuthTag()` method should only be called after encryption has been completed using the `Cipher.final()` method.
@@ -63,7 +63,7 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_setautopadding_autopadding
 	**/
 	@:overload(function():Void {})
-	function setAutoPadding(auto_padding:Bool):Void;
+	function setAutoPadding(auto_padding:Bool):Cipher;
 
 	/**
 		Updates the cipher with `data`.

@@ -50,6 +50,6 @@ extern class Hmac extends js.node.stream.Transform<Hmac> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_hmac_update_data_inputencoding
 	**/
-	@:overload(function(data:Buffer):Hmac {})
-	function update(data:String, ?input_encoding:String):Hmac;
+	@:overload(function(data:Buffer):Void {})
+	function update(data:String, ?input_encoding:String):Void;
 }

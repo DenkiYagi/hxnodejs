@@ -45,10 +45,14 @@ extern class Sign extends Writable<Sign> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_sign_sign_privatekey_outputencoding
 	**/
-	@:overload(function(private_key:String, output_format:String):String {})
-	@:overload(function(private_key:String, output_format:String):Buffer {})
 	@:overload(function(private_key:{key:String, passphrase:String}, output_format:String):String {})
-	function sign(private_key:{key:String, passphrase:String}, output_format:String):Buffer;
+	@:overload(function(private_key:{key:String, passphrase:String}):Buffer {})
+	@:overload(function(private_key:String, output_encoding:String):String {})
+	@:overload(function(private_key:String):Buffer {})
+	@:overload(function(private_key:Buffer, output_encoding:String):String {})
+	@:overload(function(private_key:Buffer):Buffer {})
+	@:overload(function(private_key:KeyObject, output_encoding:String):String {})
+	function sign(private_key:KeyObject):Buffer;
 
 	/**
 		Updates the `Sign` content with the given `data`, the encoding of which is given in `input_encoding`.

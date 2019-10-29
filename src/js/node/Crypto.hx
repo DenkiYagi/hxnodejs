@@ -127,15 +127,18 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createdecipheriv_algorithm_key_iv_options
 	**/
-	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:String):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:Buffer):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:ArrayBufferView):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:String):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:Buffer):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:ArrayBufferView):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:String):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:Buffer):Cipher {})
-	static function createDecipheriv(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:ArrayBufferView):Decipher;
+	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:Null<String>):Decipher {})
+	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:Null<Buffer>):Decipher {})
+	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:Null<ArrayBufferView>):Decipher {})
+	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:Null<String>):Decipher {})
+	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:Null<Buffer>):Decipher {})
+	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:Null<ArrayBufferView>):Decipher {})
+	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:Null<String>):Decipher {})
+	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:Null<Buffer>):Decipher {})
+	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:Null<ArrayBufferView>):Decipher {})
+	@:overload(function(algorithm:CryptoAlgorithm, key:KeyObject, iv:Null<String>):Decipher {})
+	@:overload(function(algorithm:CryptoAlgorithm, key:KeyObject, iv:Null<Buffer>):Decipher {})
+	static function createDecipheriv(algorithm:CryptoAlgorithm, key:KeyObject, iv:Null<ArrayBufferView>):Decipher;
 
 	/**
 		If `prim` is provoded as string or a `Buffer`, creates a `DiffieHellman` key exchange object
@@ -150,10 +153,10 @@ extern class Crypto {
 	@:overload(function(prime_length:Int, ?generator:String):DiffieHellman {})
 	@:overload(function(prime_length:Int, ?generator:Buffer):DiffieHellman {})
 	@:overload(function(prime_length:Int, ?generator:ArrayBufferView):DiffieHellman {})
-	@:overload(function(prime:Int, ?prime_encoding:String, ?generator:Int, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:Int, ?prime_encoding:String, ?generator:String, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:Int, ?prime_encoding:String, ?generator:Buffer, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:Int, ?prime_encoding:String, ?generator:ArrayBufferView, ?generator_encoding:String):DiffieHellman {})
+	@:overload(function(prime:String, ?prime_encoding:String, ?generator:Int, ?generator_encoding:String):DiffieHellman {})
+	@:overload(function(prime:String, ?prime_encoding:String, ?generator:String, ?generator_encoding:String):DiffieHellman {})
+	@:overload(function(prime:String, ?prime_encoding:String, ?generator:Buffer, ?generator_encoding:String):DiffieHellman {})
+	@:overload(function(prime:String, ?prime_encoding:String, ?generator:ArrayBufferView, ?generator_encoding:String):DiffieHellman {})
 	@:overload(function(prime:Buffer, ?prime_encoding:String, ?generator:Int, ?generator_encoding:String):DiffieHellman {})
 	@:overload(function(prime:Buffer, ?prime_encoding:String, ?generator:String, ?generator_encoding:String):DiffieHellman {})
 	@:overload(function(prime:Buffer, ?prime_encoding:String, ?generator:Buffer, ?generator_encoding:String):DiffieHellman {})
@@ -168,7 +171,7 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_creatediffiehellmangroup_name
 	**/
-	static function createDiffieHellmanGroup(name:String):DiffieHellman;
+	static function createDiffieHellmanGroup(name:String):DiffieHellmanGroup;
 
 	/**
 		Creates an Elliptic Curve Diffie-Hellman (`ECDH`) key exchange object using a predefined curve specified by the `curve_name` string.
@@ -286,14 +289,14 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_getdiffiehellman_groupname
 	**/
-	static function getDiffieHellman(group_name:DiffieHellmanGroupName):DiffieHellman;
+	static function getDiffieHellman(group_name:DiffieHellmanGroupName):DiffieHellmanGroup;
 
 	/**
 		Returns `true` if and only if a FIPS compliant crypto provider is currently in use.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_getfips
 	**/
-	static function getFips():Void;
+	static function getFips():Bool;
 
 	/**
 		Returns an array of the names of the supported hash algorithms, such as 'RSA-SHA256'.
@@ -477,11 +480,11 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_sign_algorithm_data_key
 	**/
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Dynamic): Buffer {})
+	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Class<Dynamic>): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: String): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Buffer): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: KeyObject): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Dynamic): Buffer {})
+	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Class<Dynamic>): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: String): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Buffer): Buffer {})
 	static function sign(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: KeyObject): Buffer;
@@ -493,9 +496,9 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_timingsafeequal_a_b
 	**/
-	@:overload(function(a: Buffer, b: Buffer): Buffer {})
-	@:overload(function(a: Buffer, b: ArrayBufferView): Buffer {})
-	@:overload(function(a: ArrayBufferView, b: Buffer): Buffer {})
+	@:overload(function(a: Buffer, b: Buffer): Bool {})
+	@:overload(function(a: Buffer, b: ArrayBufferView): Bool {})
+	@:overload(function(a: ArrayBufferView, b: Buffer): Bool {})
 	static function timingSafeEqual(a: ArrayBufferView, b: ArrayBufferView): Bool;
 
 	/**
@@ -505,16 +508,16 @@ extern class Crypto {
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_verify_algorithm_data_key_signature
 	**/
 
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Dynamic, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Dynamic, signature: ArrayBufferView): Buffer {})
+	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Class<Dynamic>, signature: Buffer): Buffer {})
+	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Class<Dynamic>, signature: ArrayBufferView): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: String, signature: Buffer): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: String, signature: ArrayBufferView): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Buffer, signature: Buffer): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Buffer, signature: ArrayBufferView): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: KeyObject, signature: Buffer): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: KeyObject, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Dynamic, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Dynamic, signature: ArrayBufferView): Buffer {})
+	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Class<Dynamic>, signature: Buffer): Buffer {})
+	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Class<Dynamic>, signature: ArrayBufferView): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: String, signature: Buffer): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: String, signature: ArrayBufferView): Buffer {})
 	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Buffer, signature: Buffer): Buffer {})
@@ -631,13 +634,13 @@ typedef GenerateKeyPairOptions = {
 **/
 typedef PrivateDecryptPrivateKey = {
 	/**
-		 The hash function to use for OAEP padding. Default: 'sha1'
+		The hash function to use for OAEP padding. Default: 'sha1'
 	**/
 	var oaeHash: String;
 
 	/**
-		 An optional padding value defined in `Crypto.Constants`,
-		 which may be: `Crypto.Constants.RSA_NO_PADDING`, `Crypto.Constants.RSA_PKCS1_PADDING`, or `Crypto.Constants.RSA_PKCS1_OAEP_PADDING`.
+		An optional padding value defined in `Crypto.Constants`,
+		which may be: `Crypto.Constants.RSA_NO_PADDING`, `Crypto.Constants.RSA_PKCS1_PADDING`, or `Crypto.Constants.RSA_PKCS1_OAEP_PADDING`.
 	**/
 	var padding: Int;
 }
@@ -647,18 +650,18 @@ typedef PrivateDecryptPrivateKey = {
 **/
 typedef PrivateEncryptPrivateKey = {
 	/**
-		 A PEM encoded private key.
+		A PEM encoded private key.
 	**/
 	var key:EitherType<String, EitherType<Buffer, KeyObject>>;
 
 	/**
-		 An optional passphrase for the private key
+		An optional passphrase for the private key
 	**/
 	var passphrase: EitherType<String, Buffer>;
 
 	/**
-		 An optional padding value defined in `Crypto.Constants`,
-		 which may be: `Crypto.Constants.RSA_NO_PADDING` or `Crypto.Constants.RSA_PKCS1_PADDING`.
+		An optional padding value defined in `Crypto.Constants`,
+		which may be: `Crypto.Constants.RSA_NO_PADDING` or `Crypto.Constants.RSA_PKCS1_PADDING`.
 	**/
 	var padding: Int;
 }
@@ -668,13 +671,13 @@ typedef PrivateEncryptPrivateKey = {
 **/
 typedef PublicDecryptKey = {
 	/**
-		 An optional passphrase for the private key
+		An optional passphrase for the private key
 	**/
 	var passphrase: EitherType<String, Buffer>;
 
 	/**
-		 An optional padding value defined in `Crypto.Constants`,
-		 which may be: `Crypto.Constants.RSA_NO_PADDING` or `Crypto.Constants.RSA_PKCS1_PADDING`.
+		An optional padding value defined in `Crypto.Constants`,
+		which may be: `Crypto.Constants.RSA_NO_PADDING` or `Crypto.Constants.RSA_PKCS1_PADDING`.
 	**/
 	var padding: Int;
 }
@@ -683,23 +686,23 @@ typedef PublicDecryptKey = {
 **/
 typedef PublicEncryptKey = {
 	/**
-		 A PEM encoded public or private key.
+		A PEM encoded public or private key.
 	**/
 	var key:EitherType<String, EitherType<Buffer, KeyObject>>;
 
 	/**
-		 The hash function to use for OAEP padding. Default: 'sha1'
+		The hash function to use for OAEP padding. Default: 'sha1'
 	**/
 	var oaeHash: String;
 
 	/**
-		 An optional passphrase for the private key
+		An optional passphrase for the private key
 	**/
 	var passphrase: EitherType<String, Buffer>;
 
 	/**
-		 An optional padding value defined in `Crypto.Constants`,
-		 which may be: `Crypto.Constants.RSA_NO_PADDING`, `Crypto.Constants.RSA_PKCS1_PADDING`, or `Crypto.Constants.RSA_PKCS1_OAEP_PADDING`.
+		An optional padding value defined in `Crypto.Constants`,
+		which may be: `Crypto.Constants.RSA_NO_PADDING`, `Crypto.Constants.RSA_PKCS1_PADDING`, or `Crypto.Constants.RSA_PKCS1_OAEP_PADDING`.
 	**/
 	var padding: Int;
 }
@@ -709,22 +712,37 @@ typedef PublicEncryptKey = {
 **/
 typedef ScryptOptions = {
 	/**
-		 CPU/memory cost parameter. Must be a power of two greater than one. Default: `16384`
+		CPU/memory cost parameter. Must be a power of two greater than one. Default: `16384`
 	**/
-	var cost:Int;
+	@:optional var cost:Int;
 
 	/**
-		 Block size parameter. Default: `8`.
+		Block size parameter. Default: `8`.
 	**/
-	var blockSize: Int;
+	@:optional var blockSize: Int;
 
 	/**
-		 Parallelization parameter. Default: `1`.
+		Parallelization parameter. Default: `1`.
 	**/
-	var parallelization: Int;
+	@:optional var parallelization: Int;
 
 	/**
-		 Memory upper bound. It is an error when (approximately) `128 * N * r > maxmem`. Default: `32 * 1024 * 1024`.
+		Alias for `cost`. Only one of both may be specified.
+	**/
+	@:optional var N: Int;
+
+	/**
+		Alias for `blockSize`. Only one of both may be specified.
+	**/
+	@:optional var r: Int;
+
+	/**
+		Alias for `parallelization`. Only one of both may be specified.
+	**/
+	@:optional var p: Int;
+
+	/**
+		Memory upper bound. It is an error when (approximately) `128 * N * r > maxmem`. Default: `32 * 1024 * 1024`.
 	**/
 	var maxmem: Int;
 }

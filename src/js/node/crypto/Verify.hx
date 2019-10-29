@@ -22,6 +22,7 @@
 
 package js.node.crypto;
 
+import js.node.crypto.Constants;
 import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.stream.Writable;
@@ -53,7 +54,34 @@ extern class Verify extends Writable<Sign> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_verify_verify_object_signature_signatureencoding
 	**/
+	@:overload(function(object:VerifyOptions, signature:String, signature_format:String):Bool {})
+	@:overload(function(object:VerifyOptions, signature:Buffer):Bool {})
+	@:overload(function(object:VerifyOptions, signature:ArrayBufferView):Bool {})
+	@:overload(function(object:String, signature:String, signature_format:String):Bool {})
 	@:overload(function(object:String, signature:Buffer):Bool {})
 	@:overload(function(object:String, signature:ArrayBufferView):Bool {})
-	function verify(object:String, signature:String, signature_format:String):Bool;
+	@:overload(function(object:Buffer, signature:String, signature_format:String):Bool {})
+	@:overload(function(object:Buffer, signature:Buffer):Bool {})
+	@:overload(function(object:Buffer, signature:ArrayBufferView):Bool {})
+	@:overload(function(object:KeyObject, signature:String, signature_format:String):Bool {})
+	@:overload(function(object:KeyObject, signature:Buffer):Bool {})
+	function verify(object:KeyObject, signature:ArrayBufferView):Bool;
 }
+
+/**
+	An options type for `scrypt` and `scryptSync` methods of `Crypto`.
+**/
+typedef VerifyOptions = {
+	/**
+		Optional padding value for RSA.
+	**/
+	@:optional var padding:Int;
+
+	/**
+		salt length for when padding is `RsaPkcs1PssPassin`.
+		The special value `Crypto.Constants.RSA_PSS_SALTLEN_DIGEST` sets the salt length to the digest size,
+		`Crypto.Constants.RSA_PSS_SALTLEN_AUTO` (default) causes it to be determined automatically.
+	**/
+	@:optional var saltLength: Int;
+}
+
