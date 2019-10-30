@@ -24,6 +24,8 @@ package js.node.zlib;
 
 /**
 	Compress data using brotli.
+
+	@see https://nodejs.org/api/zlib.html#zlib_class_zlib_brotlidecompress
 **/
 @:jsRequire("zlib", "Brotli")
 extern class BrotliDecompress {}

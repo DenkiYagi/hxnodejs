@@ -22,6 +22,7 @@
 
 package js.node.zlib;
 
+import haxe.extern.EitherType;
 import js.node.zlib.*;
 
 /**
@@ -48,6 +49,6 @@ typedef BrotliOptions = {
 	/**
 		Key-value object containing indexed Brotli parameters.
 	**/
-	@:optional var params:BrotliOptions;
+	@:optional var params:EitherType<Constants.BrotliCompressorOptions, Constants.BrotliDecompressorOptions>;
 }
 

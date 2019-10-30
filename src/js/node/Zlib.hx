@@ -29,6 +29,7 @@ import js.lib.Error;
 #else
 import js.Error;
 #end
+import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.zlib.*;
 
@@ -118,121 +119,144 @@ extern class Zlib {
 
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_brotlicompress_buffer_options_callback
 	**/
-	@:overload(function(buf:JsBuffer, options:BrotliOptions, callback:Error->Buffer->Void):Void {})
-	static function brotliCompress(buf:JsBuffer, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:Buffer, ?options:BrotliOptions, callback:Error->Buffer->Void):Void {})
+	@:overload(function(buf:ArrayBufferView, ?options:BrotliOptions, callback:Error->Buffer->Void):Void {})
+	static function brotliCompress(buf:String, ?options: BrotliOptions, callback:Error->Buffer->Void):Void;
 
 	/**
 		Compress a chunk of data with `BrotliCompress`.
 
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_brotlicompresssync_buffer_options
 	**/
-	@:overload(function(buf:JsBuffer, options:BrotliOptions):Void {})
-	static function brotliCompressSync(buf:JsBuffer, options:BrotliOptions):Void;
+	@:overload(function(buf:Buffer, ?options:BrotliOptions):Void {})
+	@:overload(function(buf:ArrayBufferView, ?options:BrotliOptions):Void {})
+	static function brotliCompressSync(buf:String, ?options:BrotliOptions):Void;
 
 	/**
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_brotlidecompress_buffer_options_callback
 	**/
-	@:overload(function(buf:JsBuffer, options:BrotliOptions):Void {})
-	static function brotliDecompress(buf:JsBuffer, options:BrotliOptions):Void;
+	@:overload(function(buf:Buffer, ?options:BrotliOptions, callback:Error->Buffer->Void):Void {})
+	@:overload(function(buf:ArrayBufferView, ?options:BrotliOptions, callback:Error->Buffer->Void):Void {})
+	static function brotliDecompress(buf:String, ?options:BrotliOptions, callback:Error->Buffer->Void):Void;
 
 	/**
 		Decompress a chunk of data with `BrotliDecompress`.
 
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_brotlidecompresssync_buffer_options
 	**/
-	static function brotliDecompressSync(buf:JsBuffer, options:BrotliOptions):Void;
+	@:overload(function(buf:Buffer, ?options:BrotliOptions):Void {})
+	@:overload(function(buf:ArrayBufferView, ?options:BrotliOptions):Void {})
+	static function brotliDecompressSync(buf:String, ?options:BrotliOptions):Void;
 
 	/**
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_deflate_buffer_options_callback
 	**/
-	@:overload(function(buf:JsBuffer, options:Options, callback:Error->Buffer->Void):Void {})
-	static function deflate(buf:JsBuffer, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:Buffer, ?options:Options, callback:Error->Buffer->Void):Void {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options, callback:Error->Buffer->Void):Void {})
+	static function deflate(buf:String, ?options:Options, callback:Error->Buffer->Void):Void;
 
 	/**
 		Compress a chunk of data with `Deflate`.
 
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_deflatesync_buffer_options
 	**/
-	static function deflateSync(buf:JsBuffer, ?options:Options):Buffer;
+	@:overload(function(buf:Buffer, ?options:Options):Buffer {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options):Buffer {})
+	static function deflateSync(buf:String, ?options:Options):Buffer;
 
 	/**
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_deflateraw_buffer_options_callback
 	**/
-	@:overload(function(buf:JsBuffer, options:Options, callback:Error->Buffer->Void):Void {})
-	static function deflateRaw(buf:JsBuffer, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:Buffer, ?options:Options, callback:Error->Buffer->Void):Void {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options, callback:Error->Buffer->Void):Void {})
+	static function deflateRaw(buf:ArrayBufferView, ?options:Options, callback:Error->Buffer->Void):Void;
 
 	/**
 		Compress a chunk of data with `DeflateRaw`.
 
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_deflaterawsync_buffer_options
 	**/
-	static function deflateRawSync(buf:JsBuffer, ?options:Options):Buffer;
+	@:overload(function(buf:Buffer, ?options:Options):Buffer {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options):Buffer {})
+	static function deflateRawSync(buf:String, ?options:Options):Buffer;
 
 	/**
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_gunzip_buffer_options_callback
 	**/
-	@:overload(function(buf:JsBuffer, options:Options, callback:Error->Buffer->Void):Void {})
-	static function gunzip(buf:JsBuffer, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:Buffer, ?options:Options, callback:Error->Buffer->Void):Void {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options, callback:Error->Buffer->Void):Void {})
+	static function gunzip(buf:String, ?options:Options, callback:Error->Buffer->Void):Void;
 
 	/**
 		Decompress a chunk of data with `Gunzip`.
 
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_gunzipsync_buffer_options
 	**/
-	static function gunzipSync(buf:JsBuffer, ?options:Options):Buffer;
+	@:overload(function(buf:Buffer, ?options:Options):Buffer {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options):Buffer {})
+	static function gunzipSync(buf:String, ?options:Options):Buffer;
 
 	/**
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_gzip_buffer_options_callback
 	**/
-	@:overload(function(buf:JsBuffer, options:Options, callback:Error->Buffer->Void):Void {})
-	static function gzip(buf:JsBuffer, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:Buffer, ?options:Options, callback:Error->Buffer->Void):Void {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options, callback:Error->Buffer->Void):Void {})
+	static function gzip(buf:String, ?options:Options, callback:Error->Buffer->Void):Void;
 
 	/**
 		Compress a chunk of data with `Gzip`.
 
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_gzipsync_buffer_options
 	**/
-	static function gzipSync(buf:JsBuffer, ?options:Options):Buffer;
+	@:overload(function(buf:Buffer, ?options:Options):Buffer {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options):Buffer {})
+	static function gzipSync(buf:String, ?options:Options):Buffer;
 
 	/**
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_inflate_buffer_options_callback
 	**/
-	@:overload(function(buf:JsBuffer, options:Options, callback:Error->Buffer->Void):Void {})
-	static function inflate(buf:JsBuffer, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:Buffer, ?options:Options, callback:Error->Buffer->Void):Void {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options, callback:Error->Buffer->Void):Void {})
+	static function inflate(buf:String, ?options:Options, callback:Error->Buffer->Void):Void;
 
 	/**
 		Decompress a chunk of data with `Inflate`.
 
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_inflatesync_buffer_options
 	**/
-	static function inflateSync(buf:JsBuffer, ?options:Options):Buffer;
+	@:overload(function(buf:Buffer, ?options:Options):Buffer {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options):Buffer {})
+	static function inflateSync(buf:String, ?options:Options):Buffer;
 
 	/**
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_inflateraw_buffer_options_callback
 	**/
-	@:overload(function(buf:JsBuffer, options:Options, callback:Error->Buffer->Void):Void {})
-	static function inflateRaw(buf:JsBuffer, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:Buffer, ?options:Options, callback:Error->Buffer->Void):Void {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options, callback:Error->Buffer->Void):Void {})
+	static function inflateRaw(buf:String, ?options:Options, callback:Error->Buffer->Void):Void;
 
 	/**
 		Decompress a chunk of data with `InflateRaw`.
 
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_inflaterawsync_buffer_options
 	**/
-	static function inflateRawSync(buf:JsBuffer, ?options:Options):Buffer;
+	@:overload(function(buf:Buffer, ?options:Options):Buffer {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options):Buffer {})
+	static function inflateRawSync(buf:String, ?options:Options):Buffer;
 
 	/**
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_unzip_buffer_options_callback
 	**/
-	@:overload(function(buf:JsBuffer, options:Options, callback:Error->Buffer->Void):Void {})
-	static function unzip(buf:JsBuffer, callback:Error->Buffer->Void):Void;
+	@:overload(function(buf:Buffer, ?options:Options, callback:Error->Buffer->Void):Void {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options, callback:Error->Buffer->Void):Void {})
+	static function unzip(buf:String, ?options:Options, callback:Error->Buffer->Void):Void;
 
 	/**
 		Decompress a chunk of data with `Unzip`.
 
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_unzipsync_buffer_options
 	**/
-	static function unzipSync(buf:JsBuffer, ?options:Options):Buffer;
+	@:overload(function(buf:Buffer, ?options:Options):Buffer {})
+	@:overload(function(buf:ArrayBufferView, ?options:Options):Buffer {})
+	static function unzipSync(buf:String, ?options:Options):Buffer;
 }
-
-
-private typedef JsBuffer = EitherType<String, Buffer>;

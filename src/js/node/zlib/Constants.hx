@@ -161,7 +161,7 @@ typedef BrotliCompressorOptions = {
 
 	@see https://nodejs.org/api/zlib.html#zlib_decompressor_options
 **/
-typedef BrotliDecompressOptions = {
+typedef BrotliDecompressorOptions = {
 	/**
 		Boolean flag that affects internal memory allocation patterns.
 	**/
