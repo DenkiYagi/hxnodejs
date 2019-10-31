@@ -60,297 +60,12 @@ typedef FsWatchFileOptions = {
 typedef FsMode = EitherType<Int, String>;
 
 /**
-	Defaults:
-	{ flags: 'r',
-	  encoding: null,
-	  fd: null,
-	  mode: 0666,
-	  autoClose: true
-	}
-**/
-/**
-	Options for `Fs.createReadStream`.
-**/
-typedef FsCreateReadStreamOptions = {
-	/**
-		default: 'r'
-	**/
-	@:optional var flags:FsOpenFlag;
-
-	/**
-		can be 'utf8', 'ascii', or 'base64'.
-		default: null
-	**/
-	@:optional var encoding:String;
-
-	/**
-		default: null
-	**/
-	@:optional var fd:Int;
-
-	/**
-		default: 0666
-	**/
-	@:optional var mode:FsMode;
-
-	/**
-		If autoClose is false, then the file descriptor won't be closed, even if there's an error.
-		It is your responsiblity to close it and make sure there's no file descriptor leak.
-
-		If autoClose is set to true (default behavior), on error or end the file
-		descriptor will be closed automatically.
-	**/
-	@:optional var autoClose:Bool;
-
-	/**
-		Start of the range of bytes to read
-	**/
-	@:optional var start:Int;
-
-	/**
-		End of the range of bytes to read
-	**/
-	@:optional var end:Int;
-};
-
-/**
-	Options for `Fs.createWriteStream`.
-**/
-typedef FsCreateWriteStreamOptions = {
-	/**
-		default: 'w'
-	**/
-	@:optional var flags:FsOpenFlag;
-
-	/**
-		default: null
-	**/
-	@:optional var encoding:String;
-
-	/**
-		default: 0666
-	**/
-	@:optional var mode:FsMode;
-
-	/**
-		position to write data the beginning of the file.
-	**/
-	@:optional var start:Int;
-}
-
-/**
 	Enumeration of possible symlink types
 **/
 @:enum abstract SymlinkType(String) from String to String {
 	var Dir = "dir";
 	var File = "file";
 	var Junction = "junction";
-}
-
-/**
-	Constants for use in `Fs` module.
-
-	Note: Not every constant will be available on every operating system.
-**/
-typedef FsConstants = {
-	/**
-		Flag indicating that the file is visible to the calling process.
-		Meant for use with `Fs.access`.
-	**/
-	var F_OK:Int;
-
-	/**
-		Flag indicating that the file can be read by the calling process.
-		Meant for use with `Fs.access`.
-	**/
-	var R_OK:Int;
-
-	/**
-		Flag indicating that the file can be written by the calling process.
-		Meant for use with `Fs.access`.
-	**/
-	var W_OK:Int;
-
-	/**
-		Flag indicating that the file can be executed by the calling process.
-		Meant for use with `Fs.access`.
-	**/
-	var X_OK:Int;
-
-	/**
-		Flag indicating to open a file for read-only access.
-	**/
-	var O_RDONLY:Int;
-
-	/**
-		Flag indicating to open a file for write-only access.
-	**/
-	var O_WRONLY:Int;
-
-	/**
-		Flag indicating to open a file for read-write access.
-	**/
-	var O_RDWR:Int;
-
-	/**
-		Flag indicating to create the file if it does not already exist.
-	**/
-	var O_CREAT:Int;
-
-	/**
-		Flag indicating that opening a file should fail if the O_CREAT flag is set and the file already exists.
-	**/
-	var O_EXCL:Int;
-
-	/**
-		Flag indicating that if path identifies a terminal device, opening the path shall not cause that terminal to become the controlling terminal for the process (if the process does not already have one).
-	**/
-	var O_NOCTTY:Int;
-
-	/**
-		Flag indicating that if the file exists and is a regular file, and the file is opened successfully for write access, its length shall be truncated to zero.
-	**/
-	var O_TRUNC:Int;
-
-	/**
-		Flag indicating that data will be appended to the end of the file.
-	**/
-	var O_APPEND:Int;
-
-	/**
-		Flag indicating that the open should fail if the path is not a directory.
-	**/
-	var O_DIRECTORY:Int;
-
-	/**
-		Flag indicating reading accesses to the file system will no longer result in an update to the atime information associated with the file. This flag is available on Linux operating systems only.
-	**/
-	var O_NOATIME:Int;
-
-	/**
-		Flag indicating that the open should fail if the path is a symbolic link.
-	**/
-	var O_NOFOLLOW:Int;
-
-	/**
-		Flag indicating that the file is opened for synchronous I/O.
-	**/
-	var O_SYNC:Int;
-
-	/**
-		Flag indicating to open the symbolic link itself rather than the resource it is pointing to.
-	**/
-	var O_SYMLINK:Int;
-
-	/**
-		When set, an attempt will be made to minimize caching effects of file I/O.
-	**/
-	var O_DIRECT:Int;
-
-	/**
-		Flag indicating to open the file in nonblocking mode when possible.
-	**/
-	var O_NONBLOCK:Int;
-
-	/**
-		Bit mask used to extract the file type code.
-	**/
-	var S_IFMT:Int;
-
-	/**
-		File type constant for a regular file.
-	**/
-	var S_IFREG:Int;
-
-	/**
-		File type constant for a directory.
-	**/
-	var S_IFDIR:Int;
-
-	/**
-		File type constant for a character-oriented device file.
-	**/
-	var S_IFCHR:Int;
-
-	/**
-		File type constant for a block-oriented device file.
-	**/
-	var S_IFBLK:Int;
-
-	/**
-		File type constant for a FIFO/pipe.
-	**/
-	var S_IFIFO:Int;
-
-	/**
-		File type constant for a symbolic link.
-	**/
-	var S_IFLNK:Int;
-
-	/**
-		File type constant for a socket.
-	**/
-	var S_IFSOCK:Int;
-
-	/**
-		File mode indicating readable, writable and executable by owner.
-	**/
-	var S_IRWXU:Int;
-
-	/**
-		File mode indicating readable by owner.
-	**/
-	var S_IRUSR:Int;
-
-	/**
-		File mode indicating writable by owner.
-	**/
-	var S_IWUSR:Int;
-
-	/**
-		File mode indicating executable by owner.
-	**/
-	var S_IXUSR:Int;
-
-	/**
-		File mode indicating readable, writable and executable by group.
-	**/
-	var S_IRWXG:Int;
-
-	/**
-		File mode indicating readable by group.
-	**/
-	var S_IRGRP:Int;
-
-	/**
-		File mode indicating writable by group.
-	**/
-	var S_IWGRP:Int;
-
-	/**
-		File mode indicating executable by group.
-	**/
-	var S_IXGRP:Int;
-
-	/**
-		File mode indicating readable, writable and executable by others.
-	**/
-	var S_IRWXO:Int;
-
-	/**
-		File mode indicating readable by others.
-	**/
-	var S_IROTH:Int;
-
-	/**
-		File mode indicating writable by others.
-	**/
-	var S_IWOTH:Int;
-
-	/**
-		File mode indicating executable by others.
-	**/
-	var S_IXOTH:Int;
 }
 
 /**
@@ -410,9 +125,86 @@ extern class Fs {
 	static function chmodSync(path:FsPath, mode:Int):Void;
 
 	/**
-		An object containing commonly used constants for file system operations.
+		Asynchronously changes owner and group of a file.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_chown_path_uid_gid_callback
+	**/
+	static function chown(path:FsPath, uid:Int, gid:Int, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronously changes owner and group of a file.
+		Returns `undefined`.
+		This is the synchronous version of `fs.chown()`.
+	**/
+	static function chownSync(path:FsPath, uid:Int, gid:Int):Void;
+
+	/**
+		Asynchronous `close(2)`.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_close_fd_callback
+	**/
+	static function close(fd:Int, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronous `close(2)`.
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_closesync_fd
+	**/
+	static function closeSync(fd:Int):Void;
+
+	/**
+		Returns an object containing commonly used constants for file system operations.
+		The specific constants currently defined are described in FS Constants.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_constants
 	**/
 	static var constants(default, null):FsConstants;
+
+	/**
+		Asynchronously copies `src` to `dest`.
+		By default, `dest` is overwritten if it already exists.
+		No arguments other than a possible exception are given to the callback function.
+		Node.js makes no guarantees about the atomicity of the copy operation.
+		If an error occurs after the destination file has been opened for writing, Node.js will attempt to remove the
+		destination.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_copyfile_src_dest_flags_callback
+	**/
+	static function copyFile(src:FsPath, dest:FsPath, ?flags:Int, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronously copies `src` to `dest`.
+		By default, dest is overwritten if it already exists.
+		Returns `undefined`.
+		Node.js makes no guarantees about the atomicity of the copy operation.
+		If an error occurs after the destination file has been opened for writing, Node.js will attempt to remove the
+		destination.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_copyfile_src_dest_flags_callback
+	**/
+	static function copyFileSync(src:FsPath, dest:FsPath, ?flags:Int):Void;
+
+	/**
+		Unlike the 16 kb default `highWaterMark` for a readable stream, the stream returned by this method has a default
+		`highWaterMark` of 64 kb.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options
+	**/
+	@:overload(function(path:FsPath, ?options:String):ReadStream {})
+	static function createReadStream(path:FsPath, ?options:FsCreateReadStreamOptions):ReadStream;
+
+	/**
+		`options` may also include a `start` option to allow writing data at some position past the beginning of the
+		file, allowed values are in the `[0, Number.MAX_SAFE_INTEGER]` range.
+		Modifying a file rather than replacing it may require a `flags` mode of `r+` rather than the default mode `w`.
+		The `encoding` can be any one of those accepted by `Buffer`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options
+	**/
+	static function createWriteStream(path:FsPath, ?options:FsCreateWriteStreamOptions):WriteStream;
 
 	/**
 		Asynchronous rename(2).
@@ -443,16 +235,6 @@ extern class Fs {
 		Synchronous truncate(2).
 	**/
 	static function truncateSync(path:FsPath, len:Int):Void;
-
-	/**
-		Asynchronous chown(2).
-	**/
-	static function chown(path:FsPath, uid:Int, gid:Int, callback:Error->Void):Void;
-
-	/**
-		Synchronous chown(2).
-	**/
-	static function chownSync(path:FsPath, uid:Int, gid:Int):Void;
 
 	/**
 		Asynchronous fchown(2).
@@ -651,16 +433,6 @@ extern class Fs {
 		Returns an array of filenames excluding '.' and '..'.
 	**/
 	static function readdirSync(path:FsPath):Array<String>;
-
-	/**
-		Asynchronous close(2).
-	**/
-	static function close(fd:Int, callback:Error->Void):Void;
-
-	/**
-		Synchronous close(2).
-	**/
-	static function closeSync(fd:Int):Void;
 
 	/**
 		Asynchronous file open. See open(2).
@@ -916,29 +688,332 @@ extern class Fs {
 		This has no effect on Windows.
 	**/
 	static var X_OK(default, null):Int;
+}
+
+/**
+	The following constants are exported by fs.constants.
+
+	@see https://nodejs.org/api/fs.html#fs_fs_constants_1
+**/
+typedef FsConstants = {
+	/**
+		Flag indicating that the file is visible to the calling process.
+		This is useful for determining if a file exists, but says nothing about `rwx` permissions.
+		Default if no mode is specified.
+	**/
+	var F_OK:Int;
 
 	/**
-		Returns a new ReadStream object (See Readable Stream).
-
-		`options` can include `start` and `end` values to read a range of bytes from the file instead of the entire file.
-		Both `start` and `end` are inclusive and start at 0.
-
-		The encoding can be 'utf8', 'ascii', or 'base64'.
-
-		If `autoClose` is `false`, then the file descriptor won't be closed, even if there's an error.
-		It is your responsiblity to close it and make sure there's no file descriptor leak.
-		If `autoClose` is set to true (default behavior), on error or end the file descriptor will be closed automatically.
+		Flag indicating that the file can be read by the calling process.
 	**/
-	static function createReadStream(path:FsPath, ?options:EitherType<String, FsCreateReadStreamOptions>):ReadStream;
+	var R_OK:Int;
 
 	/**
-		Returns a new WriteStream object (See Writable Stream).
-
-		`options` may also include a `start` option to allow writing data at some position past the beginning of the file.
-
-		Modifying a file rather than replacing it may require a flags mode of r+ rather than the default mode w.
+		Flag indicating that the file can be written by the calling process.
 	**/
-	static function createWriteStream(path:FsPath, ?options:FsCreateWriteStreamOptions):WriteStream;
+	var W_OK:Int;
+
+	/**
+		Flag indicating that the file can be executed by the calling process.
+		This has no effect on Windows (will behave like `fs.constants.F_OK`).
+	**/
+	var X_OK:Int;
+
+	/**
+		If present, the copy operation will fail with an error if the destination path already exists.
+	**/
+	var COPYFILE_EXCL:Int;
+
+	/**
+		If present, the copy operation will attempt to create a copy-on-write reflink.
+		If the underlying platform does not support copy-on-write, then a fallback copy mechanism is used.
+	**/
+	var COPYFILE_FICLONE:Int;
+
+	/**
+		If present, the copy operation will attempt to create a copy-on-write reflink.
+		If the underlying platform does not support copy-on-write, then the operation will fail with an error.
+	**/
+	var COPYFILE_FICLONE_FORCE:Int;
+
+	/**
+		Flag indicating to open a file for read-only access.
+	**/
+	var O_RDONLY:Int;
+
+	/**
+		Flag indicating to open a file for write-only access.
+	**/
+	var O_WRONLY:Int;
+
+	/**
+		Flag indicating to open a file for read-write access.
+	**/
+	var O_RDWR:Int;
+
+	/**
+		Flag indicating to create the file if it does not already exist.
+	**/
+	var O_CREAT:Int;
+
+	/**
+		Flag indicating that opening a file should fail if the `O_CREAT` flag is set and the file already exists.
+	**/
+	var O_EXCL:Int;
+
+	/**
+		Flag indicating that if path identifies a terminal device, opening the path shall not cause that terminal to
+		become the controlling terminal for the process (if the process does not already have one).
+	**/
+	var O_NOCTTY:Int;
+
+	/**
+		Flag indicating that if the file exists and is a regular file, and the file is opened successfully for write
+		access, its length shall be truncated to zero.
+	**/
+	var O_TRUNC:Int;
+
+	/**
+		Flag indicating that data will be appended to the end of the file.
+	**/
+	var O_APPEND:Int;
+
+	/**
+		Flag indicating that the open should fail if the path is not a directory.
+	**/
+	var O_DIRECTORY:Int;
+
+	/**
+		Flag indicating reading accesses to the file system will no longer result in an update to the `atime`
+		information associated with the file.
+		This flag is available on Linux operating systems only.
+	**/
+	var O_NOATIME:Int;
+
+	/**
+		Flag indicating that the open should fail if the path is a symbolic link.
+	**/
+	var O_NOFOLLOW:Int;
+
+	/**
+		Flag indicating that the file is opened for synchronized I/O with write operations waiting for file integrity.
+	**/
+	var O_SYNC:Int;
+
+	/**
+		Flag indicating that the file is opened for synchronized I/O with write operations waiting for data integrity.
+	**/
+	var O_DSYNC:Int;
+
+	/**
+		Flag indicating to open the symbolic link itself rather than the resource it is pointing to.
+	**/
+	var O_SYMLINK:Int;
+
+	/**
+		When set, an attempt will be made to minimize caching effects of file I/O.
+	**/
+	var O_DIRECT:Int;
+
+	/**
+		Flag indicating to open the file in nonblocking mode when possible.
+	**/
+	var O_NONBLOCK:Int;
+
+	/**
+		When set, a memory file mapping is used to access the file.
+		This flag is available on Windows operating systems only.
+		On other operating systems, this flag is ignored.
+	**/
+	var UV_FS_O_FILEMAP:Int;
+
+	/**
+		Bit mask used to extract the file type code.
+	**/
+	var S_IFMT:Int;
+
+	/**
+		File type constant for a regular file.
+	**/
+	var S_IFREG:Int;
+
+	/**
+		File type constant for a directory.
+	**/
+	var S_IFDIR:Int;
+
+	/**
+		File type constant for a character-oriented device file.
+	**/
+	var S_IFCHR:Int;
+
+	/**
+		File type constant for a block-oriented device file.
+	**/
+	var S_IFBLK:Int;
+
+	/**
+		File type constant for a FIFO/pipe.
+	**/
+	var S_IFIFO:Int;
+
+	/**
+		File type constant for a symbolic link.
+	**/
+	var S_IFLNK:Int;
+
+	/**
+		File type constant for a socket.
+	**/
+	var S_IFSOCK:Int;
+
+	/**
+		File mode indicating readable, writable, and executable by owner.
+	**/
+	var S_IRWXU:Int;
+
+	/**
+		File mode indicating readable by owner.
+	**/
+	var S_IRUSR:Int;
+
+	/**
+		File mode indicating writable by owner.
+	**/
+	var S_IWUSR:Int;
+
+	/**
+		File mode indicating executable by owner.
+	**/
+	var S_IXUSR:Int;
+
+	/**
+		File mode indicating readable, writable, and executable by group.
+	**/
+	var S_IRWXG:Int;
+
+	/**
+		File mode indicating readable by group.
+	**/
+	var S_IRGRP:Int;
+
+	/**
+		File mode indicating writable by group.
+	**/
+	var S_IWGRP:Int;
+
+	/**
+		File mode indicating executable by group.
+	**/
+	var S_IXGRP:Int;
+
+	/**
+		File mode indicating readable, writable, and executable by others.
+	**/
+	var S_IRWXO:Int;
+
+	/**
+		File mode indicating readable by others.
+	**/
+	var S_IROTH:Int;
+
+	/**
+		File mode indicating writable by others.
+	**/
+	var S_IWOTH:Int;
+
+	/**
+		File mode indicating executable by others.
+	**/
+	var S_IXOTH:Int;
+}
+
+/**
+	Options object used by `Fs.createReadStream`.
+**/
+typedef FsCreateReadStreamOptions = {
+	/**
+		See support of file system `flags`.
+
+		Default: `'r'`.
+	**/
+	@:optional var flags:FsOpenFlag;
+
+	/**
+		Default: `null`.
+	**/
+	@:optional var encoding:String;
+
+	/**
+		Default: `null`.
+	**/
+	@:optional var fd:Int;
+
+	/**
+		Default: `0o666`.
+	**/
+	@:optional var mode:Int;
+
+	/**
+		Default: `true`.
+	**/
+	@:optional var autoClose:Bool;
+
+	/**
+		Default: `false`.
+	**/
+	@:optional var emitClose:Bool;
+
+	@:optional var start:Int;
+
+	/**
+		Default: `Infinity`.
+	**/
+	@:optional var end:Int;
+
+	/**
+		Default: `64 * 1024`.
+	**/
+	@:optional var highWaterMark:Int;
+};
+
+/**
+	Options object used by `Fs.createWriteStream`.
+**/
+typedef FsCreateWriteStreamOptions = {
+	/**
+		See support of file system `flags`.
+
+		Default: `'w'`.
+	**/
+	@:optional var flags:String;
+
+	/**
+		Default: `'utf8'`.
+	**/
+	@:optional var encoding:String;
+
+	/**
+		Default: `null`.
+	**/
+	@:optional var fd:Int;
+
+	/**
+		Default: `0o666`.
+	**/
+	@:optional var mode:Int;
+
+	/**
+		Default: `true`.
+	**/
+	@:optional var autoClose:Bool;
+
+	/**
+		Default: `false`.
+	**/
+	@:optional var emitClose:Bool;
+
+	@:optional var start:Int;
 }
 
 /**
