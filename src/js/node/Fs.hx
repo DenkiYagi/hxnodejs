@@ -207,6 +207,264 @@ extern class Fs {
 	static function createWriteStream(path:FsPath, ?options:FsCreateWriteStreamOptions):WriteStream;
 
 	/**
+		Test whether or not the given path exists by checking with the file system.
+		Then call the `callback` argument with either true or false:
+
+		@see https://nodejs.org/api/fs.html#fs_fs_exists_path_callback
+	**/
+	@:deprecated
+	static function exists(path:FsPath, callback:Bool->Void):Void;
+
+	/**
+		Returns `true` if the path exists, `false` otherwise.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_existssync_path
+	**/
+	static function existsSync(path:FsPath):Bool;
+
+	/**
+		Asynchronous `fchmod(2)`.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_fchmod_fd_mode_callback
+	**/
+	static function fchmod(fd:Int, mode:Int, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronous `fchmod(2)`.
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_fchmodsync_fd_mode
+	**/
+	static function fchmodSync(fd:Int, mode:Int):Void;
+
+	/**
+		Asynchronous `fchown(2)`.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_fchown_fd_uid_gid_callback
+	**/
+	static function fchown(fd:Int, uid:Int, gid:Int, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronous `fchown(2)`.
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_fchownsync_fd_uid_gid
+	**/
+	static function fchownSync(fd:Int, uid:Int, gid:Int):Void;
+
+	/**
+		Asynchronous `fdatasync(2)`.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_fdatasync_fd_callback
+	**/
+	static function fdatasync(fd:Int, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronous `fdatasync(2)`.
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_fdatasyncsync_fd
+	**/
+	static function fdatasyncSync(fd:Int):Void;
+
+	/**
+		Asynchronous `fstat(2)`.
+		The callback gets two arguments `(err, stats)` where `stats` is an `fs.Stats` object.
+		`fstat()` is identical to `stat()`, except that the file to be stat-ed is specified by the file descriptor `fd`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_fstat_fd_options_callback
+	**/
+	static function fstat(fd:Int, ?options:{bigint:Bool}, callback:Error->Stats->Void):Void;
+
+	/**
+		Synchronous `fstat(2)`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_fstatsync_fd_options
+	**/
+	static function fstatSync(fd:Int, ?options:{bigint:Bool}):Stats;
+
+	/**
+		Asynchronous `fsync(2)`.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_fsync_fd_callback
+	**/
+	static function fsync(fd:Int, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronous `fsync(2)`.
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_fsyncsync_fd
+	**/
+	static function fsyncSync(fd:Int):Void;
+
+	/**
+		Asynchronous `ftruncate(2)`.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_ftruncate_fd_len_callback
+	**/
+	static function ftruncate(fd:Int, ?len:Int, callback:Null<Error>->Void):Void;
+
+	/**
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_ftruncatesync_fd_len
+	**/
+	static function ftruncateSync(fd:Int, ?len:Int):Void;
+
+	/**
+		Change the file system timestamps of the object referenced by the supplied file descriptor.
+		See `fs.utimes()`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_futimes_fd_atime_mtime_callback
+	**/
+	static function futimes(fd:Int, atime:Time, mtime:Time, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronous version of `fs.futimes()`.
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_futimessync_fd_atime_mtime
+	**/
+	static function futimesSync(fd:Int, atime:Date, mtime:Date):Void;
+
+	/**
+		Asynchronous `lchmod(2)`.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_lchmod_path_mode_callback
+	**/
+	static function lchmod(path:FsPath, mode:Int, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronous `lchmod(2)`.
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_lchmodsync_path_mode
+	**/
+	static function lchmodSync(path:FsPath, mode:Int):Void;
+
+	/**
+		Asynchronous `lchown(2)`.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_lchown_path_uid_gid_callback
+	**/
+	static function lchown(path:FsPath, uid:Int, gid:Int, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronous `lchown(2)`.
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_lchownsync_path_uid_gid
+	**/
+	static function lchownSync(path:FsPath, uid:Int, gid:Int):Void;
+
+	/**
+		Asynchronous `link(2)`.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_link_existingpath_newpath_callback
+	**/
+	static function link(existingPath:FsPath, newPath:FsPath, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronous `link(2)`.
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_linksync_existingpath_newpath
+	**/
+	static function linkSync(existingPath:FsPath, newPath:FsPath):Void;
+
+	/**
+		Asynchronous `lstat(2)`.
+		The callback gets two arguments `(err, stats)` where `stats` is a `fs.Stats` object.
+		`lstat()` is identical to `stat()`, except that if `path` is a symbolic link, then the link itself is stat-ed,
+		not the file that it refers to.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_lstat_path_options_callback
+	**/
+	static function lstat(path:FsPath, ?options:{bigint:Bool}, callback:Error->Stats->Void):Void;
+
+	/**
+		Synchronous `lstat(2)`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_lstatsync_path_options
+	**/
+	static function lstatSync(path:FsPath, ?options:{bigint:Bool}):Stats;
+
+	/**
+		Asynchronously creates a directory.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_mkdir_path_options_callback
+	**/
+	static function mkdir(path:FsPath, ?options:FsMkdirOptions, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronously creates a directory.
+		Returns `undefined`.
+		This is the synchronous version of `fs.mkdir()`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_mkdirsync_path_options
+	**/
+	static function mkdirSync(path:FsPath, ?options:FsMkdirOptions):Void;
+
+	/**
+		Creates a unique temporary directory.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_mkdtemp_prefix_options_callback
+	**/
+	@:overload(function(prefix:String, ?options:String, callback:Error->String->Void):Void {})
+	static function mkdtemp(prefix:String, ?options:{encoding:String}, callback:Error->String->Void):Void;
+
+	/**
+		Returns the created folder path.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_mkdtempsync_prefix_options
+	**/
+	@:overload(function(prefix:String, ?options:String):String {})
+	static function mkdtempSync(prefix:String, ?options:{encoding:String}):String;
+
+	/**
+		Asynchronous file open.
+		See `open(2)`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_open_path_flags_mode_callback
+	**/
+	@:overload(function(path:FsPath, ?flags:FsOpenFlag, ?mode:Int, callback:Error->Int->Void):Void {})
+	static function open(path:FsPath, ?flags:Int, ?mode:Int, callback:Error->Int->Void):Void;
+
+	/**
+		Asynchronously open a directory.
+		See `opendir(3)`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_opendir_path_options_callback
+	**/
+	static function opendir(path:FsPath, ?options:{encoding:Null<String>}, callback:Error->Dir->Void):Void;
+
+	/**
+		Synchronously open a directory.
+		See `opendir(3)`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_opendirsync_path_options
+	**/
+	static function opendirSync(path:FsPath, ?options:{encoding:Null<String>}):Dir;
+
+	/**
+		Returns an integer representing the file descriptor.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_opensync_path_flags_mode
+	**/
+	@:overload(function(path:FsPath, ?flags:FsOpenFlag, ?mode:Int):Int {})
+	static function openSync(path:FsPath, ?flags:Int, ?mode:Int):Int;
+
+	/**
 		Asynchronous rename(2).
 	**/
 	static function rename(oldPath:FsPath, newPath:FsPath, callback:Error->Void):Void;
@@ -215,16 +473,6 @@ extern class Fs {
 		Synchronous rename(2).
 	**/
 	static function renameSync(oldPath:FsPath, newPath:FsPath):Void;
-
-	/**
-		Asynchronous ftruncate(2).
-	**/
-	static function ftruncate(fd:Int, len:Int, callback:Error->Void):Void;
-
-	/**
-		Synchronous ftruncate(2).
-	**/
-	static function ftruncateSync(fd:Int, len:Int):Void;
 
 	/**
 		Asynchronous truncate(2).
@@ -237,91 +485,14 @@ extern class Fs {
 	static function truncateSync(path:FsPath, len:Int):Void;
 
 	/**
-		Asynchronous fchown(2).
-	**/
-	static function fchown(fd:Int, uid:Int, gid:Int, callback:Error->Void):Void;
-
-	/**
-		Synchronous fchown(2).
-	**/
-	static function fchownSync(fd:Int, uid:Int, gid:Int):Void;
-
-	/**
-		Asynchronous lchown(2).
-	**/
-	static function lchown(path:FsPath, uid:Int, gid:Int, callback:Error->Void):Void;
-
-	/**
-		Synchronous lchown(2).
-	**/
-	static function lchownSync(path:FsPath, uid:Int, gid:Int):Void;
-
-	/**
-		Asynchronous fchmod(2).
-	**/
-	static function fchmod(fd:Int, mode:FsMode, callback:Error->Void):Void;
-
-	/**
-		Synchronous fchmod(2).
-	**/
-	static function fchmodSync(fd:Int, mode:FsMode):Void;
-
-	/**
-		Asynchronous lchmod(2).
-		Only available on Mac OS X.
-	**/
-	static function lchmod(path:FsPath, mode:FsMode, callback:Error->Void):Void;
-
-	/**
-		Synchronous lchmod(2).
-	**/
-	static function lchmodSync(path:FsPath, mode:FsMode):Void;
-
-	/**
 		Asynchronous stat(2).
 	**/
 	static function stat(path:FsPath, callback:Error->Stats->Void):Void;
 
 	/**
-		Asynchronous lstat(2).
-
-		lstat() is identical to stat(), except that if path is a symbolic link,
-		then the link itself is stat-ed, not the file that it refers to.
-	**/
-	static function lstat(path:FsPath, callback:Error->Stats->Void):Void;
-
-	/**
-		Asynchronous fstat(2).
-
-		fstat() is identical to stat(), except that the file to be stat-ed
-		is specified by the file descriptor fd.
-	**/
-	static function fstat(fd:Int, callback:Error->Stats->Void):Void;
-
-	/**
 		Synchronous stat(2).
 	**/
 	static function statSync(path:FsPath):Stats;
-
-	/**
-		Synchronous lstat(2).
-	**/
-	static function lstatSync(path:FsPath):Stats;
-
-	/**
-		Synchronous fstat(2).
-	**/
-	static function fstatSync(fd:Int):Stats;
-
-	/**
-		Asynchronous link(2).
-	**/
-	static function link(srcpath:FsPath, dstpath:FsPath, callback:Error->Void):Void;
-
-	/**
-		Synchronous link(2).
-	**/
-	static function linkSync(srcpath:FsPath, dstpath:FsPath):Void;
 
 	/**
 		Asynchronous symlink(2).
@@ -392,34 +563,6 @@ extern class Fs {
 	static function rmdirSync(path:FsPath):Void;
 
 	/**
-		Asynchronous mkdir(2).
-		`mode` defaults to 0777.
-	**/
-	@:overload(function(path:FsPath, callback:Error->Void):Void {})
-	static function mkdir(path:FsPath, mode:FsMode, callback:Error->Void):Void;
-
-	/**
-		Synchronous mkdir(2).
-	**/
-	static function mkdirSync(path:FsPath, ?mode:FsMode):Void;
-
-	/**
-		Creates a unique temporary directory.
-
-		Generates six random characters to be appended behind a required `prefix` to create a unique temporary directory.
-
-		The created folder path is passed as a string to the `callback`'s second parameter.
-	**/
-	static function mkdtemp(prefix:String, callback:Error->String->Void):Void;
-
-	/**
-		The synchronous version of `mkdtemp`.
-
-		Returns the created folder path.
-	**/
-	static function mkdtempSync(template:String):String;
-
-	/**
 		Asynchronous readdir(3).
 		Reads the contents of a directory.
 
@@ -435,25 +578,6 @@ extern class Fs {
 	static function readdirSync(path:FsPath):Array<String>;
 
 	/**
-		Asynchronous file open. See open(2).
-
-		See `FsOpenFlag` for description of possible `flags`.
-
-		`mode` sets the file mode (permission and sticky bits), but only if the file was created.
-		It defaults to 0666, readable and writeable.
-
-		The `callback` gets two arguments (err, fd).
-	**/
-	@:overload(function(path:FsPath, flags:FsOpenFlag, callback:Error->Int->Void):Void {})
-	static function open(path:FsPath, flags:FsOpenFlag, mode:FsMode, callback:Error->Int->Void):Void;
-
-	/**
-		Synchronous version of open().
-	**/
-	@:overload(function(path:FsPath, flags:FsOpenFlag):Int {})
-	static function openSync(path:FsPath, flags:FsOpenFlag, mode:FsMode):Int;
-
-	/**
 		Change file timestamps of the file referenced by the supplied path.
 	**/
 	static function utimes(path:FsPath, atime:Date, mtime:Date, callback:Error->Void):Void;
@@ -462,26 +586,6 @@ extern class Fs {
 		Change file timestamps of the file referenced by the supplied path.
 	**/
 	static function utimesSync(path:FsPath, atime:Date, mtime:Date):Void;
-
-	/**
-		Change the file timestamps of a file referenced by the supplied file descriptor.
-	**/
-	static function futimes(fd:Int, atime:Date, mtime:Date, callback:Error->Void):Void;
-
-	/**
-		Change the file timestamps of a file referenced by the supplied file descriptor.
-	**/
-	static function futimesSync(fd:Int, atime:Date, mtime:Date):Void;
-
-	/**
-		Asynchronous fsync(2).
-	**/
-	static function fsync(fd:Int, callback:Error->Void):Void;
-
-	/**
-		Synchronous fsync(2).
-	**/
-	static function fsyncSync(fd:Int):Void;
 
 	/**
 		Documentation for the overloads with the `buffer` argument:
@@ -640,26 +744,6 @@ extern class Fs {
 	static function watch(filename:FsPath, listener:FSWatcherChangeType->FsPath->Void):FSWatcher;
 
 	/**
-		Test whether or not the given `path` exists by checking with the file system.
-		Then call the `callback` argument with either `true` or `false`.
-
-		`exists` is an anachronism and exists only for historical reasons.
-		There should almost never be a reason to use it in your own code.
-
-		In particular, checking if a file exists before opening it is an anti-pattern that leaves you vulnerable to race conditions:
-		another process may remove the file between the calls to `exists` and `open`.
-
-		Just open the file and handle the error when it's not there.
-	**/
-	@:deprecated("Use Fs.stat or Fs.access instead")
-	static function exists(path:FsPath, callback:Bool->Void):Void;
-
-	/**
-		Synchronous version of `exists`.
-	**/
-	static function existsSync(path:FsPath):Bool;
-
-	/**
 		A mode flag for `access` and `accessSync` methods:
 
 		File is visible to the calling process.
@@ -688,6 +772,110 @@ extern class Fs {
 		This has no effect on Windows.
 	**/
 	static var X_OK(default, null):Int;
+}
+
+typedef FsPath = EitherType<String, EitherType<Buffer, URL>>;
+typedef FsPath_ = EitherType<FsPath, Int>;
+
+/**
+	Options object used by `Fs.appendFile` and `Fs.writeFile`.
+**/
+typedef FsWriteFileOptions = {
+	/**
+		Default: `'utf8'`.
+	**/
+	@:optional var encoding:Null<String>;
+
+	/**
+		Default: `0o666`.
+	**/
+	@:optional var mode:Int;
+
+	/**
+		Default: `'a'`.
+	**/
+	@:optional var flag:FsOpenFlag;
+}
+
+/**
+	Enumeration of possible flags for opening file.
+
+	@see https://nodejs.org/api/fs.html#fs_file_system_flags
+**/
+@:enum abstract FsOpenFlag(String) from String to String {
+	/**
+		Open file for appending.
+		The file is created if it does not exist.
+	**/
+	var AppendCreate = "a";
+
+	/**
+		Like `'a'` but fails if the path exists.
+	**/
+	var AppendCheck = "ax";
+
+	/**
+		Open file for reading and appending.
+		The file is created if it does not exist.
+	 */
+	var AppendReadCreate = "a+";
+
+	/**
+		Like `'a+'` but fails if the path exists.
+	**/
+	var AppendReadCheck = "ax+";
+
+	/**
+		Open file for appending in synchronous mode.
+		The file is created if it does not exist.
+	**/
+	var AppendCreateSync = "as";
+
+	/**
+		Open file for reading and appending in synchronous mode.
+		The file is created if it does not exist.
+	**/
+	var AppendReadCreateSync = "as+";
+
+	/**
+		Open file for reading.
+		An exception occurs if the file does not exist.
+	**/
+	var Read = "r";
+
+	/**
+		Open file for reading and writing.
+		An exception occurs if the file does not exist.
+	**/
+	var ReadWrite = "r+";
+
+	/**
+		Open file for reading and writing in synchronous mode.
+		Instructs the operating system to bypass the local file system cache.
+	**/
+	var ReadWriteSync = "rs+";
+
+	/**
+		Open file for writing.
+		The file is created (if it does not exist) or truncated (if it exists).
+	**/
+	var WriteCreate = "w";
+
+	/**
+		Like `'w'` but fails if the path exists.
+	**/
+	var WriteCheck = "wx";
+
+	/**
+		Open file for reading and writing.
+		The file is created (if it does not exist) or truncated (if it exists).
+	**/
+	var WriteReadCreate = "w+";
+
+	/**
+		Like `'w+'` but fails if the path exists.
+	**/
+	var WriteReadCheck = "wx+";
 }
 
 /**
@@ -1016,111 +1204,24 @@ typedef FsCreateWriteStreamOptions = {
 	@:optional var start:Int;
 }
 
-/**
-	Most FS functions now support passing `String` and `Buffer`.
-	This type is used for path arguments and allows passing either of those.
-**/
-typedef FsPath = EitherType<String, EitherType<Buffer, URL>>;
-
-typedef FsPath_ = EitherType<FsPath, Int>;
+typedef Time = EitherType<Int, EitherType<String, Date>>;
 
 /**
-	Options object used by `Fs.appendFile` and `Fs.writeFile`.
+	Options object used by `Fs.mkdir`.
 **/
-typedef FsWriteFileOptions = {
+typedef FsMkdirOptions = {
 	/**
-		Default: `'utf8'`.
+		Default: `false`.
 	**/
-	@:optional var encoding:Null<String>;
+	@:optional var recursive:Bool;
 
 	/**
-		Default: `0o666`.
+		Not supported on Windows.
+
+		Default: `0o777`.
 	**/
 	@:optional var mode:Int;
-
-	/**
-		Default: `'a'`.
-	**/
-	@:optional var flag:FsOpenFlag;
 }
 
-/**
-	Enumeration of possible flags for opening file.
-
-	@see https://nodejs.org/api/fs.html#fs_file_system_flags
-**/
-@:enum abstract FsOpenFlag(String) from String to String {
-	/**
-		Open file for appending.
-		The file is created if it does not exist.
-	**/
-	var AppendCreate = "a";
-
-	/**
-		Like `'a'` but fails if the path exists.
-	**/
-	var AppendCheck = "ax";
-
-	/**
-		Open file for reading and appending.
-		The file is created if it does not exist.
-	 */
-	var AppendReadCreate = "a+";
-
-	/**
-		Like `'a+'` but fails if the path exists.
-	**/
-	var AppendReadCheck = "ax+";
-
-	/**
-		Open file for appending in synchronous mode.
-		The file is created if it does not exist.
-	**/
-	var AppendCreateSync = "as";
-
-	/**
-		Open file for reading and appending in synchronous mode.
-		The file is created if it does not exist.
-	**/
-	var AppendReadCreateSync = "as+";
-
-	/**
-		Open file for reading.
-		An exception occurs if the file does not exist.
-	**/
-	var Read = "r";
-
-	/**
-		Open file for reading and writing.
-		An exception occurs if the file does not exist.
-	**/
-	var ReadWrite = "r+";
-
-	/**
-		Open file for reading and writing in synchronous mode.
-		Instructs the operating system to bypass the local file system cache.
-	**/
-	var ReadWriteSync = "rs+";
-
-	/**
-		Open file for writing.
-		The file is created (if it does not exist) or truncated (if it exists).
-	**/
-	var WriteCreate = "w";
-
-	/**
-		Like `'w'` but fails if the path exists.
-	**/
-	var WriteCheck = "wx";
-
-	/**
-		Open file for reading and writing.
-		The file is created (if it does not exist) or truncated (if it exists).
-	**/
-	var WriteReadCreate = "w+";
-
-	/**
-		Like `'w+'` but fails if the path exists.
-	**/
-	var WriteReadCheck = "wx+";
-}
+// TODO: impl FS.Dir
+typedef Dir = {}
