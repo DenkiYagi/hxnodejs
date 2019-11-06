@@ -113,11 +113,29 @@ typedef DnsLookupOptions = {
 /**
 	Types of address data returned by `resolve` functions.
 **/
+typedef DnsResolvedAddress4 = {address:String, ttl:Int};
+typedef DnsResolvedAddress6 = {address:String, ttl:Int};
+typedef DnsResolvedAddressCname = {value:String};
 typedef DnsResolvedAddressMX = {priority:Int, exchange:String};
-
-typedef DnsResolvedAddressSRV = {priority:Int, weight:Int, port:Int, name:String};
-typedef DnsResolvedAddressSOA = {nsname:String, hostmaster:String, serial:Int, refresh:Int, retry:Int, expire:Int, minttl:Int};
-typedef DnsResolvedAddress = EitherType<String, EitherType<DnsResolvedAddressMX, EitherType<DnsResolvedAddressSOA, DnsResolvedAddressSRV>>>;
+typedef DnsResolvedAddressNaptr = {flags:String, service:String, regexp:String, replacement:String, order:Int, preference:Int};
+typedef DnsResolvedAddressNs = {value:String};
+typedef DnsResolvedAddressPtr = {value:String};
+typedef DnsResolvedAddressSoa = {
+    nsname:String,
+    hostmaster:String,
+    serial:Int,
+    refresh:Int,
+    retry:Int,
+    expire:Int,
+    minttl:Int
+};
+typedef DnsResolvedAddressSrv = {
+    priority:Int,
+    weight:Int,
+    port:Int,
+    name:String
+};
+typedef DnsResolvedAddressTxt = {entries:Array<String>};
 
 /**
 	Error objects returned by dns lookups are of this type
@@ -131,6 +149,8 @@ extern class DnsError extends Error {
 
 /**
 	Each DNS query can return one of the following error codes
+
+	@see https://nodejs.org/api/dns.html#dns_error_codes
 **/
 @:jsRequire("dns")
 @:enum extern abstract DnsErrorCode(String) {
@@ -240,12 +260,12 @@ extern class DnsError extends Error {
 	var NOTINITIALIZED;
 
 	/**
-		Error loading iphlpapi.dll.
+		Error loading `iphlpapi.dll`.
 	**/
 	var LOADIPHLPAPI;
 
 	/**
-		Could not find GetNetworkParams function.
+		Could not find `GetNetworkParams` function.
 	**/
 	var ADDRGETNETWORKPARAMS;
 
@@ -255,11 +275,56 @@ extern class DnsError extends Error {
 	var CANCELLED;
 }
 
-typedef DnsLookupCallbackSingle = #if (haxe_ver >= 4) (err : DnsError, address : String, family : DnsAddressFamily) -> Void; #else DnsError->String->
-	DnsAddressFamily->Void #end
-typedef DnsLookupCallbackAll = #if (haxe_ver >= 4) (err : DnsError, addresses : Array<DnsLookupCallbackAllEntry>) -> Void; #else DnsError->
-	Array<DnsLookupCallbackAllEntry>->Void; #end
+typedef DnsLookupCallbackSingle =
+#if (haxe_ver >= 4)
+    (err : DnsError, address : String, family : DnsAddressFamily) -> Void;
+#else
+	DnsError->String->DnsAddressFamily->Void
+#end
+
+typedef DnsLookupCallbackAll =
+#if (haxe_ver >= 4)
+    (err : DnsError, addresses : Array<DnsLookupCallbackAllEntry>) -> Void;
+#else DnsError->
+	DnsError->Array<DnsLookupCallbackAllEntry>->Void;
+#end
 typedef DnsLookupCallbackAllEntry = {address:String, family:DnsAddressFamily};
+
+typedef ResolveAnyRet = EitherType<
+	{type:String, address:String, ttl:Int}, EitherType< // A
+	{type:String, address:String, ttl:Int}, EitherType< // AAAA
+	{type:String, value:String}, EitherType< // Cname
+	{type:String, priority:Int, exchange:String}, EitherType< // MX
+	{ // NAPTR
+		type:String,
+		flags:String,
+		service:String,
+		regex:String,
+		replacement:String,
+		order:Int,
+		preference:Int
+	}, EitherType<
+	{type:String, value:String}, EitherType< // Ns
+	{type:String, value:String}, EitherType< // PTR
+	{ // SOA
+		type:String,
+		nsname:String,
+		hostmaster:String,
+		serial:Int,
+		refersh:Int,
+		retry:Int,
+		expire:Int,
+		minttl:Int
+	}, EitherType<
+	{ // SRV
+		type:String,
+		priority:Int,
+		weight:Int,
+		port:Int,
+		name:String
+	},
+	{type:String, entries:Array<String>} // TXT
+>>>>>>>>>;
 
 /**
 	This module contains functions that belong to two different categories:
@@ -274,158 +339,189 @@ typedef DnsLookupCallbackAllEntry = {address:String, family:DnsAddressFamily};
 	These functions do not use the same set of configuration files than what `lookup` uses. For instance,
 	they do not use the configuration from /etc/hosts. These functions should be used by developers who do not want
 	to use the underlying operating system's facilities for name resolution, and instead want to always perform DNS queries.
+
+	@see https://nodejs.org/api/dns.html#dns_dns
 **/
 @:jsRequire("dns")
 extern class Dns {
 	/**
-		Resolves a `hostname` (e.g. 'google.com') into the first found A (IPv4) or AAAA (IPv6) record.
-
-		If `options` is not provided, then IP v4 and v6 addresses are both valid.
-
-		The `family` can be the integer 4 or 6. Defaults to null that indicates both Ip v4 and v6 address family.
-
-		The `callback` has arguments (err, address, family).
-		The `address` argument is a string representation of a IP v4 or v6 address.
-		The `family` argument is either the integer 4 or 6 and denotes the family
-		of address (not necessarily the value initially passed to lookup).
-
-		With the `all` option set, the arguments change to (err, addresses), with addresses being an array of objects
-		with the properties `address` and `family`.
-
-		Keep in mind that `err.code` will be set to 'ENOENT' not only when the hostname does not exist but
-		also when the lookup fails in other ways such as no available file descriptors.
-
-		`lookup` doesn't necessarily have anything to do with the DNS protocol. It's only an operating system facility
-		that can associate name with addresses, and vice versa.
-	**/
-	@:overload(function(hostname:String, options:EitherType<DnsAddressFamily, DnsLookupOptions>,
-		callback:EitherType<DnsLookupCallbackSingle, DnsLookupCallbackAll>):Void {})
-	static function lookup(hostname:String, callback:DnsLookupCallbackSingle):Void;
-
-	/**
-		A flag passed in the `hints` argument of `lookup` method.
+		A flag can be passed as hints to `Dns.lookup()`.
 
 		Returned address types are determined by the types of addresses supported by the current system.
 		For example, IPv4 addresses are only returned if the current system has at least one IPv4 address configured.
 		Loopback addresses are not considered.
+
+		@see https://nodejs.org/api/dns.html#dns_supported_getaddrinfo_flags
 	**/
 	static var ADDRCONFIG(default, null):Int;
 
 	/**
-		A flag passed in the `hints` argument of `lookup` method.
+		A flag can be passed as hints to `Dns.lookup()`.
 
 		If the IPv6 family was specified, but no IPv6 addresses were found, then return IPv4 mapped IPv6 addresses.
-		Note that it is not supported on some operating systems (e.g FreeBSD 10.1).
+		It is not supported on some operating systems (e.g FreeBSD 10.1).
+
+		@see https://nodejs.org/api/dns.html#dns_supported_getaddrinfo_flags
 	**/
 	static var V4MAPPED(default, null):Int;
 
 	/**
-		Resolves the given `address` and `port` into a hostname and service using `getnameinfo`.
+		Returns an array of IP address strings, formatted according to RFC 5952, that are currently configured for DNS resolution.
+		A string will include a port section if a custom port is used.
 
-		The `callback` has arguments (err, hostname, service).
-		The `hostname` and `service` arguments are strings (e.g. 'localhost' and 'http' respectively).
-
-		On error, `err` is an Error object, where `err.code` is the error code.
-	**/
-	static function lookupService(address:String, port:Int, callback:DnsError->String->String->Void):Void;
-
-	/**
-		Resolves a `hostname` (e.g. 'google.com') into an array of the record types specified by `rrtype`.
-
-		The `callback` has arguments (err, addresses).
-		The type of each item in `addresses` is determined by the record type,
-		and described in the documentation for the corresponding lookup methods below.
-
-		On error, `err` is an Error object, where `err.code` is the error code.
-	**/
-	@:overload(function(hostname:String, callback:DnsError->Array<DnsResolvedAddress>->Void):Void {})
-	static function resolve(hostname:String, rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddress>->Void):Void;
-
-	/**
-		The same as `resolve`, but only for IPv4 queries (A records).
-		`addresses` is an array of IPv4 addresses (e.g. ['74.125.79.104', '74.125.79.105', '74.125.79.106']).
-	**/
-	static function resolve4(hostname:String, callback:DnsError->Array<String>->Void):Void;
-
-	/**
-		The same as `resolve4` except for IPv6 queries (an AAAA query).
-	**/
-	static function resolve6(hostname:String, callback:DnsError->Array<String>->Void):Void;
-
-	/**
-		The same as `resolve`, but only for mail exchange queries (MX records).
-		`addresses` is an array of MX records, each with a priority
-		and an exchange attribute (e.g. [{'priority': 10, 'exchange': 'mx.example.com'},...]).
-	**/
-	static function resolveMx(hostname:String, callback:DnsError->Array<DnsResolvedAddressMX>->Void):Void;
-
-	/**
-		The same as `resolve`, but only for text queries (TXT records).
-		`addresses` is a 2-d array of the text records available for hostname (e.g., [ ['v=spf1 ip4:0.0.0.0 ', '~all' ] ]).
-		Each sub-array contains TXT chunks of one record. Depending on the use case, the could be either joined together
-		or treated separately.
-	**/
-	static function resolveTxt(hostname:String, callback:DnsError->Array<Array<String>>->Void):Void;
-
-	/**
-		The same as `resolve`, but only for service records (SRV records).
-		`addresses` is an array of the SRV records available for `hostname`.
-		Properties of SRV records are priority, weight, port, and name
-		(e.g., [{'priority': 10, 'weight': 5, 'port': 21223, 'name': 'service.example.com'}, ...]).
-	**/
-	static function resolveSrv(hostname:String, callback:DnsError->Array<DnsResolvedAddressSRV>->Void):Void;
-
-	/**
-		Uses the DNS protocol to resolve pointer records (PTR records) for the `hostname`.
-		The addresses argument passed to the callback function will be an array of strings containing the reply records.
-	**/
-	static function resolvePtr(hostname:String, callback:DnsError->Array<String>->Void):Void;
-
-	/**
-		The same as `resolve`, but only for start of authority record queries (SOA record).
-
-		`addresses` is an object with the following structure:
-		{
-		  nsname: 'ns.example.com',
-		  hostmaster: 'root.example.com',
-		  serial: 2013101809,
-		  refresh: 10000,
-		  retry: 2400,
-		  expire: 604800,
-		  minttl: 3600
-		}
-	**/
-	static function resolveSoa(hostname:String, callback:DnsError->DnsResolvedAddressSOA->Void):Void;
-
-	/**
-		The same as `resolve`, but only for name server records (NS records).
-		`addresses` is an array of the name server records available for hostname (e.g., ['ns1.example.com', 'ns2.example.com']).
-	**/
-	static function resolveNs(hostname:String, callback:DnsError->Array<String>->Void):Void;
-
-	/**
-		The same as `resolve`, but only for canonical name records (CNAME records).
-		`addresses` is an array of the canonical name records available for hostname (e.g., ['bar.example.com']).
-	**/
-	static function resolveCname(hostname:String, callback:DnsError->Array<String>->Void):Void;
-
-	/**
-		Reverse resolves an `ip` address to an array of hostnames.
-		The `callback` has arguments (err, hostname).
-	**/
-	static function reverse(ip:String, callback:DnsError->Array<String>->Void):Void;
-
-	/**
-		Returns an array of IP addresses as strings that are currently being used for resolution.
+		@see https://nodejs.org/api/dns.html#dns_dns_getservers
 	**/
 	static function getServers():Array<String>;
 
 	/**
-		Given an array of IP addresses as strings, set them as the servers to use for resolving.
+		Resolves a hostname (e.g. `'nodejs.org'`) into the first found A (IPv4) or AAAA (IPv6) record.
+		All `option` properties are optional.
+		If `options` is an integer, then it must be `4` or `6`.
+		If `options` is not provided, then IPv4 and IPv6 addresses are both returned if found.
 
-		If you specify a port with the address it will be stripped, as the underlying library doesn't support that.
+		@see https://nodejs.org/api/dns.html#dns_dns_lookup_hostname_options_callback
+	**/
 
-		This will throw if you pass invalid input.
+	@:overload(function(hostname:String, ?options:DnsAddressFamily, callback:DnsLookupCallbackSingle):Void {})
+	@:overload(function(hostname:String, ?options:DnsLookupOptions, callback:DnsLookupCallbackSingle):Void {})
+	static function lookup(hostname:String, options:DnsLookupOptions, callback:DnsLookupCallbackAll):Void; // when `options.all == true`
+
+	/**
+		Resolves the given `address` and `port` into a hostname and service
+		using the operating system's underlying `getnameinfo` implementation.
+
+		@see https://nodejs.org/api/dns.html#dns_dns_lookupservice_address_port_callback
+	**/
+	static function lookupService(address:String, port:Int, callback:DnsError->String->String->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve a hostname (e.g. `'nodejs.org'`) into an array of the resource records.
+		The `callback` function has arguments `(err, records)`.
+		When successful, `records` will be an array of resource records.
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolve_hostname_rrtype_callback
+	**/
+
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<String>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddress4>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddress6>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressCname>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressMX>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressNaptr>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressNs>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressPtr>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSoa>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSrv>->Void):Void {})
+	static function resolve(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressTxt>->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve a IPv4 addresses (`A` records) for the `hostname`.
+		The `addresses` argument passed to the `callback` function will contain an array of IPv4 addresses (e.g. `['74.125.79.104', '74.125.79.105', '74.125.79.106']`).
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolve4_hostname_options_callback
+	**/
+	static function resolve4(hostname:String, ?options:{ttl:Int}, callback:DnsError->Array<String>->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve a IPv6 addresses (`AAAA` records) for the `hostname`.
+		The `addresses` argument passed to the `callback` function will contain an array of IPv6 addresses.
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolve6_hostname_options_callback
+	**/
+	static function resolve6(hostname:String, ?options:{ttl:Int}, callback:DnsError->Array<String>->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve all records (also known as `ANY` or `*` query).
+		The `ret` argument passed to the `callback` function will be an array containing various types of records.
+		Each object has a property `type` that indicates the type of the current record.
+		And depending on the `type`, additional properties will be present on the object.
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolveany_hostname_callback
+	**/
+	static function resolveAny(hostname:String, callback:DnsError->Array<ResolveAnyRet>->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve `CNAME` records for the `hostname`.
+		The `addresses` argument passed to the `callback` function will contain an array of canonical name records
+		available for the `hostname` (e.g. `['bar.example.com']`).
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolvecname_hostname_callback
+	**/
+	static function resolveCname(hostname:String, callback:DnsError->Array<String>->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve mail exchange records (`MX` records) for the `hostname`.
+		The `addresses` argument passed to the `callback` function will contain an array of objects containing
+		both a `priority` and `exchange` property (e.g. `[{priority: 10, exchange: 'mx.example.com'}, ...]`).
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolvemx_hostname_callback
+	**/
+	static function resolveMx(hostname:String, callback:DnsError->Array<DnsResolvedAddressMX>->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve regular expression based records (`NAPTR` records) for the `hostname`.
+		The `addresses` argument passed to the `callback` function will contain an array of objects with properties.
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolvenaptr_hostname_callback
+	**/
+	static function resolveNaptr(hostname:String, callback:DnsError->Array<DnsResolvedAddressNaptr>->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve name server records (`NS` records) for the `hostname`.
+		The `addresses` argument passed to the `callback` function will contain an array of name server records
+		available for `hostname` (e.g. `['ns1.example.com', 'ns2.example.com']`).
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolvens_hostname_callback
+	**/
+	static function resolveNs(hostname:String, callback:DnsError->Array<String>->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve pointer records (`PTR` records) for the hostname.
+		The `addresses` argument passed to the `callback` function will be an array of strings containing the reply records.
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolveptr_hostname_callback
+	**/
+	static function resolvePtr(hostname:String, callback:DnsError->Array<String>->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve a start of authority record (`SOA` record) for the `hostname`.
+		The `address` argument passed to the `callback` function will be an object with the properties.
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolvesoa_hostname_callback
+	**/
+	static function resolveSoa(hostname:String, callback:DnsError->DnsResolvedAddressSoa->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve service records (`SRV` records) for the `hostname`.
+		The `addresses` argument passed to the `callback` function will be an array of objects with the properties.
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolvesrv_hostname_callback
+	**/
+	static function resolveSrv(hostname:String, callback:DnsError->Array<DnsResolvedAddressSrv>->Void):Void;
+
+	/**
+		Uses the DNS protocol to resolve text queries (`TXT` records) for the `hostname`.
+		The `records` argument passed to the `callback` function is a two-dimensional array of the text records available for `hostname` (e.g. `[ ['v=spf1 ip4:0.0.0.0 ', '~all' ] ]`).
+		Each sub-array contains TXT chunks of one record.
+		Depending on the use case, these could be either joined together or treated separately.
+
+		@see https://nodejs.org/api/dns.html#dns_dns_resolvetxt_hostname_callback
+	**/
+	static function resolveTxt(hostname:String, callback:DnsError->Array<Array<String>>->Void):Void;
+
+	/**
+		Performs a reverse DNS query that resolves an IPv4 or IPv6 address to an array of hostnames.
+
+		@see https://nodejs.org/api/dns.html#dns_dns_reverse_ip_callback
+	**/
+	static function reverse(ip:String, callback:DnsError->Array<String>->Void):Void;
+
+	/**
+		Sets the IP address and port of servers to be used when performing DNS resolution.
+		The servers argument is an array of RFC 5952 formatted addresses.
+		If the port is the IANA default DNS port (53) it can be omitted.
+
+		@see https://nodejs.org/api/dns.html#dns_dns_setservers_servers
 	**/
 	static function setServers(servers:Array<String>):Void;
 }
