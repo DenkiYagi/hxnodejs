@@ -30,6 +30,7 @@ import js.lib.Error;
 #else
 import js.Error;
 #end
+import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.fs.Stats;
 import js.node.fs.FSWatcher;
@@ -96,8 +97,8 @@ extern class Fs {
 		@see https://nodejs.org/api/fs.html#fs_fs_appendfile_path_data_options_callback
 	**/
 	@:overload(function(path:FsPath_, data:String, ?options:FsWriteFileOptions, callback:Null<Error>->Void):Void {})
-	@:overload(function(path:FsPath_, data:Buffer, ?options:FsWriteFileOptions, callback:Null<Error>->Void):Void {})
 	@:overload(function(path:FsPath_, data:String, ?options:String, callback:Null<Error>->Void):Void {})
+	@:overload(function(path:FsPath_, data:Buffer, ?options:FsWriteFileOptions, callback:Null<Error>->Void):Void {})
 	static function appendFile(path:FsPath_, data:Buffer, ?options:String, callback:Null<Error>->Void):Void;
 
 	/**
@@ -106,8 +107,8 @@ extern class Fs {
 		@see https://nodejs.org/api/fs.html#fs_fs_appendfilesync_path_data_options
 	**/
 	@:overload(function(path:FsPath_, data:String, ?options:FsWriteFileOptions):Void {})
-	@:overload(function(path:FsPath_, data:Buffer, ?options:FsWriteFileOptions):Void {})
 	@:overload(function(path:FsPath_, data:String, ?options:String):Void {})
+	@:overload(function(path:FsPath_, data:Buffer, ?options:FsWriteFileOptions):Void {})
 	static function appendFileSync(path:FsPath_, data:Buffer, ?options:String):Void;
 
 	/**
@@ -136,6 +137,8 @@ extern class Fs {
 		Synchronously changes owner and group of a file.
 		Returns `undefined`.
 		This is the synchronous version of `fs.chown()`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_chownsync_path_uid_gid
 	**/
 	static function chownSync(path:FsPath, uid:Int, gid:Int):Void;
 
@@ -204,13 +207,20 @@ extern class Fs {
 
 		@see https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options
 	**/
+	@:overload(function(path:FsPath, ?options:String):WriteStream {})
 	static function createWriteStream(path:FsPath, ?options:FsCreateWriteStreamOptions):WriteStream;
 
 	/**
-		Test whether or not the given path exists by checking with the file system.
-		Then call the `callback` argument with either true or false:
+		Test whether or not the given `path` exists by checking with the file system.
+		Then call the `callback` argument with either `true` or `false`.
 
-		@see https://nodejs.org/api/fs.html#fs_fs_exists_path_callback
+		`exists` is an anachronism and exists only for historical reasons.
+		There should almost never be a reason to use it in your own code.
+
+		In particular, checking if a file exists before opening it is an anti-pattern that leaves you vulnerable to race conditions:
+		another process may remove the file between the calls to `exists` and `open`.
+
+		Just open the file and handle the error when it's not there.
 	**/
 	@:deprecated
 	static function exists(path:FsPath, callback:Bool->Void):Void;
@@ -277,14 +287,14 @@ extern class Fs {
 
 		@see https://nodejs.org/api/fs.html#fs_fs_fstat_fd_options_callback
 	**/
-	static function fstat(fd:Int, ?options:{bigint:Bool}, callback:Error->Stats->Void):Void;
+	static function fstat(fd:Int, ?options:FsFstatOptions, callback:Error->Stats->Void):Void;
 
 	/**
 		Synchronous `fstat(2)`.
 
 		@see https://nodejs.org/api/fs.html#fs_fs_fstatsync_fd_options
 	**/
-	static function fstatSync(fd:Int, ?options:{bigint:Bool}):Stats;
+	static function fstatSync(fd:Int, ?options:FsFstatOptions):Stats;
 
 	/**
 		Asynchronous `fsync(2)`.
@@ -389,14 +399,14 @@ extern class Fs {
 
 		@see https://nodejs.org/api/fs.html#fs_fs_lstat_path_options_callback
 	**/
-	static function lstat(path:FsPath, ?options:{bigint:Bool}, callback:Error->Stats->Void):Void;
+	static function lstat(path:FsPath, ?options:FsFstatOptions, callback:Error->Stats->Void):Void;
 
 	/**
 		Synchronous `lstat(2)`.
 
 		@see https://nodejs.org/api/fs.html#fs_fs_lstatsync_path_options
 	**/
-	static function lstatSync(path:FsPath, ?options:{bigint:Bool}):Stats;
+	static function lstatSync(path:FsPath, ?options:FsFstatOptions):Stats;
 
 	/**
 		Asynchronously creates a directory.
@@ -420,8 +430,8 @@ extern class Fs {
 
 		@see https://nodejs.org/api/fs.html#fs_fs_mkdtemp_prefix_options_callback
 	**/
-	@:overload(function(prefix:String, ?options:String, callback:Error->String->Void):Void {})
-	static function mkdtemp(prefix:String, ?options:{encoding:String}, callback:Error->String->Void):Void;
+	@:overload(function(prefix:String, ?options:String, callback:Null<Error>->String->Void):Void {})
+	static function mkdtemp(prefix:String, ?options:FsMkdtempOptions, callback:Null<Error>->String->Void):Void;
 
 	/**
 		Returns the created folder path.
@@ -429,7 +439,7 @@ extern class Fs {
 		@see https://nodejs.org/api/fs.html#fs_fs_mkdtempsync_prefix_options
 	**/
 	@:overload(function(prefix:String, ?options:String):String {})
-	static function mkdtempSync(prefix:String, ?options:{encoding:String}):String;
+	static function mkdtempSync(prefix:String, ?options:FsMkdtempOptions):String;
 
 	/**
 		Asynchronous file open.
@@ -446,7 +456,7 @@ extern class Fs {
 
 		@see https://nodejs.org/api/fs.html#fs_fs_opendir_path_options_callback
 	**/
-	static function opendir(path:FsPath, ?options:{encoding:Null<String>}, callback:Error->Dir->Void):Void;
+	static function opendir(path:FsPath, ?options:FsOpendirOptions, callback:Error->Dir->Void):Void;
 
 	/**
 		Synchronously open a directory.
@@ -454,7 +464,7 @@ extern class Fs {
 
 		@see https://nodejs.org/api/fs.html#fs_fs_opendirsync_path_options
 	**/
-	static function opendirSync(path:FsPath, ?options:{encoding:Null<String>}):Dir;
+	static function opendirSync(path:FsPath, ?options:FsOpendirOptions):Dir;
 
 	/**
 		Returns an integer representing the file descriptor.
@@ -463,6 +473,101 @@ extern class Fs {
 	**/
 	@:overload(function(path:FsPath, ?flags:FsOpenFlag, ?mode:Int):Int {})
 	static function openSync(path:FsPath, ?flags:Int, ?mode:Int):Int;
+
+	/**
+		Read data from the file specified by `fd`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_read_fd_buffer_offset_length_position_callback
+	**/
+	@:overload(function(fd:Int, buffer:ArrayBufferView, offset:Int, length:Int, position:Null<Int>, callback:Error->Int->Buffer->Void):Void {})
+	static function read(fd:Int, buffer:Buffer, offset:Int, length:Int, position:Null<Int>, callback:Error->Int->Buffer->Void):Void;
+
+	/**
+		Asynchronous `readdir(3)`.
+		Reads the contents of a directory.
+		The callback gets two arguments `(err, files)` where `files` is an array of the names of the files in the
+		directory excluding `'.'` and `'..'`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_readdir_path_options_callback
+	**/
+	@:overload(function(path:FsPath, ?options:String, callback:Error->Array<String>->Void):Void {})
+	@:overload(function(path:FsPath, ?options:String, callback:Error->Array<Buffer>->Void):Void {})
+	@:overload(function(path:FsPath, ?options:String, callback:Error->Array<Dirent>->Void):Void {})
+	@:overload(function(path:FsPath, ?options:FSReaddirOptions, callback:Error->Array<String>->Void):Void {})
+	@:overload(function(path:FsPath, ?options:FSReaddirOptions, callback:Error->Array<Buffer>->Void):Void {})
+	static function readdir(path:FsPath, ?options:FSReaddirOptions, callback:Error->Array<Dirent>->Void):Void;
+
+	/**
+		Synchronous `readdir(3).`
+
+		@see https://nodejs.org/api/fs.html#fs_fs_readdirsync_path_options
+	**/
+	@:overload(function(path:FsPath, ?options:String):Array<String> {})
+	@:overload(function(path:FsPath, ?options:String):Array<Buffer> {})
+	@:overload(function(path:FsPath, ?options:String):Array<Dirent> {})
+	@:overload(function(path:FsPath, ?options:FSReaddirOptions):Array<String> {})
+	@:overload(function(path:FsPath, ?options:FSReaddirOptions):Array<Buffer> {})
+	static function readdirSync(path:FsPath, ?options:FSReaddirOptions):Array<Dirent>;
+
+	/**
+		Asynchronously reads the entire contents of a file.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_readfile_path_options_callback
+	**/
+	@:overload(function(filename:FsPath_, ?options:FsReadFileOptions, callback:Null<Error>->String->Void):Void {})
+	@:overload(function(filename:FsPath_, ?options:FsReadFileOptions, callback:Null<Error>->Buffer->Void):Void {})
+	@:overload(function(filename:FsPath_, ?options:String, callback:Null<Error>->String->Void):Void {})
+	static function readFile(filename:FsPath_, options:String, callback:Null<Error>->Buffer->Void):Void;
+
+	/**
+		Returns the contents of the `path`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_readfilesync_path_options
+	**/
+	@:overload(function(filename:FsPath, ?options:FsReadFileOptions):String {})
+	@:overload(function(filename:FsPath, ?options:FsReadFileOptions):Buffer {})
+	@:overload(function(filename:FsPath, ?options:String):String {})
+	static function readFileSync(filename:FsPath, ?options:String):Buffer;
+
+	/**
+		Asynchronous `readlink(2)`.
+		The callback gets two arguments `(err, linkString)`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_readlink_path_options_callback
+	**/
+	@:overload(function(path:FsPath, ?options:String, callback:Error->String->Void):Void {})
+	@:overload(function(path:FsPath, ?options:String, callback:Error->Buffer->Void):Void {})
+	@:overload(function(path:FsPath, ?options:FsMkdtempOptions, callback:Error->String->Void):Void {})
+	static function readlink(path:FsPath, ?options:FsMkdtempOptions, callback:Error->Buffer->Void):Void;
+
+	/**
+		Synchronous `readlink(2)`.
+		Returns the symbolic link's string value.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_readlinksync_path_options
+	**/
+	@:overload(function(path:FsPath, ?options:String):String {})
+	@:overload(function(path:FsPath, ?options:String):Buffer {})
+	@:overload(function(path:FsPath, ?options:FsMkdtempOptions):String {})
+	static function readlinkSync(path:FsPath, ?options:FsMkdtempOptions):Buffer;
+
+	/**
+		Returns the number of `bytesRead`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_readsync_fd_buffer_offset_length_position
+	**/
+	@:overload(function(fd:Int, buffer:Buffer, offset:Int, length:Int, position:Null<Int>):Int {})
+	static function readSync(fd:Int, buffer:ArrayBufferView, offset:Int, length:Int, position:Null<Int>):Int;
+
+	/**
+		Asynchronously computes the canonical pathname by resolving `.`, `..` and symbolic links.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_realpath_path_options_callback
+	**/
+	@:overload(function(path:FsPath, ?options:String, callback:Error->String->Void):Void {})
+	@:overload(function(path:FsPath, ?options:String, callback:Error->Buffer->Void):Void {})
+	@:overload(function(path:FsPath, ?options:FsMkdtempOptions, callback:Error->String->Void):Void {})
+	static function realpath(path:FsPath, ?options:FsMkdtempOptions, callback:Error->Buffer->Void):Void;
 
 	/**
 		Asynchronous rename(2).
@@ -512,30 +617,6 @@ extern class Fs {
 	static function symlinkSync(srcpath:FsPath, dstpath:FsPath, type:SymlinkType):Void;
 
 	/**
-		Asynchronous readlink(2).
-	**/
-	static function readlink(path:FsPath, callback:Error->String->Void):Void;
-
-	/**
-		Synchronous readlink(2).
-		Returns the symbolic link's string value.
-	**/
-	static function readlinkSync(path:FsPath):String;
-
-	/**
-		Asynchronous realpath(2).
-
-		The callback gets two arguments (err, resolvedPath).
-
-		May use process.cwd to resolve relative paths.
-
-		`cache` is an object literal of mapped paths that can be used to force a specific path resolution
-		or avoid additional `stat` calls for known real paths.
-	**/
-	@:overload(function(path:FsPath, callback:Error->String->Void):Void {})
-	static function realpath(path:FsPath, cache:DynamicAccess<String>, callback:Error->String->Void):Void;
-
-	/**
 		Synchronous realpath(2).
 		Returns the resolved path.
 	**/
@@ -561,21 +642,6 @@ extern class Fs {
 		Synchronous rmdir(2).
 	**/
 	static function rmdirSync(path:FsPath):Void;
-
-	/**
-		Asynchronous readdir(3).
-		Reads the contents of a directory.
-
-		The callback gets two arguments (err, files) where files is an array of the
-		names of the files in the directory excluding '.' and '..'.
-	**/
-	static function readdir(path:FsPath, callback:Error->Array<String>->Void):Void;
-
-	/**
-		Synchronous readdir(3).
-		Returns an array of filenames excluding '.' and '..'.
-	**/
-	static function readdirSync(path:FsPath):Array<String>;
 
 	/**
 		Change file timestamps of the file referenced by the supplied path.
@@ -641,49 +707,6 @@ extern class Fs {
 	@:overload(function(fd:Int, data:Dynamic, position:Int, encoding:String):Int {})
 	@:overload(function(fd:Int, data:Dynamic, ?position:Int):Int {})
 	static function writeSync(fd:Int, buffer:Buffer, offset:Int, length:Int, ?position:Int):Int;
-
-	/**
-		Read data from the file specified by `fd`.
-
-		`buffer` is the buffer that the data will be written to.
-
-		`offset` is the offset in the `buffer` to start writing at.
-
-		`length` is an integer specifying the number of bytes to read.
-
-		`position` is an integer specifying where to begin reading from in the file.
-		If position is null, data will be read from the current file position.
-
-		The `callback` is given the three arguments, (err, bytesRead, buffer).
-	**/
-	static function read(fd:Int, buffer:Buffer, offset:Int, length:Int, position:Null<Int>, callback:Error->Int->Buffer->Void):Void;
-
-	/**
-		Synchronous version of `read`. Returns the number of bytes read.
-	**/
-	static function readSync(fd:Int, buffer:Buffer, offset:Int, length:Int, position:Null<Int>):Int;
-
-	/**
-		Asynchronously reads the entire contents of a file.
-
-		The `callback` is passed two arguments (err, data), where data is the contents of the file.
-		If no `encoding` is specified, then the raw buffer is returned.
-
-		If `options` is a string, then it specifies the encoding.
-	**/
-	@:overload(function(filename:FsPath, callback:Error->Buffer->Void):Void {})
-	@:overload(function(filename:FsPath, options:{flag:FsOpenFlag}, callback:Error->Buffer->Void):Void {})
-	@:overload(function(filename:FsPath, options:String, callback:Error->String->Void):Void {})
-	static function readFile(filename:FsPath, options:{encoding:String, ?flag:FsOpenFlag}, callback:Error->String->Void):Void;
-
-	/**
-		Synchronous version of `readFile`. Returns the contents of the filename.
-		If the `encoding` option is specified then this function returns a string. Otherwise it returns a buffer.
-	**/
-	@:overload(function(filename:FsPath):Buffer {})
-	@:overload(function(filename:FsPath, options:{flag:FsOpenFlag}):Buffer {})
-	@:overload(function(filename:FsPath, options:String):String {})
-	static function readFileSync(filename:FsPath, options:{encoding:String, ?flag:FsOpenFlag}):String;
 
 	/**
 		Asynchronously writes data to a file, replacing the file if it already exists.
@@ -1204,6 +1227,18 @@ typedef FsCreateWriteStreamOptions = {
 	@:optional var start:Int;
 }
 
+/**
+	Options object used by `Fs.fstat` and `Fs.lstat`.
+**/
+typedef FsFstatOptions = {
+	/**
+		Whether the numeric values in the returned `fs.Stats` object should be bigint.
+
+		Default: `false`.
+	**/
+	@:optional var bigint:Bool;
+}
+
 typedef Time = EitherType<Int, EitherType<String, Date>>;
 
 /**
@@ -1223,5 +1258,65 @@ typedef FsMkdirOptions = {
 	@:optional var mode:Int;
 }
 
+/**
+	Options object used by `Fs.mkdtemp`, `Fs.readlink` and `Fs.realpath`.
+**/
+typedef FsMkdtempOptions = {
+	/**
+		Default: `'utf8'`.
+	**/
+	@:optional var encoding:String;
+}
+
+/**
+	Options object used by `Fs.opendir`.
+**/
+typedef FsOpendirOptions = {
+	/**
+		Default: `'utf8'`.
+	**/
+	@:optional var encoding:Null<String>;
+
+	/**
+		Number of directory entries that are buffered internally when reading from the directory.
+		Higher values lead to better performance but higher memory usage.
+
+		Default: `32`.
+	**/
+	@:optional var bufferSize:Int;
+}
+
+/**
+	Options object used by `Fs.readdir`.
+**/
+typedef FSReaddirOptions = {
+	/**
+		Default: `'utf8'`.
+	**/
+	@:optional var encoding:String;
+
+	/**
+		Default: `false`.
+	**/
+	@:optional var withFileTypes:Bool;
+}
+
+typedef FsReadFileOptions = {
+	/**
+		Default: `null`.
+	**/
+	@:optional var encoding:Null<String>;
+
+	/**
+		See support of file system `flags`.
+
+		Default: `'r'`.
+	**/
+	@:optional var flag:FsOpenFlag;
+}
+
 // TODO: impl FS.Dir
 typedef Dir = {}
+
+// TODO: impl FS.Dirent
+typedef Dirent = {}
