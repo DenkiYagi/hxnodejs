@@ -38,38 +38,6 @@ import js.node.fs.ReadStream;
 import js.node.fs.WriteStream;
 
 /**
-	Possible options for `Fs.watchFile`.
-**/
-typedef FsWatchFileOptions = {
-	/**
-		indicates whether the process should continue to run as long as files are being watched
-		default: true
-	**/
-	@:optional var persistent:Bool;
-
-	/**
-		indicates how often the target should be polled, in milliseconds
-		default: 5007
-	**/
-	@:optional var interval:Int;
-}
-
-/**
-	The `mode` argument used by `Fs.open` and related functions
-	can be either an integer or a string with octal number.
-**/
-typedef FsMode = EitherType<Int, String>;
-
-/**
-	Enumeration of possible symlink types
-**/
-@:enum abstract SymlinkType(String) from String to String {
-	var Dir = "dir";
-	var File = "file";
-	var Junction = "junction";
-}
-
-/**
 	The `fs` module provides an API for interacting with the file system in a manner closely modeled around standard
 	POSIX functions.
 
@@ -570,231 +538,199 @@ extern class Fs {
 	static function realpath(path:FsPath, ?options:FsMkdtempOptions, callback:Error->Buffer->Void):Void;
 
 	/**
-		Asynchronous rename(2).
+		Returns the resolved pathname.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_realpathsync_path_options
 	**/
-	static function rename(oldPath:FsPath, newPath:FsPath, callback:Error->Void):Void;
+	@:overload(function(path:FsPath, ?options:String):String {})
+	@:overload(function(path:FsPath, ?options:String):Buffer {})
+	@:overload(function(path:FsPath, ?options:FsMkdtempOptions):String {})
+	static function realpathSync(path:FsPath, cache:DynamicAccess<String>):Buffer;
 
 	/**
-		Synchronous rename(2).
+		Asynchronously rename file at `oldPath` to the pathname provided as `newPath`.
+		In the case that `newPath` already exists, it will be overwritten.
+		If there is a directory at `newPath`, an error will be raised instead.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_rename_oldpath_newpath_callback
+	**/
+	static function rename(oldPath:FsPath, newPath:FsPath, callback:Null<Error>->Void):Void;
+
+	/**
+		Synchronous `rename(2)`.
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_renamesync_oldpath_newpath
 	**/
 	static function renameSync(oldPath:FsPath, newPath:FsPath):Void;
 
 	/**
-		Asynchronous truncate(2).
+		Asynchronous `stat(2)`.
+		The callback gets two arguments `(err, stats)` where stats is an `fs.Stats` object.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_stat_path_options_callback
 	**/
-	static function truncate(path:FsPath, len:Int, callback:Error->Void):Void;
+	static function stat(path:FsPath, ?options:FsFstatOptions, callback:Error->Stats->Void):Void;
 
 	/**
-		Synchronous truncate(2).
+		Synchronous `stat(2)`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_statsync_path_options
 	**/
-	static function truncateSync(path:FsPath, len:Int):Void;
+	static function statSync(path:FsPath, ?options:FsFstatOptions):Stats;
 
 	/**
-		Asynchronous stat(2).
+		Asynchronous `symlink(2)` which creates the link called `path` pointing to `target`.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_symlink_target_path_type_callback
 	**/
-	static function stat(path:FsPath, callback:Error->Stats->Void):Void;
+	static function symlink(target:FsPath, path:FsPath, ?type:SymlinkType, callback:Null<Error>->Void):Void;
 
 	/**
-		Synchronous stat(2).
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_symlinksync_target_path_type
 	**/
-	static function statSync(path:FsPath):Stats;
+	static function symlinkSync(target:FsPath, path:FsPath, ?type:SymlinkType):Void;
 
 	/**
-		Asynchronous symlink(2).
+		Asynchronous `truncate(2)`.
+		No arguments other than a possible exception are given to the completion callback.
+		A file descriptor can also be passed as the first argument.
+		In this case, `fs.ftruncate()` is called.
 
-		The `type` argument can be set to 'dir', 'file', or 'junction' (default is 'file')
-		and is only available on Windows (ignored on other platforms). Note that Windows junction
-		points require the destination path to be absolute. When using 'junction', the destination
-		argument will automatically be normalized to absolute path.
+		@see https://nodejs.org/api/fs.html#fs_fs_truncate_path_len_callback
 	**/
-	@:overload(function(srcpath:FsPath, dstpath:FsPath, callback:Error->Void):Void {})
-	static function symlink(srcpath:FsPath, dstpath:FsPath, type:SymlinkType, callback:Error->Void):Void;
+	static function truncate(path:FsPath, ?len:Int, callback:Null<Error>->Void):Void;
 
 	/**
-		Synchronous symlink(2).
+		Synchronous `truncate(2)`.
+		Returns `undefined`.
+		A file descriptor can also be passed as the first argument.
+		In this case, `fs.ftruncateSync()` is called.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_truncatesync_path_len
 	**/
-	@:overload(function(srcpath:FsPath, dstpath:FsPath):Void {})
-	static function symlinkSync(srcpath:FsPath, dstpath:FsPath, type:SymlinkType):Void;
+	static function truncateSync(path:FsPath, ?len:Int):Void;
 
 	/**
-		Synchronous realpath(2).
-		Returns the resolved path.
+		Asynchronously removes a file or symbolic link.
+		No arguments other than a possible exception are given to the completion callback.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_unlink_path_callback
 	**/
-	@:overload(function(path:FsPath):String {})
-	static function realpathSync(path:FsPath, cache:DynamicAccess<String>):String;
+	static function unlink(path:FsPath, callback:Null<Error>->Void):Void;
 
 	/**
-		Asynchronous unlink(2).
-	**/
-	static function unlink(path:FsPath, callback:Error->Void):Void;
+		Synchronous `unlink(2)`.
+		Returns `undefined`.
 
-	/**
-		Synchronous unlink(2).
+		@see https://nodejs.org/api/fs.html#fs_fs_unlinksync_path
 	**/
 	static function unlinkSync(path:FsPath):Void;
 
 	/**
-		Asynchronous rmdir(2).
-	**/
-	static function rmdir(path:FsPath, callback:Error->Void):Void;
-
-	/**
-		Synchronous rmdir(2).
-	**/
-	static function rmdirSync(path:FsPath):Void;
-
-	/**
-		Change file timestamps of the file referenced by the supplied path.
-	**/
-	static function utimes(path:FsPath, atime:Date, mtime:Date, callback:Error->Void):Void;
-
-	/**
-		Change file timestamps of the file referenced by the supplied path.
-	**/
-	static function utimesSync(path:FsPath, atime:Date, mtime:Date):Void;
-
-	/**
-		Documentation for the overloads with the `buffer` argument:
-
-		Write `buffer` to the file specified by `fd`.
-
-		`offset` and `length` determine the part of the `buffer` to be written.
-
-		`position` refers to the offset from the beginning of the file where this data should be written.
-		If position is null, the data will be written at the current position. See pwrite(2).
-
-		The `callback` will be given three arguments (err, written, buffer)
-		where `written` specifies how many bytes were written from `buffer`.
-
-		---
-
-		Documentation for the overloads with the `data` argument:
-
-		Write `data` to the file specified by `fd`. If `data` is not a `Buffer` instance then
-		the value will be coerced to a string.
-
-		`position` refers to the offset from the beginning of the file where this data should be written.
-		If omitted, the data will be written at the current position. See pwrite(2).
-
-		`encoding` is the expected string encoding.
-
-		The `callback` will receive the arguments (err, written, string) where written specifies how many bytes
-		the passed string required to be written. Note that bytes written is not the same as string characters.
-		See `Buffer.byteLength`.
-
-		Unlike when writing `buffer`, the entire string must be written. No substring may be specified.
-		This is because the byte offset of the resulting data may not be the same as the string offset.
-
-		---
-
-		Common notes:
-
-		Note that it is unsafe to use `write` multiple times on the same file without waiting for the callback.
-		For this scenario, `createWriteStream` is strongly recommended.
-
-		On Linux, positional writes don't work when the file is opened in append mode. The kernel ignores the position
-		argument and always appends the data to the end of the file.
-	**/
-	@:overload(function(fd:Int, data:Dynamic, position:Int, encoding:String, callback:Error->Int->String->Void):Void {})
-	@:overload(function(fd:Int, data:Dynamic, position:Int, callback:Error->Int->String->Void):Void {})
-	@:overload(function(fd:Int, data:Dynamic, callback:Error->Int->String->Void):Void {})
-	@:overload(function(fd:Int, buffer:Buffer, offset:Int, length:Int, callback:Error->Int->Buffer->Void):Void {})
-	static function write(fd:Int, buffer:Buffer, offset:Int, length:Int, position:Int, callback:Error->Int->Buffer->Void):Void;
-
-	/**
-		Synchronous version of `write`. Returns the number of bytes written.
-	**/
-	@:overload(function(fd:Int, data:Dynamic, position:Int, encoding:String):Int {})
-	@:overload(function(fd:Int, data:Dynamic, ?position:Int):Int {})
-	static function writeSync(fd:Int, buffer:Buffer, offset:Int, length:Int, ?position:Int):Int;
-
-	/**
-		Asynchronously writes data to a file, replacing the file if it already exists.
-
-		`data` can be a string or a buffer.
-
-		The encoding option is ignored if data is a buffer. It defaults to 'utf8'.
-	**/
-	@:overload(function(filename:FsPath, data:Buffer, callback:Error->Void):Void {})
-	@:overload(function(filename:FsPath, data:String, callback:Error->Void):Void {})
-	@:overload(function(filename:FsPath, data:Buffer, options:EitherType<String, FsWriteFileOptions>, callback:Error->Void):Void {})
-	static function writeFile(filename:FsPath, data:String, options:EitherType<String, FsWriteFileOptions>, callback:Error->Void):Void;
-
-	/**
-		The synchronous version of `writeFile`.
-	**/
-	@:overload(function(filename:FsPath, data:Buffer):Void {})
-	@:overload(function(filename:FsPath, data:String):Void {})
-	@:overload(function(filename:FsPath, data:Buffer, options:EitherType<String, FsWriteFileOptions>):Void {})
-	static function writeFileSync(filename:FsPath, data:String, options:EitherType<String, FsWriteFileOptions>):Void;
-
-	/**
-		Unstable. Use `watch` instead, if possible.
-
-		Watch for changes on `filename`.
-		The callback `listener` will be called each time the file is accessed.
-
-		The `options` if provided should be an object containing two members:
-			- `persistent` indicates whether the process should continue to run as long as files are being watched.
-			- `interval` indicates how often the target should be polled, in milliseconds.
-		The default is { persistent: true, interval: 5007 }.
-
-		The `listener` gets two arguments: the current stat object and the previous stat object.
-	**/
-	@:overload(function(filename:FsPath, listener:Stats->Stats->Void):Void {})
-	static function watchFile(filename:FsPath, options:FsWatchFileOptions, listener:Stats->Stats->Void):Void;
-
-	/**
-		Unstable. Use `watch` instead, if possible.
-
-		Stop watching for changes on filename.
+		Stop watching for changes on `filename`.
 		If `listener` is specified, only that particular listener is removed.
-		Otherwise, all listeners are removed and you have effectively stopped watching filename.
-		Calling `unwatchFile` with a `filename` that is not being watched is a no-op, not an error.
+		Otherwise, all listeners are removed, effectively stopping watching of `filename`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_unwatchfile_filename_listener
 	**/
 	static function unwatchFile(filename:FsPath, ?listener:Stats->Stats->Void):Void;
 
 	/**
-		Watch for changes on `filename`, where filename is either a file or a directory.
+		Change the file system timestamps of the object referenced by `path`.
 
-		`persistent` indicates whether the process should continue to run as long as files are being watched. Default is `true`.
-
-		The `listener` callback gets two arguments (event, filename). event is either 'rename' or 'change', and filename
-		is the name of the file which triggered the event.
+		@see https://nodejs.org/api/fs.html#fs_fs_utimes_path_atime_mtime_callback
 	**/
-	@:overload(function(filename:FsPath):FSWatcher {})
-	@:overload(function(filename:FsPath, options:{persistent:Bool, ?recursive:Bool}, listener:FSWatcherChangeType->String->Void):FSWatcher {})
-	static function watch(filename:FsPath, listener:FSWatcherChangeType->FsPath->Void):FSWatcher;
+	static function utimes(path:FsPath, atime:Time, mtime:Time, callback:Error->Void):Void;
 
 	/**
-		A mode flag for `access` and `accessSync` methods:
+		Returns `undefined`.
 
-		File is visible to the calling process.
-		This is useful for determining if a file exists, but says nothing about rwx permissions.
+		@see https://nodejs.org/api/fs.html#fs_fs_utimessync_path_atime_mtime
 	**/
-	static var F_OK(default, null):Int;
+	static function utimesSync(path:FsPath, atime:Time, mtime:Time):Void;
 
 	/**
-		A mode flag for `access` and `accessSync` methods:
+		Watch for changes on `filename`, where `filename` is either a file or a directory.
 
-		File can be read by the calling process.
+		@see https://nodejs.org/api/fs.html#fs_fs_watch_filename_options_listener
 	**/
-	static var R_OK(default, null):Int;
+	@:overload(function(filename:FsPath, ?options:String, ?listener:FSWatcherChangeType->String->Void):FSWatcher {})
+	@:overload(function(filename:FsPath, ?options:String, ?listener:FSWatcherChangeType->Buffer->Void):FSWatcher {})
+	@:overload(function(filename:FsPath, ?options:FsWatchOptions, listener:FSWatcherChangeType->String->Void):FSWatcher {})
+	static function watch(filename:FsPath, ?options:FsWatchOptions, listener:FSWatcherChangeType->Buffer->Void):FSWatcher;
 
 	/**
-		A mode flag for `access` and `accessSync` methods:
+		Watch for changes on `filename`.
+		The callback `listener` will be called each time the file is accessed.
 
-		File can be written by the calling process.
+		@see https://nodejs.org/api/fs.html#fs_fs_watchfile_filename_options_listener
 	**/
-	static var W_OK(default, null):Int;
+	static function watchFile(filename:FsPath, ?options:FsWatchFileOptions, listener:Stats->Stats->Void):Void;
 
 	/**
-		A mode flag for `access` and `accessSync` methods:
+		Write `buffer` to the file specified by `fd`.
 
-		File can be executed by the calling process.
-		This has no effect on Windows.
+		@see https://nodejs.org/api/fs.html#fs_fs_write_fd_buffer_offset_length_position_callback
+		@see https://nodejs.org/api/fs.html#fs_fs_write_fd_string_position_encoding_callback
 	**/
-	static var X_OK(default, null):Int;
+	@:overload(function(fd:Int, buffer:Buffer, ?offset:Int, ?length:Int, ?position:Int, callback:Error->Int->Buffer->Void):Void {})
+	@:overload(function(fd:Int, buffer:ArrayBufferView, ?offset:Int, ?length:Int, ?position:Int, callback:Error->Int->ArrayBufferView->Void):Void {})
+	static function write(fd:Int, string:String, ?position:Int, ?encoding:String, callback:Error->Int->String->Void):Void;
+
+	/**
+		When `file` is a filename, asynchronously writes data to the file, replacing the file if it already exists.
+		`data` can be a string or a buffer.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_writefile_file_data_options_callback
+	**/
+	@:overload(function(filename:FsPath_, data:String, ?options:FsWriteFileOptions, callback:Null<Error>->Void):Void {})
+	@:overload(function(filename:FsPath_, data:String, ?options:String, callback:Null<Error>->Void):Void {})
+	@:overload(function(filename:FsPath_, data:Buffer, ?options:FsWriteFileOptions, callback:Null<Error>->Void):Void {})
+	@:overload(function(filename:FsPath_, data:Buffer, ?options:String, callback:Null<Error>->Void):Void {})
+	@:overload(function(filename:FsPath_, data:ArrayBufferView, ?options:FsWriteFileOptions, callback:Null<Error>->Void):Void {})
+	static function writeFile(filename:FsPath_, data:ArrayBufferView, ?options:String, callback:Null<Error>->Void):Void;
+
+	/**
+		Returns `undefined`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_writefilesync_file_data_options
+	**/
+	@:overload(function(filename:FsPath_, data:String, ?options:FsWriteFileOptions):Void {})
+	@:overload(function(filename:FsPath_, data:String, ?options:String):Void {})
+	@:overload(function(filename:FsPath_, data:Buffer, ?options:FsWriteFileOptions):Void {})
+	@:overload(function(filename:FsPath_, data:Buffer, ?options:String):Void {})
+	@:overload(function(filename:FsPath_, data:ArrayBufferView, ?options:FsWriteFileOptions):Void {})
+	static function writeFileSync(filename:FsPath_, data:ArrayBufferView, ?options:String):Void;
+
+	/**
+		For detailed information, see the documentation of the asynchronous version of this API:
+		`fs.write(fd, buffer...)`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_writesync_fd_buffer_offset_length_position
+		@see https://nodejs.org/api/fs.html#fs_fs_writesync_fd_string_position_encoding
+	**/
+	@:overload(function(fd:Int, buffer:Buffer, ?offset:Int, ?length:Int, ?position:Int):Int {})
+	@:overload(function(fd:Int, buffer:ArrayBufferView, ?offset:Int, ?length:Int, ?position:Int):Int {})
+	static function writeSync(fd:Int, string:String, ?position:Int, ?encoding:String):Int;
+
+	/**
+		Write an array of `ArrayBufferViews` to the file specified by `fd` using `writev()`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_writev_fd_buffers_position_callback
+	**/
+	static function writev(fd:Int, buffers:Array<ArrayBufferView>, ?position:Int, callback:Error->Int->Array<ArrayBufferView>):Void;
+
+	/**
+		For detailed information, see the documentation of the asynchronous version of this API: `fs.writev()`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_writevsync_fd_buffers_position
+	**/
+	static function writevSync(fd:Int, buffers:Array<ArrayBufferView>, ?position:Int):Int;
 }
 
 typedef FsPath = EitherType<String, EitherType<Buffer, URL>>;
@@ -814,9 +750,6 @@ typedef FsWriteFileOptions = {
 	**/
 	@:optional var mode:Int;
 
-	/**
-		Default: `'a'`.
-	**/
 	@:optional var flag:FsOpenFlag;
 }
 
@@ -902,7 +835,7 @@ typedef FsWriteFileOptions = {
 }
 
 /**
-	The following constants are exported by fs.constants.
+	The following constants are exported by `fs.constants`.
 
 	@see https://nodejs.org/api/fs.html#fs_fs_constants_1
 **/
@@ -1228,7 +1161,7 @@ typedef FsCreateWriteStreamOptions = {
 }
 
 /**
-	Options object used by `Fs.fstat` and `Fs.lstat`.
+	Options object used by `Fs.fstat`, `Fs.lstat` and `Fs.stat`.
 **/
 typedef FsFstatOptions = {
 	/**
@@ -1301,6 +1234,9 @@ typedef FSReaddirOptions = {
 	@:optional var withFileTypes:Bool;
 }
 
+/**
+	Options object used by `Fs.readFile`.
+**/
 typedef FsReadFileOptions = {
 	/**
 		Default: `null`.
@@ -1313,6 +1249,57 @@ typedef FsReadFileOptions = {
 		Default: `'r'`.
 	**/
 	@:optional var flag:FsOpenFlag;
+}
+
+/**
+	Enumeration of possible symlink types.
+**/
+@:enum abstract SymlinkType(String) from String to String {
+	var Dir = "dir";
+	var File = "file";
+	var Junction = "junction";
+}
+
+/**
+	Options object used by `Fs.watch`.
+**/
+typedef FsWatchOptions = {
+	/**
+		Indicates whether the process should continue to run as long as files are being watched.
+
+		Default: `true`.
+	**/
+	@:optional var persistent:Bool;
+
+	/**
+		Indicates whether all subdirectories should be watched, or only the current directory.
+		This applies when a directory is specified, and only on supported platforms (See Caveats).
+
+		Default: `false`.
+	**/
+	@:optional var recursive:Bool;
+
+	/**
+		Specifies the character encoding to be used for the filename passed to the listener.
+
+		Default: `'utf8'`.
+	**/
+	@:optional var encoding:String;
+}
+
+/**
+	Options object used by `Fs.watchFile`.
+**/
+typedef FsWatchFileOptions = {
+	/**
+		Default: `true`.
+	**/
+	@:optional var persistent:Bool;
+
+	/**
+		Default: `5007`.
+	**/
+	@:optional var interval:Int;
 }
 
 // TODO: impl FS.Dir
