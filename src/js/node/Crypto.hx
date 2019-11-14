@@ -45,6 +45,7 @@ import js.node.stream.Writable;
 	var MD5 = "md5";
 	var SHA256 = "sha256";
 	var SHA512 = "sha512";
+	var SHAKE256 = "shake256";
 }
 
 /**
@@ -480,14 +481,14 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_sign_algorithm_data_key
 	**/
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Class<Dynamic>): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: String): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Buffer): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: KeyObject): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Class<Dynamic>): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: String): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Buffer): Buffer {})
-	static function sign(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: KeyObject): Buffer;
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: {padding:Int, saltLength:Int}): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: String): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: Buffer): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: KeyObject): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: {padding:Int, saltLength:Int}): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: String): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: Buffer): Buffer {})
+	static function sign(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: KeyObject): Buffer;
 
 	/**
 		This function is based on a constant-time algorithm.
@@ -508,22 +509,22 @@ extern class Crypto {
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_verify_algorithm_data_key_signature
 	**/
 
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Class<Dynamic>, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Class<Dynamic>, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: String, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: String, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Buffer, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: Buffer, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: KeyObject, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: Buffer, key: KeyObject, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Class<Dynamic>, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Class<Dynamic>, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: String, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: String, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Buffer, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: Buffer, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: KeyObject, signature: Buffer): Buffer {})
-	static function verify(algorithm: Option<CryptoAlgorithm>, data: ArrayBufferView, key: KeyObject, signature: ArrayBufferView): Bool;
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: {padding:Int, saltLength:Int}, signature: Buffer): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: {padding:Int, saltLength:Int}, signature: ArrayBufferView): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: String, signature: Buffer): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: String, signature: ArrayBufferView): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: Buffer, signature: Buffer): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: Buffer, signature: ArrayBufferView): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: KeyObject, signature: Buffer): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: KeyObject, signature: ArrayBufferView): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: {padding:Int, saltLength:Int}, signature: Buffer): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: {padding:Int, saltLength:Int}, signature: ArrayBufferView): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: String, signature: Buffer): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: String, signature: ArrayBufferView): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: Buffer, signature: Buffer): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: Buffer, signature: ArrayBufferView): Buffer {})
+	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: KeyObject, signature: Buffer): Buffer {})
+	static function verify(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: KeyObject, signature: ArrayBufferView): Bool;
 }
 
 /**

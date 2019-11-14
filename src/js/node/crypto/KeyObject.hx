@@ -38,7 +38,7 @@ extern class KeyObject {
 
 		@see https://nodejs.org/api/crypto.html#crypto_keyobject_asymmetrickeytype
 	**/
-    var asymmetricKeyType: String;
+    var asymmetricKeyType: AsymmetricKeyTypes;
 
 	/**
 		For symmetric keys, this function allocates a `Buffer` containing the key material and ignores any options.
@@ -62,7 +62,46 @@ extern class KeyObject {
 
 		@see https://nodejs.org/api/crypto.html#crypto_keyobject_type
 	**/
-    var type: String;
+    var type: KeyType;
+}
+
+/**
+	Enumerations of encpding format for keys
+**/
+@:enum abstract EncodingFormat(String) from String to String {
+	var PEM = "pem";
+	var DER = "der";
+}
+
+/**
+	Enumerations of supported key types for asymmetric keys.
+**/
+@:enum abstract AsymmetricKeyTypes(String) from String to String {
+	var RSA = "rsa";
+	var RSA_PSS = "rsa-pss";
+	var DSA = "dsa";
+	var EC = "ec";
+	var X25519 = "x25519";
+	var X448 = "x448";
+	var ED25519 = "ed25519";
+	var ED448 = "ed448";
+}
+
+/**
+	Enumerations of encpding type for public keys
+**/
+@:enum abstract PublicEncodingType(String) from String to String {
+	var PKCS1 = "pkcs1";
+	var PKCS8 = "spki";
+}
+
+/**
+	Enumerations of encpding type for private keys
+**/
+@:enum abstract PrivateEncodingType(String) from String to String {
+	var PKCS1 = "pkcs1";
+	var PKCS8 = "pkcs8";
+	var SEC1 = "sec1";
 }
 
 /**
@@ -73,12 +112,12 @@ typedef ExportPublicKeyOptions = {
 	/**
 		Must be one of `'pkcs1'` (RSA only) or `'spki'`.
 	**/
-	var type: String;
+	var type: PublicEncodingType;
 
 	/**
 		Must be `'pem'` or `'der'`.
 	**/
-	var format: String;
+	var format: EncodingFormat;
 }
 
 /**
@@ -88,12 +127,12 @@ typedef ExportPrivateKeyOptions = {
 	/**
 		Must be one of `'pkcs1'` (RSA only), `'pkcs8'` or `'sec1'` (EC only).
 	**/
-	var type: String;
+	var type: PrivateEncodingType;
 
 	/**
 		Must be `'pem'` or `'der'`.
 	**/
-	var format: String;
+	var format: EncodingFormat;
 
 	/**
 		If specified, the private key will be encrypted with the given cipher and passphrase using PKCS#5 v2.0 password based encryption.
@@ -104,5 +143,14 @@ typedef ExportPrivateKeyOptions = {
 		The passphrase to use for encryption, see `cipher`.
 	**/
     var passphrase: EitherType<String, Buffer>;
+}
+
+/**
+	Enumerations of key type
+**/
+@:enum abstract KeyType(String) from String to String {
+    var Secret = "secret";
+    var Public = "public";
+    var Private = "private";
 }
 
