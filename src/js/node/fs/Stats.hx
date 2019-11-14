@@ -23,60 +23,183 @@
 package js.node.fs;
 
 /**
-	Objects returned from `Fs.stat`, `Fs.lstat` and `Fs.fstat` and their synchronous counterparts are of this type.
+	A `fs.Stats` object provides information about a file.
+
+	@see https://nodejs.org/api/fs.html#fs_class_fs_stats
 **/
 extern class Stats {
-	var dev:Int;
-	var ino:Float;
-	var mode:Int;
-	var nlink:Int;
-	var uid:Int;
-	var gid:Int;
-	var rdev:Int;
-	var size:Float;
-	var blksize:Null<Int>;
-	var blocks:Null<Float>;
+	/**
+		Returns `true` if the `fs.Stats` object describes a block device.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_isblockdevice
+	**/
+	function isBlockDevice():Bool;
 
 	/**
-		"Access Time" - Time when file data last accessed.
+		Returns `true` if the `fs.Stats` object describes a character device.
 
-		Changed by the mknod(2), utimes(2), and read(2) system calls.
+		@see https://nodejs.org/api/fs.html#fs_stats_ischaracterdevice
+	**/
+	function isCharacterDevice():Bool;
+
+	/**
+		Returns `true` if the `fs.Stats` object describes a file system directory.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_isdirectory
+	**/
+	function isDirectory():Bool;
+
+	/**
+		Returns `true` if the `fs.Stats` object describes a first-in-first-out (FIFO) pipe.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_isfifo
+	**/
+	function isFIFO():Bool;
+
+	/**
+		Returns `true` if the `fs.Stats` object describes a regular file.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_isfile
+	**/
+	function isFile():Bool;
+
+	/**
+		Returns `true` if the `fs.Stats` object describes a socket.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_issocket
+	**/
+	function isSocket():Bool;
+
+	/**
+		Returns `true` if the `fs.Stats` object describes a symbolic link.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_issymboliclink
+	**/
+	function isSymbolicLink():Bool;
+
+	/**
+		The numeric identifier of the device containing the file.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_dev
+	**/
+	var dev:Int;
+
+	/**
+		The file system specific "Inode" number for the file.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_ino
+	**/
+	var ino:Int;
+
+	/**
+		A bit-field describing the file type and mode.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_mode
+	**/
+	var mode:Int;
+
+	/**
+		The number of hard-links that exist for the file.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_nlink
+	**/
+	var nlink:Int;
+
+	/**
+		The numeric user identifier of the user that owns the file (POSIX).
+
+		@see https://nodejs.org/api/fs.html#fs_stats_uid
+	**/
+	var uid:Int;
+
+	/**
+		The numeric group identifier of the group that owns the file (POSIX).
+
+		@see https://nodejs.org/api/fs.html#fs_stats_gid
+	**/
+	var gid:Int;
+
+	/**
+		A numeric device identifier if the file is considered "special".
+
+		@see https://nodejs.org/api/fs.html#fs_stats_rdev
+	**/
+	var rdev:Int;
+
+	/**
+		The size of the file in bytes.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_size
+	**/
+	var size:Int;
+
+	/**
+		The file system block size for i/o operations.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_blksize
+	**/
+	var blksize:Int;
+
+	/**
+		The number of blocks allocated for this file.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_blocks
+	**/
+	var blocks:Int;
+
+	/**
+		The timestamp indicating the last time this file was accessed expressed in milliseconds since the POSIX Epoch.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_atimems
+	**/
+	var atimeMs:Float;
+
+	/**
+		The timestamp indicating the last time this file was modified expressed in milliseconds since the POSIX Epoch.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_mtimems
+	**/
+	var mtimeMs:Float;
+
+	/**
+		The timestamp indicating the last time the file status was changed expressed in milliseconds since the POSIX Epoch.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_ctimems
+	**/
+	var ctimeMs:Float;
+
+	/**
+		https://nodejs.org/api/fs.html#fs_stats_birthtimems
+
+		@see https://nodejs.org/api/fs.html#fs_stats_birthtimems
+	**/
+	var birthtimeMs:Float;
+
+	/**
+		The timestamp indicating the last time this file was accessed.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_atime
 	**/
 	var atime:Date;
 
 	/**
-		"Modified Time" - Time when file data last modified.
+		The timestamp indicating the last time this file was modified.
 
-		Changed by the mknod(2), utimes(2), and write(2) system calls.
+		@see https://nodejs.org/api/fs.html#fs_stats_mtime
 	**/
 	var mtime:Date;
 
 	/**
-		"Change Time" - Time when file status was last changed (inode data modification).
+		The timestamp indicating the last time the file status was changed.
 
-		Changed by the chmod(2), chown(2), link(2), mknod(2), rename(2), unlink(2), utimes(2), read(2), and write(2) system calls.
+		@see https://nodejs.org/api/fs.html#fs_stats_ctime
 	**/
 	var ctime:Date;
 
 	/**
-		"Birth Time" - Time of file creation. Set once when the file is created.
+		The timestamp indicating the creation time of this file.
 
-		On filesystems where birthtime is not available, this field may instead hold either the ctime or 1970-01-01T00:00Z (ie, unix epoch timestamp 0).
-		Note that this value may be greater than `atime` or `mtime` in this case. On Darwin and other FreeBSD variants,
-		also set if the `atime` is explicitly set to an earlier value than the current birthtime using the utimes(2) system call.
+		@see https://nodejs.org/api/fs.html#fs_stats_birthtime
 	**/
 	var birthtime:Date;
-
-	function isFile():Bool;
-	function isDirectory():Bool;
-	function isBlockDevice():Bool;
-	function isCharacterDevice():Bool;
-
-	/**
-		Only valid with `Fs.lstat`.
-	**/
-	function isSymbolicLink():Bool;
-
-	function isFIFO():Bool;
-	function isSocket():Bool;
 }
