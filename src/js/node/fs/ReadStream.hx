@@ -23,27 +23,60 @@
 package js.node.fs;
 
 import js.node.events.EventEmitter.Event;
-import js.node.Fs.FsPath;
+import haxe.extern.EitherType;
 
+/**
+	Enumeration of events emitted by the `ReadStream` objects.
+**/
 @:enum abstract ReadStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		Emitted when the `ReadStream`'s file is opened.
+		Emitted when the `fs.ReadStream`'s underlying file descriptor has been closed.
 
-		Listener arguments:
-			fd - file descriptor used by the `ReadStream`.
+		@see https://nodejs.org/api/fs.html#fs_event_close_1
+	**/
+	var Close:ReadStreamEvent<Void->Void> = "close";
+
+	/**
+		Emitted when the `fs.ReadStream`'s file descriptor has been opened.
+
+		@see https://nodejs.org/api/fs.html#fs_event_open
 	**/
 	var Open:ReadStreamEvent<Int->Void> = "open";
+
+	/**
+		Emitted when the `fs.ReadStream` is ready to be used.
+
+		@see https://nodejs.org/api/fs.html#fs_event_ready
+	**/
+	var Ready:ReadStreamEvent<Void->Void> = "ready";
 }
 
 /**
-	Readable file stream.
+	A successful call to `fs.createReadStream()` will return a new `fs.ReadStream` object.
+
+	@see https://nodejs.org/api/fs.html#fs_class_fs_readstream
 **/
+@:jsRequire("fs", "ReadStream")
 extern class ReadStream extends js.node.stream.Readable<ReadStream> {
 	/**
-		The path to the file the stream is reading from as specified in the first argument to `Fs.createReadStream`.
+		The number of bytes that have been read so far.
 
-		If path is passed as a string, then readStream.path will be a string.
-		If path is passed as a Buffer, then readStream.path will be a Buffer.
+		@see https://nodejs.org/api/fs.html#fs_readstream_bytesread
 	**/
-	var path:FsPath;
+	var bytesRead:Int;
+
+	/**
+		The path to the file the stream is reading from as specified in the first argument to `fs.createReadStream()`.
+		If `path` is passed as a string, then `readStream.path` will be a string.
+		If `path` is passed as a `Buffer`, then `readStream.path` will be a `Buffer`.
+	**/
+	var path:EitherType<String, Buffer>;
+
+	/**
+		This property is `true` if the underlying file has not been opened yet, i.e. before the `'ready'` event is
+		emitted.
+
+		@see https://nodejs.org/api/fs.html#fs_readstream_pending
+	**/
+	var pending:Bool;
 }

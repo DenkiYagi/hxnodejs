@@ -23,7 +23,7 @@
 package js.node.fs;
 
 import js.node.events.EventEmitter;
-import js.node.Fs.FsPath;
+import haxe.extern.EitherType;
 #if haxe4
 import js.lib.Error;
 #else
@@ -31,7 +31,7 @@ import js.Error;
 #end
 
 /**
-	Enumeration of possible types of changes for 'change' event.
+	Enumeration of possible types of changes for `'change'` event.
 **/
 @:enum abstract FSWatcherChangeType(String) from String to String {
 	var Change = "change";
@@ -39,30 +39,46 @@ import js.Error;
 }
 
 /**
-	Enumeration of the events emitted by `FSWatcher`.
+	Enumeration of events emitted by the `FSWatcher` objects.
 **/
 @:enum abstract FSWatcherEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		Emitted when something changes in a watched directory or file. See more details in `Fs.watch`.
+		Emitted when something changes in a watched directory or file.
+		See more details in `fs.watch()`.
 
-		Listener arguments:
-			event - The type of fs change
-			filename - The filename that changed (if relevant/available)
+		@see https://nodejs.org/api/fs.html#fs_event_change
 	**/
-	var Change:FSWatcherEvent<FSWatcherChangeType->FsPath->Void> = "change";
+	var Change:FSWatcherEvent<FSWatcherChangeType->EitherType<String, Buffer>->Void> = "change";
+	
+	/**
+		Emitted when the watcher stops watching for changes.
+		The closed `fs.FSWatcher` object is no longer usable in the event handler.
+
+		@see https://nodejs.org/api/fs.html#fs_event_close
+	**/
+	var Close:FSWatcherEvent<Void->Void> = "close";
 
 	/**
-		Emitted when an error occurs.
+		Emitted when an error occurs while watching the file.
+		The errored `fs.FSWatcher` object is no longer usable in the event handler.
+
+		@see https://nodejs.org/api/fs.html#fs_event_error
 	**/
 	var Error:FSWatcherEvent<Error->Void> = "error";
 }
 
 /**
-	Objects returned from `Fs.watch` are of this type.
+	A successful call to `fs.watch()` method will return a new `fs.FSWatcher` object.
+
+	@see https://nodejs.org/api/fs.html#fs_class_fs_fswatcher
 **/
+@:jsRequire("fs", "FSWatcher")
 extern class FSWatcher extends EventEmitter<FSWatcher> {
 	/**
-		Stop watching for changes on the given `FSWatcher`.
+		Stop watching for changes on the given `fs.FSWatcher`.
+		Once stopped, the `fs.FSWatcher` object is no longer usable.
+
+		@see https://nodejs.org/api/fs.html#fs_watcher_close
 	**/
 	function close():Void;
 }

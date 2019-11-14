@@ -25,30 +25,59 @@ package js.node.fs;
 import js.node.events.EventEmitter.Event;
 import js.node.Fs.FsPath;
 
+/**
+	Enumeration of events emitted by the `WriteStream` objects.
+**/
 @:enum abstract WriteStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+	/**
+		Emitted when the `WriteStream`'s underlying file descriptor has been closed.
+
+		@see https://nodejs.org/api/fs.html#fs_event_close_2
+	**/
+	var Close:WriteStreamEvent<Void->Void> = "close";
+
 	/**
 		Emitted when the `WriteStream`'s file is opened.
 
-		Listener arguments:
-			fd - file descriptor used by the `WriteStream`.
+		@see https://nodejs.org/api/fs.html#fs_event_open_1
 	**/
 	var Open:WriteStreamEvent<Int->Void> = "open";
+
+	/**
+		Emitted when the `fs.WriteStream` is ready to be used.
+
+		@see https://nodejs.org/api/fs.html#fs_event_ready_1
+	**/
+	var Ready:WriteStreamEvent<Void->Void> = "ready";
 }
 
 /**
-	Writable file stream.
+	@see https://nodejs.org/api/fs.html#fs_class_fs_writestream
 **/
+@:jsRequire("fs", "WriteStream")
 extern class WriteStream extends js.node.stream.Writable<WriteStream> {
 	/**
-		The path to the file the stream is writing to as specified in the first argument to `Fs.createWriteStream`.
-		If path is passed as a string, then writeStream.path will be a string.
-		If path is passed as a Buffer, then writeStream.path will be a Buffer.
+		The number of bytes written so far.
+		Does not include data that is still queued for writing.
+
+		@see https://nodejs.org/api/fs.html#fs_writestream_byteswritten
+	**/
+	var bytesWritten:Int;
+
+	/**
+		The path to the file the stream is writing to as specified in the first argument to `fs.createWriteStream()`.
+		If `path` is passed as a string, then `writeStream.path` will be a string.
+		If `path` is passed as a `Buffer`, then `writeStream.path` will be a `Buffer`.
+
+		@see https://nodejs.org/api/fs.html#fs_writestream_path
 	**/
 	var path:FsPath;
 
 	/**
-		The number of bytes written so far.
-		Does not include data that is still queued for writing.
+		This property is `true` if the underlying file has not been opened yet, i.e. before the `'ready'` event is
+		emitted.
+
+		@see https://nodejs.org/api/fs.html#fs_writestream_pending
 	**/
-	var bytesWritten:Int;
+	var pending:Bool;
 }
