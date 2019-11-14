@@ -60,7 +60,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/tls.html#tls_event_ocsprequest
 	**/
-	var OCSPRequest:ServerEvent<Buffer->Buffer->(Error->?Buffer->Void)->Void> = "OCSPRequest";
+	var OCSPRequest:ServerEvent<Buffer->Buffer->(Null<Error>->?Buffer->Void)->Void> = "OCSPRequest";
 
 
 	/**
@@ -68,7 +68,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/tls.html#tls_event_resumesession
 	**/
-	var ResumeSession:ServerEvent<Buffer->(Error->?Buffer->Void)->Void> = "resumeSession";
+	var ResumeSession:ServerEvent<Buffer->(Null<Error>->?Buffer->Void)->Void> = "resumeSession";
 
 	/**
 		The `'secureConnection'` event is emitted after the handshaking process for a new connection has successfully completed.
@@ -113,7 +113,7 @@ extern class Server extends js.node.net.Server {
 
 		@see https://nodejs.org/api/tls.html#tls_server_close_callback
 	**/
-    function close(callback:haxe.Constraints.Function):Server;
+    function close(callback:Error->Void):Server;
 
 	/**
 		Returns the current number of concurrent connections on the server.

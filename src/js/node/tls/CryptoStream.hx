@@ -22,27 +22,21 @@
 
 package js.node.tls;
 
-import js.node.events.EventEmitter;
-
 /**
-	Events emitted by `SecurePair`.
-**/
-@:enum abstract SecurePairEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
-	/**
-		The `'secure'` event is emitted by the `SecurePair` object once a secure connection has been established.
+	The `tls.CryptoStream` class represents a stream of encrypted data.
+	This class is deprecated and should no longer be used.
 
-		@see https://nodejs.org/api/tls.html#tls_event_secure
-	**/
-	var Secure:SecurePairEvent<Void->Void> = "secure";
-}
-
-/**
-	Returned by `Tls.createSecurePair`.
-
-	@see https://nodejs.org/api/tls.html#tls_class_securepair
+	@see https://nodejs.org/api/tls.html#tls_class_cryptostream
 **/
 @:deprecated
-extern class SecurePair extends EventEmitter<SecurePair> {
-	var cleartext(default, null):TLSSocket;
-	var encrypted(default, null):js.node.stream.Duplex.IDuplex;
+@:jsRequire("tls", "CryptoStream")
+extern class CryptoStream {
+	/**
+		The `cryptoStream.bytesWritten` property returns the total number of bytes written to the underlying socket
+		including the bytes required for the implementation of the TLS protocol.
+
+		@see https://nodejs.org/api/tls.html#tls_cryptostream_byteswritten
+	**/
+	var authorizationError(default, null):Int;
 }
+

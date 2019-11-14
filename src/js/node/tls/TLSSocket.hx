@@ -25,8 +25,9 @@ package js.node.tls;
 import haxe.Constraints.Function;
 import js.node.Buffer;
 import js.node.events.EventEmitter.Event;
-import js.node.Tls.TlsServerOptionsBase;
-import js.node.Tls.TlsClientOptionsBase;
+import js.node.tls.SecureContext;
+import js.node.Tls.ALPNProtocolsType;
+
 #if haxe4
 import js.lib.Error;
 #else
@@ -44,7 +45,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/tls.html#tls_event_keylog_1
 	**/
-	var Keylog:TLSSocketEvent<Bool->Void> = "keylog";
+	var Keylog:TLSSocketEvent<Buffer->TLSSocket->Void> = "keylog";
 
 	/**
 		The `'OCSPResponse'` event is emitted if the `requestOCSP` option was set
@@ -82,15 +83,7 @@ import js.Error;
 	An option type for constructor of `TLSSocket`.
 **/
 typedef TLSSocketOptions = {
-	// import
-	// * rejectunauthorized
-	// * NPNProtocols
-	// * requestCert
-	// * SNICallback
-	// * session
-	// * requestOCSP
-	> TlsServerOptionsBase,
-	> TlsClientOptionsBase,
+	> SecureContextOptions,
 
 	/**
 		See `Tls.createServer()`
@@ -98,22 +91,54 @@ typedef TLSSocketOptions = {
 	@:optional var enableTrace:Bool;
 
 	/**
-		If true the TLS socket will be instantiated in server-mode
+		The SSL/TLS protocol is asymmetrical, `TLSSocket`s must know if they are to behave as a server or a client.
+		If `true` the TLS socket will be instantiated as a server.
+		Default: false.
 	**/
 	@:optional var isServer:Bool;
 
 	/**
-		A `net.Server` instance
+		Whether to authenticate the remote peer by requesting a certificate.
+		Clients always request a server certificate.
+		Servers (`isServer` is true) may set `requestCert` to `true` to request a client certificate.
 	**/
-	@:optional var server:js.node.net.Server;
+	@:optional var requestCert: Bool;
 
 	/**
 		See `Tls.createServer()`
 	**/
-	@:optional var ALPNProtocols:Array<Buffer>;
+	@:optional var rejectUnauthorized: Bool;
 
 	/**
-		An optional TLS context object from `Tls.createSecureContext`
+		See `Tls.createServer()`
+	**/
+	@:optional var ALPNProtocols: ALPNProtocolsType;
+
+	/**
+		See `Tls.createServer()`
+	**/
+    @:optional var SNICallback:
+#if (haxe_ver >= 4)
+		(servername:String, cb:(Error->SecureContext)) -> Void;
+#else
+		String->(Error->SecureContext)->Void;
+#end
+
+	/**
+		A `Buffer` instance containing a TLS sessions.
+	**/
+	@:optional var session: Buffer;
+
+	/**
+		If `true`, specifies that the OCSP status request extension will be added to the client hello and
+		an `'OCSPResponse'` event will be emitted on the socket before establishing a secure communication.
+	**/
+	@:optional var requestOCSP: Bool;
+
+	/**
+		TLS context object created with `tls.createSecureContext()`.
+		If a secureContext is not provided,
+		one will be created by passing the entire `options` object to `tls.createSecureContext()`.
 	**/
 	@:optional var secureContext:SecureContext;
 }
@@ -216,7 +241,7 @@ extern class TLSSocket extends js.node.net.Socket {
 
 		@see https://nodejs.org/api/tls.html#tls_tlssocket_getfinished
 	**/
-	function getFinished(): Dynamic;
+	function getFinished(): Null<Buffer>;
 
 	/**
 		Returns an object representing the peer's certificate.
@@ -251,14 +276,14 @@ extern class TLSSocket extends js.node.net.Socket {
 
 		@see https://nodejs.org/api/tls.html#tls_tlssocket_getsession
 	**/
-	function getSession():Buffer;
+	function getSession():Null<Buffer>;
 
 	/**
 		see https://www.openssl.org/docs/man1.1.1/man3/SSL_get_shared_sigalgs.html for more information.
 
 		@see https://nodejs.org/api/tls.html#tls_tlssocket_getsharedsigalgs
 	**/
-	function getSharedSignals():Array<String>;
+	function getSharedSignals():Array<Dynamic>;
 
 	/**
 		For a client, returns the TLS session ticket if one is available, or `null`. For a server, always returns `null`.
@@ -273,6 +298,46 @@ extern class TLSSocket extends js.node.net.Socket {
 		@see https://nodejs.org/api/tls.html#tls_tlssocket_issessionreused
 	**/
 	function isSessionReused():Bool;
+
+	// This member has defined in base class, `js.node.net.Socket`.
+	/*
+		Returns the string representation of the local IP address.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_localaddress
+	*/
+	// var localAddress(default, null): String;
+
+	// This member has defined in base class, `js.node.net.Socket`.
+	/*
+		Returns the numeric representation of the local port.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_localport
+	*/
+	// var localPort(default, null): Int;
+
+	// This member has defined in base class, `js.node.net.Socket`.
+	/*
+		Returns the string representation of the remote IP address. For example, `'74.125.127.100'` or `'2001:4860:a005::68'`.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_remoteaddress
+	*/
+	// var remoteAddress(default, null): String;
+
+	// This member has defined in base class, `js.node.net.Socket`.
+	/*
+		Returns the string representation of the remote IP family. `'IPv4'` or `'IPv6'`.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_remotefamily
+	*/
+	// var remoteFamily(default, null): String;
+
+	// This member has defined in base class, `js.node.net.Socket`.
+	/*
+		Returns the numeric representation of the remote port. For example, `443`.
+
+		@see https://nodejs.org/api/tls.html#tls_tlssocket_remoteport
+	*/
+	// var remotePort(default, null): Int;
 
 	/**
 		The `TlsSocket.renegotiate()` method initiates a TLS renegotiation process.
