@@ -32,10 +32,12 @@ import js.Error;
 #end
 import js.lib.ArrayBufferView;
 import js.node.Buffer;
-import js.node.fs.Stats;
+import js.node.fs.Dir;
+import js.node.fs.Dirent;
 import js.node.fs.FSWatcher;
 import js.node.fs.ReadStream;
 import js.node.fs.WriteStream;
+import js.node.fs.Stats;
 
 /**
 	The `fs` module provides an API for interacting with the file system in a manner closely modeled around standard
@@ -1301,9 +1303,3 @@ typedef FsWatchFileOptions = {
 	**/
 	@:optional var interval:Int;
 }
-
-// TODO: impl FS.Dir
-typedef Dir = {}
-
-// TODO: impl FS.Dirent
-typedef Dirent = {}

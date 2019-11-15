@@ -27,6 +27,7 @@ package js.node.fs;
 
 	@see https://nodejs.org/api/fs.html#fs_class_fs_stats
 **/
+@:jsRequire("fs", "Stats")
 extern class Stats {
 	/**
 		Returns `true` if the `fs.Stats` object describes a block device.
