@@ -113,7 +113,7 @@ extern class Server extends js.node.net.Server {
 
 		@see https://nodejs.org/api/tls.html#tls_server_close_callback
 	**/
-    function close(callback:Error->Void):Server;
+    function close(callback:Null<Error>->Void):Server;
 
 	/**
 		Returns the current number of concurrent connections on the server.

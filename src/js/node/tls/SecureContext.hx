@@ -28,12 +28,12 @@ typedef SecureContextOptions = {
 	/**
 		Optionally override the trusted CA certificates.
 	**/
-	@:optional var ca:Array<EitherType<String, Buffer>>;
+	@:optional var ca:EitherType<EitherType<String, Buffer>, Array<EitherType<String, Buffer>>>;
 
 	/**
 		Cert chains in PEM format.
 	**/
-	@:optional var cert:EitherType<String, Buffer>;
+	@:optional var cert:EitherType<EitherType<String, Buffer>, Array<EitherType<String, Buffer>>>;
 
 	/**
 		Colon-separated list of supported signature algorithms.

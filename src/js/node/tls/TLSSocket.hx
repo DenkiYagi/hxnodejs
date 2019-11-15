@@ -45,7 +45,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/tls.html#tls_event_keylog_1
 	**/
-	var Keylog:TLSSocketEvent<Buffer->TLSSocket->Void> = "keylog";
+	var Keylog:TLSSocketEvent<Buffer->Void> = "keylog";
 
 	/**
 		The `'OCSPResponse'` event is emitted if the `requestOCSP` option was set
