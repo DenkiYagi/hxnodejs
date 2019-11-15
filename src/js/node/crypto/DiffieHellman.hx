@@ -153,5 +153,5 @@ extern class DiffieHellman implements IDiffieHellman {
 
 		@see https://nodejs.org/api/crypto.html#crypto_diffiehellman_verifyerror
 	**/
-	function verifyError(v:Int):Void;
+	var verifyError(default, null): Int;
 }
