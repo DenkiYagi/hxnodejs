@@ -44,7 +44,7 @@ typedef DnsLookupOptions = {
 	/**
 		The record family. If not provided, both IP v4 and v6 addresses are accepted.
 	**/
-	@:optional var family:DnsAddressFamily;
+	@:optional var family:Int;
 
 	/**
 		If present, it should be one or more of the supported `getaddrinfo` flags.
@@ -58,6 +58,14 @@ typedef DnsLookupOptions = {
 		Defaults to false.
 	**/
 	@:optional var all:Bool;
+
+	/**
+		When `true`, the callback receives IPv4 and IPv6 addresses in the order the DNS resolver returned them.
+		When `false`, IPv4 addresses are placed before IPv6 addresses.
+		Default: currently `false` (addresses are reordered) but this is expected to change in the not too distant future.
+		New code should use `{ verbatim: true }`.
+	**/
+	@:optional var verbatim:Bool;
 }
 
 /**
@@ -65,7 +73,7 @@ typedef DnsLookupOptions = {
 **/
 @:enum abstract DnsRrtype(String) from String to String {
 	/**
-		IPV4 addresses, default
+		IPV4 addresses (default)
 	**/
 	var A = "A";
 
@@ -75,29 +83,9 @@ typedef DnsLookupOptions = {
 	var AAAA = "AAAA";
 
 	/**
-		mail exchange records
+		any records
 	**/
-	var MX = "MX";
-
-	/**
-		text records
-	**/
-	var TXT = "TXT";
-
-	/**
-		SRV records
-	**/
-	var SRV = "SRV";
-
-	/**
-		used for reverse IP lookups
-	**/
-	var PTR = "PTR";
-
-	/**
-		name server records
-	**/
-	var NS = "NS";
+	var ANY = "ANY";
 
 	/**
 		canonical name records
@@ -105,9 +93,39 @@ typedef DnsLookupOptions = {
 	var CNAME = "CNAME";
 
 	/**
-		start of authority record
+		mail exchange records
+	**/
+	var MX = "MX";
+
+	/**
+		name authority pointer records
+	**/
+	var NAPTR = "NAPTR";
+
+	/**
+		name server records
+	**/
+	var NS = "NS";
+
+	/**
+		pointer records
+	**/
+	var PTR = "PTR";
+
+	/**
+		start of authority records
 	**/
 	var SOA = "SOA";
+
+	/**
+		service records
+	**/
+	var SRV = "SRV";
+
+	/**
+		text records
+	**/
+	var TXT = "TXT";
 }
 
 /**
@@ -115,27 +133,34 @@ typedef DnsLookupOptions = {
 **/
 typedef DnsResolvedAddress4 = {address:String, ttl:Int};
 typedef DnsResolvedAddress6 = {address:String, ttl:Int};
-typedef DnsResolvedAddressCname = {value:String};
 typedef DnsResolvedAddressMX = {priority:Int, exchange:String};
 typedef DnsResolvedAddressNaptr = {flags:String, service:String, regexp:String, replacement:String, order:Int, preference:Int};
-typedef DnsResolvedAddressNs = {value:String};
-typedef DnsResolvedAddressPtr = {value:String};
 typedef DnsResolvedAddressSoa = {
-    nsname:String,
-    hostmaster:String,
-    serial:Int,
-    refresh:Int,
-    retry:Int,
-    expire:Int,
-    minttl:Int
+	nsname:String,
+	hostmaster:String,
+	serial:Int,
+	refresh:Int,
+	retry:Int,
+	expire:Int,
+	minttl:Int
 };
 typedef DnsResolvedAddressSrv = {
-    priority:Int,
-    weight:Int,
-    port:Int,
-    name:String
+	priority:Int,
+	weight:Int,
+	port:Int,
+	name:String
 };
 typedef DnsResolvedAddressTxt = {entries:Array<String>};
+
+typedef DnsResolvedAddressAny = EitherType<
+	String, EitherType<
+	DnsResolvedAddress4, EitherType<
+	DnsResolvedAddress6, EitherType<
+	DnsResolvedAddressMX, EitherType<
+	DnsResolvedAddressNaptr, EitherType<
+	DnsResolvedAddressSoa, EitherType<
+	DnsResolvedAddressSrv, DnsResolvedAddressTxt
+>>>>>>>;
 
 /**
 	Error objects returned by dns lookups are of this type
@@ -291,8 +316,7 @@ typedef DnsLookupCallbackAll =
 typedef DnsLookupCallbackAllEntry = {address:String, family:DnsAddressFamily};
 
 typedef ResolveAnyRet = EitherType<
-	{type:String, address:String, ttl:Int}, EitherType< // A
-	{type:String, address:String, ttl:Int}, EitherType< // AAAA
+	{type:String, address:String, ttl:Int}, EitherType< // A, AAAA
 	{type:String, value:String}, EitherType< // Cname
 	{type:String, priority:Int, exchange:String}, EitherType< // MX
 	{ // NAPTR
@@ -304,8 +328,7 @@ typedef ResolveAnyRet = EitherType<
 		order:Int,
 		preference:Int
 	}, EitherType<
-	{type:String, value:String}, EitherType< // Ns
-	{type:String, value:String}, EitherType< // PTR
+	{type:String, value:String}, EitherType< // Ns, Ptr
 	{ // SOA
 		type:String,
 		nsname:String,
@@ -324,7 +347,7 @@ typedef ResolveAnyRet = EitherType<
 		name:String
 	},
 	{type:String, entries:Array<String>} // TXT
->>>>>>>>>;
+>>>>>>>;
 
 /**
 	This module contains functions that belong to two different categories:
@@ -344,27 +367,6 @@ typedef ResolveAnyRet = EitherType<
 **/
 @:jsRequire("dns")
 extern class Dns {
-	/**
-		A flag can be passed as hints to `Dns.lookup()`.
-
-		Returned address types are determined by the types of addresses supported by the current system.
-		For example, IPv4 addresses are only returned if the current system has at least one IPv4 address configured.
-		Loopback addresses are not considered.
-
-		@see https://nodejs.org/api/dns.html#dns_supported_getaddrinfo_flags
-	**/
-	static var ADDRCONFIG(default, null):Int;
-
-	/**
-		A flag can be passed as hints to `Dns.lookup()`.
-
-		If the IPv6 family was specified, but no IPv6 addresses were found, then return IPv4 mapped IPv6 addresses.
-		It is not supported on some operating systems (e.g FreeBSD 10.1).
-
-		@see https://nodejs.org/api/dns.html#dns_supported_getaddrinfo_flags
-	**/
-	static var V4MAPPED(default, null):Int;
-
 	/**
 		Returns an array of IP address strings, formatted according to RFC 5952, that are currently configured for DNS resolution.
 		A string will include a port section if a custom port is used.
@@ -403,13 +405,9 @@ extern class Dns {
 	**/
 
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<String>->Void):Void {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddress4>->Void):Void {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddress6>->Void):Void {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressCname>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressAny>->Void):Void {})
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressMX>->Void):Void {})
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressNaptr>->Void):Void {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressNs>->Void):Void {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressPtr>->Void):Void {})
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSoa>->Void):Void {})
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSrv>->Void):Void {})
 	static function resolve(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressTxt>->Void):Void;
@@ -420,7 +418,8 @@ extern class Dns {
 
 		@see https://nodejs.org/api/dns.html#dns_dns_resolve4_hostname_options_callback
 	**/
-	static function resolve4(hostname:String, ?options:{ttl:Int}, callback:DnsError->Array<String>->Void):Void;
+	@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:Error->Array<String>->Void):Void {})
+	static function resolve4(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<DnsResolvedAddress4>->Void):Void;
 
 	/**
 		Uses the DNS protocol to resolve a IPv6 addresses (`AAAA` records) for the `hostname`.
@@ -428,7 +427,8 @@ extern class Dns {
 
 		@see https://nodejs.org/api/dns.html#dns_dns_resolve6_hostname_options_callback
 	**/
-	static function resolve6(hostname:String, ?options:{ttl:Int}, callback:DnsError->Array<String>->Void):Void;
+	@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:Error->Array<String>->Void):Void {})
+	static function resolve6(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<DnsResolvedAddress6>->Void):Void;
 
 	/**
 		Uses the DNS protocol to resolve all records (also known as `ANY` or `*` query).
@@ -524,4 +524,27 @@ extern class Dns {
 		@see https://nodejs.org/api/dns.html#dns_dns_setservers_servers
 	**/
 	static function setServers(servers:Array<String>):Void;
+
+	/**
+		A flag can be passed as hints to `Dns.lookup()`.
+
+		Returned address types are determined by the types of addresses supported by the current system.
+		For example, IPv4 addresses are only returned if the current system has at least one IPv4 address configured.
+		Loopback addresses are not considered.
+
+		@see https://nodejs.org/api/dns.html#dns_supported_getaddrinfo_flags
+	**/
+	static var ADDRCONFIG(default, null):Int;
+
+	/**
+		A flag can be passed as hints to `Dns.lookup()`.
+
+		If the IPv6 family was specified, but no IPv6 addresses were found, then return IPv4 mapped IPv6 addresses.
+		It is not supported on some operating systems (e.g FreeBSD 10.1).
+
+		@see https://nodejs.org/api/dns.html#dns_supported_getaddrinfo_flags
+	**/
+	static var V4MAPPED(default, null):Int;
+
+
 }
