@@ -310,7 +310,7 @@ typedef DnsLookupCallbackSingle =
 typedef DnsLookupCallbackAll =
 #if (haxe_ver >= 4)
     (err : DnsError, addresses : Array<DnsLookupCallbackAllEntry>) -> Void;
-#else DnsError->
+#else
 	DnsError->Array<DnsLookupCallbackAllEntry>->Void;
 #end
 typedef DnsLookupCallbackAllEntry = {address:String, family:DnsAddressFamily};
