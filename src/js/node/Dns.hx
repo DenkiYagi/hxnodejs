@@ -33,6 +33,7 @@ import js.Error;
 	Enumeration of possible Int `options` values for `Dns.lookup`.
 **/
 @:enum abstract DnsAddressFamily(Int) from Int to Int {
+	var Both = 0;
 	var IPv4 = 4;
 	var IPv6 = 6;
 }
@@ -44,7 +45,7 @@ typedef DnsLookupOptions = {
 	/**
 		The record family. If not provided, both IP v4 and v6 addresses are accepted.
 	**/
-	@:optional var family:Int;
+	@:optional var family:DnsAddressFamily;
 
 	/**
 		If present, it should be one or more of the supported `getaddrinfo` flags.
@@ -150,16 +151,38 @@ typedef DnsResolvedAddressSrv = {
 	port:Int,
 	name:String
 };
-typedef DnsResolvedAddressTxt = {entries:Array<String>};
-
 typedef DnsResolvedAddressAny = EitherType<
-	String, EitherType<
-	DnsResolvedAddress4, EitherType<
-	DnsResolvedAddress6, EitherType<
-	DnsResolvedAddressMX, EitherType<
-	DnsResolvedAddressNaptr, EitherType<
-	DnsResolvedAddressSoa, EitherType<
-	DnsResolvedAddressSrv, DnsResolvedAddressTxt
+	{type:String, address:String, ttl:Int}, EitherType< // A, AAAA
+	{type:String, value:String}, EitherType< // Cname
+	{type:String, priority:Int, exchange:String}, EitherType< // MX
+	{ // NAPTR
+		type:String,
+		flags:String,
+		service:String,
+		regex:String,
+		replacement:String,
+		order:Int,
+		preference:Int
+	}, EitherType<
+	{type:String, value:String}, EitherType< // Ns, Ptr
+	{ // SOA
+		type:String,
+		nsname:String,
+		hostmaster:String,
+		serial:Int,
+		refersh:Int,
+		retry:Int,
+		expire:Int,
+		minttl:Int
+	}, EitherType<
+	{ // SRV
+		type:String,
+		priority:Int,
+		weight:Int,
+		port:Int,
+		name:String
+	},
+	{type:String, entries:Array<String>} // TXT
 >>>>>>>;
 
 /**
@@ -315,40 +338,6 @@ typedef DnsLookupCallbackAll =
 #end
 typedef DnsLookupCallbackAllEntry = {address:String, family:DnsAddressFamily};
 
-typedef ResolveAnyRet = EitherType<
-	{type:String, address:String, ttl:Int}, EitherType< // A, AAAA
-	{type:String, value:String}, EitherType< // Cname
-	{type:String, priority:Int, exchange:String}, EitherType< // MX
-	{ // NAPTR
-		type:String,
-		flags:String,
-		service:String,
-		regex:String,
-		replacement:String,
-		order:Int,
-		preference:Int
-	}, EitherType<
-	{type:String, value:String}, EitherType< // Ns, Ptr
-	{ // SOA
-		type:String,
-		nsname:String,
-		hostmaster:String,
-		serial:Int,
-		refersh:Int,
-		retry:Int,
-		expire:Int,
-		minttl:Int
-	}, EitherType<
-	{ // SRV
-		type:String,
-		priority:Int,
-		weight:Int,
-		port:Int,
-		name:String
-	},
-	{type:String, entries:Array<String>} // TXT
->>>>>>>;
-
 /**
 	This module contains functions that belong to two different categories:
 
@@ -403,14 +392,13 @@ extern class Dns {
 
 		@see https://nodejs.org/api/dns.html#dns_dns_resolve_hostname_rrtype_callback
 	**/
-
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<String>->Void):Void {})
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressAny>->Void):Void {})
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressMX>->Void):Void {})
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressNaptr>->Void):Void {})
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSoa>->Void):Void {})
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSrv>->Void):Void {})
-	static function resolve(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressTxt>->Void):Void;
+	static function resolve(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<Array<String>>->Void):Void; // Txt
 
 	/**
 		Uses the DNS protocol to resolve a IPv4 addresses (`A` records) for the `hostname`.
@@ -418,7 +406,7 @@ extern class Dns {
 
 		@see https://nodejs.org/api/dns.html#dns_dns_resolve4_hostname_options_callback
 	**/
-	@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:Error->Array<String>->Void):Void {})
+	@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<String>->Void):Void {})
 	static function resolve4(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<DnsResolvedAddress4>->Void):Void;
 
 	/**
@@ -427,7 +415,7 @@ extern class Dns {
 
 		@see https://nodejs.org/api/dns.html#dns_dns_resolve6_hostname_options_callback
 	**/
-	@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:Error->Array<String>->Void):Void {})
+	@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<String>->Void):Void {})
 	static function resolve6(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<DnsResolvedAddress6>->Void):Void;
 
 	/**
@@ -438,7 +426,7 @@ extern class Dns {
 
 		@see https://nodejs.org/api/dns.html#dns_dns_resolveany_hostname_callback
 	**/
-	static function resolveAny(hostname:String, callback:DnsError->Array<ResolveAnyRet>->Void):Void;
+	static function resolveAny(hostname:String, callback:DnsError->Array<DnsResolvedAddressAny>->Void):Void;
 
 	/**
 		Uses the DNS protocol to resolve `CNAME` records for the `hostname`.
@@ -545,6 +533,4 @@ extern class Dns {
 		@see https://nodejs.org/api/dns.html#dns_supported_getaddrinfo_flags
 	**/
 	static var V4MAPPED(default, null):Int;
-
-
 }

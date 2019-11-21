@@ -133,7 +133,7 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_getservers
 	**/
-	static function getServers():Array<String>;
+	static function getServers():Promise<Array<String>>;
 
 	/**
 		Resolves a hostname (e.g. `'nodejs.org'`) into the first found A (IPv4) or AAAA (IPv6) record.

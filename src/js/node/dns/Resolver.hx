@@ -51,7 +51,7 @@ extern class Resolver {
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressNaptr>->Void):Void {})
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSoa>->Void):Void {})
 	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSrv>->Void):Void {})
-	static function resolve(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Class<DnsResolvedAddressTxt>->Void):Void;
+	static function resolve(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<Array<String>>->Void):Void; // Txt
 
 	/**
 		An alias of `Dns.resolve4()`.
@@ -68,7 +68,7 @@ extern class Resolver {
 	/**
 		An alias of `Dns.resolveAny()`.
 	**/
-	static function resolveAny(hostname:String, callback:DnsError->Array<ResolveAnyRet>->Void):Void;
+	static function resolveAny(hostname:String, callback:DnsError->Array<DnsResolvedAddressAny>->Void):Void;
 
 	/**
 		An alias of `Dns.resolveCname()`.
