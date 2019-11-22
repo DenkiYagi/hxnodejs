@@ -36,62 +36,76 @@ import js.node.events.EventEmitter.Event;
 **/
 @:enum abstract SocketEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		Emitted after resolving the hostname but before connecting.
-		Not applicable to UNIX sockets.
+		Emitted once the socket is fully closed.
+		The argument hadError is a boolean which says if the socket was closed due to a transmission error.
+
+		@see https://nodejs.org/api/net.html#net_event_close_1
 	**/
-	var Lookup:SocketEvent<Null<Error>->String->DnsAddressFamily->Void> = "lookup";
+	var Close:SocketEvent<Bool->Void> = "close";
 
 	/**
-		Emitted when a socket connection is successfully established. See `Socket.connect`.
+		Emitted when a socket connection is successfully established.
+		See `net.createConnection`.
+
+		@see https://nodejs.org/api/net.html#net_event_connect
 	**/
 	var Connect:SocketEvent<Void->Void> = "connect";
 
 	/**
 		Emitted when data is received.
 		The argument data will be a `Buffer` or `String`.
-		Encoding of data is set by `Socket.setEncoding`.
+		Encoding of data is set by `Socket.setEncoding()`.
 
-		Note that the data will be lost if there is no listener when a Socket emits a 'data' event.
+		@see https://nodejs.org/api/net.html#net_event_data
 	**/
 	var Data:SocketEvent<EitherType<Buffer, String>->Void> = "data";
 
 	/**
-		Emitted when the other end of the socket sends a FIN packet.
+		Emitted when the write buffer becomes empty.
+		Can be used to throttle uploads.
 
-		By default (allowHalfOpen == false) the socket will destroy its file descriptor once
-		it has written out its pending write queue. However, by setting allowHalfOpen == true
-		the socket will not automatically `end` its side allowing the user to write arbitrary amounts of data,
-		with the caveat that the user is required to `end` their side now.
-	**/
-	var End:SocketEvent<Void->Void> = "end";
-
-	/**
-		Emitted if the socket times out from inactivity.
-		This is only to notify that the socket has been idle
-		The user must manually close the connection.
-		See also: `Socket.setTimeout`
-	**/
-	var Timeout:SocketEvent<Void->Void> = "timeout";
-
-	/**
-		Emitted when the write buffer becomes empty. Can be used to throttle uploads.
-		See also: the return values of `Socket.write`
+		@see https://nodejs.org/api/net.html#net_event_drain
 	**/
 	var Drain:SocketEvent<Void->Void> = "drain";
 
 	/**
-		Emitted when an error occurs. The 'close' event will be called directly following this event.
+		Emitted when the other end of the socket sends a FIN packet, thus ending the readable side of the socket.
+
+		@see https://nodejs.org/api/net.html#net_event_end
+	**/
+	var End:SocketEvent<Void->Void> = "end";
+
+	/**
+		Emitted when an error occurs.
+		The `'close'` event will be called directly following this event.
+
+		@see https://nodejs.org/api/net.html#net_event_error_1
 	**/
 	var Error:SocketEvent<Error->Void> = "error";
 
 	/**
-		Emitted once the socket is fully closed.
-		The argument `had_error` is a boolean which says if the socket was closed due to a transmission error.
+		Emitted after resolving the hostname but before connecting.
+		Not applicable to UNIX sockets.
 
-		Listener arguments:
-			had_error - true if the socket had a transmission error
+		@see https://nodejs.org/api/net.html#net_event_lookup
 	**/
-	var Close:SocketEvent<Bool->Void> = "close";
+	var Lookup:SocketEvent<Null<Error>->String->Null<DnsAddressFamily>->String->Void> = "lookup";
+
+	/**
+		Emitted when a socket is ready to be used.
+
+		@see https://nodejs.org/api/net.html#net_event_ready
+	**/
+	var Ready:SocketEvent<Error->Void> = "ready";
+
+	/**
+		Emitted if the socket times out from inactivity.
+		This is only to notify that the socket has been idle.
+		The user must manually close the connection.
+
+		@see https://nodejs.org/api/net.html#net_event_timeout
+	**/
+	var Timeout:SocketEvent<Void->Void> = "timeout";
 }
 
 typedef SocketOptionsBase = {
@@ -178,7 +192,7 @@ typedef SocketConnectOptionsUnix = {
 /**
 	Bound address, the address family name and port of the socket as reported by the operating system.
 **/
-typedef SocketAdress = {
+typedef SocketAddress = {
 	/**
 		Connection port.
 	**/
@@ -187,7 +201,7 @@ typedef SocketAdress = {
 	/**
 		IP Family.
 	**/
-	var family:SocketAdressFamily;
+	var family:SocketAddressFamily;
 
 	/**
 		IP Address.
@@ -198,17 +212,46 @@ typedef SocketAdress = {
 /**
 	Enumeration of possible socket family values.
 **/
-@:enum abstract SocketAdressFamily(String) to String {
+@:enum abstract SocketAddressFamily(String) to String {
 	var IPv4 = "IPv4";
 	var IPv6 = "IPv6";
 }
 
+/**
+	This class is an abstraction of a TCP socket or a streaming `IPC` endpoint
+	(uses named pipes on Windows, and Unix domain sockets otherwise).
+	It is also an `EventEmitter`.
+
+	@see https://nodejs.org/api/net.html#net_class_net_socket
+**/
 @:jsRequire("net", "Socket")
 extern class Socket extends js.node.stream.Duplex<Socket> {
 	/**
-		Construct a new socket object.
+		Creates a new socket object.
+
+		@see https://nodejs.org/api/net.html#net_new_net_socket_options
 	**/
 	function new(?options:SocketOptions);
+
+	/**
+		Returns the bound address, the address `family` name and `port` of the socket as reported by the operating system:
+		`{ port: 12346, family: 'IPv4', address: '127.0.0.1' }`
+
+		@see https://nodejs.org/api/net.html#net_socket_address
+	**/
+	function address():SocketAddress;
+
+	/**
+		`net.Socket` has the property that `socket.write()` always works.
+		This is to help users get up and running quickly.
+		The computer cannot always keep up with the amount of data that is written to a socket.
+		The network connection simply might be too slow.
+		Node.js will internally queue up the data written to a socket and send it out over the wire when it is possible.
+		(Internally it is polling on the socket's file descriptor for being writable).
+
+		@see https://nodejs.org/api/net.html#net_socket_buffersize
+	**/
+	var bufferSize:Int;
 
 	/**
 		Opens the connection for a given socket.
@@ -230,21 +273,6 @@ extern class Socket extends js.node.stream.Duplex<Socket> {
 	@:overload(function(port:Int, ?connectListener:Void->Void):Socket {})
 	@:overload(function(port:Int, host:String, ?connectListener:Void->Void):Socket {})
 	function connect(options:EitherType<SocketConnectOptionsTcp, SocketConnectOptionsUnix>, ?connectListener:Void->Void):Socket;
-
-	/**
-		`Socket` has the property that `socket.write` always works. This is to help users get up and running quickly.
-		The computer cannot always keep up with the amount of data that is written to a socket - the network connection
-		simply might be too slow. Node will internally queue up the data written to a socket and send it out over the
-		wire when it is possible. (Internally it is polling on the socket's file descriptor for being writable).
-
-		The consequence of this internal buffering is that memory may grow. This property shows the number of characters
-		currently buffered to be written. (Number of characters is approximately equal to the number of bytes to be written,
-		but the buffer may contain strings, and the strings are lazily encoded, so the exact number of bytes is not known.)
-
-		Users who experience large or growing `bufferSize` should attempt to "throttle" the data flows
-		in their program with `pause` and `resume`.
-	**/
-	var bufferSize:Int;
 
 	/**
 		A boolean value that indicates if the connection is destroyed or not.
@@ -302,11 +330,6 @@ extern class Socket extends js.node.stream.Duplex<Socket> {
 	function setKeepAlive(enable:Bool, ?initialDelay:Int):Void;
 
 	/**
-		Returns the bound address, the address family name and port of the socket as reported by the operating system.
-	**/
-	function address():SocketAdress;
-
-	/**
 		Calling `unref` on a socket will allow the program to exit if this is the only active socket in the event system.
 		If the socket is already `unref`d calling `unref` again will have no effect.
 	**/
@@ -329,7 +352,7 @@ extern class Socket extends js.node.stream.Duplex<Socket> {
 		The string representation of the remote IP family.
 		'IPv4' or 'IPv6'.
 	**/
-	var remoteFamily(default, null):SocketAdressFamily;
+	var remoteFamily(default, null):SocketAddressFamily;
 
 	/**
 		The numeric representation of the remote port. For example, 80 or 21.

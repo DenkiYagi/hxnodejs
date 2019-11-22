@@ -275,7 +275,7 @@ typedef NetworkInterfaceAddressInfo = {
 	/**
 		IP address family (either `IPv4` or `IPv6`).
 	**/
-	var family:js.node.net.Socket.SocketAdressFamily;
+	var family:js.node.net.Socket.SocketAddressFamily;
 
 	/**
 		The MAC address of the network interface.

@@ -23,7 +23,7 @@
 package js.node.dgram;
 
 import js.node.events.EventEmitter;
-import js.node.net.Socket.SocketAdress;
+import js.node.net.Socket.SocketAddress;
 #if haxe4
 import js.lib.Error;
 #else
@@ -60,7 +60,7 @@ import js.Error;
 	var Error:SocketEvent<Error->Void> = "error";
 }
 
-typedef MessageListener = Buffer->SocketAdress->Void;
+typedef MessageListener = Buffer->SocketAddress->Void;
 
 /**
 	Enumeration of possible datagram socket types
@@ -153,7 +153,7 @@ extern class Socket extends EventEmitter<Socket> {
 	/**
 		Returns an object containing the address information for a socket.
 	**/
-	function address():SocketAdress;
+	function address():SocketAddress;
 
 	/**
 		Sets or clears the SO_BROADCAST socket option.
