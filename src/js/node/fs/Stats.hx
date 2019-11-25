@@ -163,7 +163,8 @@ extern class Stats {
 	var mtimeMs:Float;
 
 	/**
-		The timestamp indicating the last time the file status was changed expressed in milliseconds since the POSIX Epoch.
+		The timestamp indicating the last time the file status was changed expressed in milliseconds since the POSIX
+		Epoch.
 
 		@see https://nodejs.org/api/fs.html#fs_stats_ctimems
 	**/

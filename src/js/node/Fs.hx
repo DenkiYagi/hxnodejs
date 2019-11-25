@@ -311,7 +311,7 @@ extern class Fs {
 
 		@see https://nodejs.org/api/fs.html#fs_fs_futimessync_fd_atime_mtime
 	**/
-	static function futimesSync(fd:Int, atime:Date, mtime:Date):Void;
+	static function futimesSync(fd:Int, atime:Time, mtime:Time):Void;
 
 	/**
 		Asynchronous `lchmod(2)`.
@@ -752,6 +752,9 @@ typedef FsWriteFileOptions = {
 	**/
 	@:optional var mode:Int;
 
+	/**
+		See support of file system flags.
+	**/
 	@:optional var flag:FsOpenFlag;
 }
 
