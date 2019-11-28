@@ -547,7 +547,7 @@ extern class Fs {
 	@:overload(function(path:FsPath, ?options:String):String {})
 	@:overload(function(path:FsPath, ?options:String):Buffer {})
 	@:overload(function(path:FsPath, ?options:FsMkdtempOptions):String {})
-	static function realpathSync(path:FsPath, cache:DynamicAccess<String>):Buffer;
+	static function realpathSync(path:FsPath, ?options:FsMkdtempOptions):Buffer;
 
 	/**
 		Asynchronously rename file at `oldPath` to the pathname provided as `newPath`.
@@ -733,6 +733,53 @@ extern class Fs {
 		@see https://nodejs.org/api/fs.html#fs_fs_writevsync_fd_buffers_position
 	**/
 	static function writevSync(fd:Int, buffers:Array<ArrayBufferView>, ?position:Int):Int;
+}
+
+@:jsRequire("fs", "realpath")
+extern class Realpath {
+	/**
+		Asynchronously computes the canonical pathname by resolving `.`, `..` and symbolic links.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_realpath_path_options_callback
+	**/
+	@:selfCall
+	@:overload(function(path:FsPath, ?options:String, callback:Error->String->Void):Void {})
+	@:overload(function(path:FsPath, ?options:String, callback:Error->Buffer->Void):Void {})
+	@:overload(function(path:FsPath, ?options:FsMkdtempOptions, callback:Error->String->Void):Void {})
+	static function realpath(path:FsPath, ?options:FsMkdtempOptions, callback:Error->Buffer->Void):Void;
+
+	/**
+		Asynchronous `realpath(3)`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_realpath_native_path_options_callback
+	**/
+	@:overload(function(path:FsPath, ?options:String, callback:Error->String->Void):Void {})
+	@:overload(function(path:FsPath, ?options:String, callback:Error->Buffer->Void):Void {})
+	@:overload(function(path:FsPath, ?options:FsMkdtempOptions, callback:Error->String->Void):Void {})
+	static function native(path:FsPath, ?options:FsMkdtempOptions, callback:Error->Buffer->Void):Void;
+}
+
+@:jsRequire("fs", "realpathSync")
+extern class RealpathSync {
+	/**
+		Returns the resolved pathname.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_realpathsync_path_options
+	**/
+	@:overload(function(path:FsPath, ?options:String):String {})
+	@:overload(function(path:FsPath, ?options:String):Buffer {})
+	@:overload(function(path:FsPath, ?options:FsMkdtempOptions):String {})
+	static function realpathSync(path:FsPath, ?options:FsMkdtempOptions):Buffer;
+
+	/**
+		Synchronous `realpath(3)`.
+
+		@see https://nodejs.org/api/fs.html#fs_fs_realpathsync_native_path_options
+	**/
+	@:overload(function(path:FsPath, ?options:String):String {})
+	@:overload(function(path:FsPath, ?options:String):Buffer {})
+	@:overload(function(path:FsPath, ?options:FsMkdtempOptions):String {})
+	static function native(path:FsPath, ?options:FsMkdtempOptions):Buffer;
 }
 
 typedef FsPath = EitherType<String, EitherType<Buffer, URL>>;
