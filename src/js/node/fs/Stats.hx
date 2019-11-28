@@ -83,6 +83,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_dev
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var dev:Int;
 
 	/**
@@ -90,6 +91,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_ino
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var ino:Int;
 
 	/**
@@ -97,6 +99,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_mode
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var mode:Int;
 
 	/**
@@ -104,6 +107,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_nlink
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var nlink:Int;
 
 	/**
@@ -111,6 +115,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_uid
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var uid:Int;
 
 	/**
@@ -118,6 +123,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_gid
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var gid:Int;
 
 	/**
@@ -125,6 +131,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_rdev
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var rdev:Int;
 
 	/**
@@ -132,6 +139,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_size
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var size:Int;
 
 	/**
@@ -139,6 +147,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_blksize
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var blksize:Int;
 
 	/**
@@ -146,6 +155,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_blocks
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var blocks:Int;
 
 	/**
@@ -153,6 +163,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_atimems
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var atimeMs:Float;
 
 	/**
@@ -160,6 +171,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_mtimems
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var mtimeMs:Float;
 
 	/**
@@ -168,6 +180,7 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_ctimems
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var ctimeMs:Float;
 
 	/**
@@ -175,7 +188,41 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_birthtimems
 	**/
+	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
 	var birthtimeMs:Float;
+
+	// It should be implemented bigint.
+	/**
+		Only present when `bigint: true` is passed into the method that generates the object.
+		The timestamp indicating the last time this file was accessed expressed in nanoseconds since the POSIX Epoch.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_atimens
+	**/
+	// var atimeNs;
+	/**
+		Only present when `bigint: true` is passed into the method that generates the object.
+		The timestamp indicating the last time this file was modified expressed in nanoseconds since the POSIX Epoch.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_mtimens
+	**/
+	// var mtimeNs;
+	// It should be implemented bigint.
+	/**
+		Only present when `bigint: true` is passed into the method that generates the object.
+		The timestamp indicating the last time the file status was changed
+		expressed in nanoseconds since the POSIX Epoch.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_ctimens
+	**/
+	// var ctimeNs;
+	// It should be implemented bigint.
+	/**
+		Only present when `bigint: true` is passed into the method that generates the object.
+		The timestamp indicating the creation time of this file expressed in nanoseconds since the POSIX Epoch.
+
+		@see https://nodejs.org/api/fs.html#fs_stats_birthtimens
+	**/
+	// var birthtimeNs;
 
 	/**
 		The timestamp indicating the last time this file was accessed.
