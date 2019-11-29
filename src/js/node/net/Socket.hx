@@ -28,6 +28,7 @@ import js.lib.Error;
 #else
 import js.Error;
 #end
+import js.lib.ArrayBufferView;
 import js.node.Dns;
 import js.node.events.EventEmitter.Event;
 
@@ -108,40 +109,42 @@ import js.node.events.EventEmitter.Event;
 	var Timeout:SocketEvent<Void->Void> = "timeout";
 }
 
-typedef SocketOptionsBase = {
-	/**
-		If true, then the socket won't automatically send a FIN packet
-		when the other end of the socket sends a FIN packet.
-
-		The socket becomes non-readable, but still writable. You should call the `end` method explicitly.
-		See `end` event for more information.
-
-		Default: false
-	**/
-	@:optional var allowHalfOpen:Bool;
-}
-
 /**
 	Options for creating new `Socket` object.
 **/
 typedef SocketOptions = {
-	> SocketOptionsBase,
-
 	/**
 		allows you to specify the existing file descriptor of socket.
 	**/
 	@:optional var fd:Null<Int>;
 
+	/*+
+		Indicates whether half-opened TCP connections are allowed.
+		See `Net.createServer()` and the `'end'` event for details.
+		Default: `false`.
+	**/
+	@:optional var allowHalfOpen:Bool;
+
 	/**
 		allow reads on this socket (NOTE: Works only when `fd` is passed)
+		Default: `false`.
 	**/
 	@:optional var readable:Bool;
 
 	/**
 		allow writes on this socket (NOTE: Works only when `fd` is passed)
+		Default: `false`
 	**/
 	@:optional var writable:Bool;
 }
+
+/**
+	A member that both `SocketConnectOptionsTcp` and `SocketConnectOptionsUnix` contain
+**/
+typedef Onread = {
+	var buffer:EitherType<Buffer, ArrayBufferView>;
+	var callback:Int->EitherType<Buffer, ArrayBufferView>->Bool;
+};
 
 /**
 	Options for the `Socket.connect` method (TCP version).
@@ -174,9 +177,23 @@ typedef SocketConnectOptionsTcp = {
 	@:optional var family:DnsAddressFamily;
 
 	/**
+		`Dns.lookup()` hints
+	**/
+	@:optional var hints:Int;
+
+	/**
 		Custom lookup function. Defaults to `Dns.lookup`.
 	**/
 	@:optional var lookup:String->DnsLookupOptions->DnsLookupCallbackSingle->Void;
+
+	/**
+		If specified, incoming data is stored in a single `buffer` and passed to the supplied `callback`
+		when data arrives on the socket.
+		Note: this will cause the streaming functionality to not provide any data,
+		however events like `'error'`, `'end'`, and `'close'` will still be emitted as normal and methods
+		like `pause()` and `resume()` will also behave as expected.
+	**/
+	@:optional var onread:Onread;
 }
 
 /**
@@ -187,6 +204,15 @@ typedef SocketConnectOptionsUnix = {
 		Path the client should connect to
 	**/
 	var path:String;
+
+	/**
+		If specified, incoming data is stored in a single `buffer` and passed to the supplied `callback`
+		when data arrives on the socket.
+		Note: this will cause the streaming functionality to not provide any data,
+		however events like `'error'`, `'end'`, and `'close'` will still be emitted as normal and methods
+		like `pause()` and `resume()` will also behave as expected.
+	**/
+	@:optional var onread:Onread;
 }
 
 /**
@@ -254,137 +280,192 @@ extern class Socket extends js.node.stream.Duplex<Socket> {
 	var bufferSize:Int;
 
 	/**
-		Opens the connection for a given socket.
+		The amount of received bytes.
 
-		If `port` and `host` are given, then the socket will be opened as a TCP socket,
-		if `host` is omitted, localhost will be assumed.
-		If a `path` is given, the socket will be opened as a unix socket to that path.
-
-		Normally this method is not needed, as `Net.createConnection` opens the socket.
-		Use this only if you are implementing a custom `Socket`.
-
-		This function is asynchronous. When the 'connect' event is emitted the socket is established.
-		If there is a problem connecting, the 'connect' event will not be emitted,
-		the 'error' event will be emitted with the exception
-
-		The `connectListener` parameter will be added as an listener for the 'connect' event.
+		@see https://nodejs.org/api/net.html#net_socket_bytesread
 	**/
-	@:overload(function(path:String, ?connectListener:Void->Void):Socket {})
-	@:overload(function(port:Int, ?connectListener:Void->Void):Socket {})
-	@:overload(function(port:Int, host:String, ?connectListener:Void->Void):Socket {})
-	function connect(options:EitherType<SocketConnectOptionsTcp, SocketConnectOptionsUnix>, ?connectListener:Void->Void):Socket;
+	var bytesRead(default, null):Int;
 
 	/**
-		A boolean value that indicates if the connection is destroyed or not.
-		Once a connection is destroyed no further data can be transferred using it.
+		The amount of bytes sent.
 
-		define in Stream/Readable.hx
+		@see https://nodejs.org/api/net.html#net_socket_byteswritten
 	**/
-	// var destroyed(default, null):Bool;
+	var bytesWritten(default, null):Int;
+
+	/**
+		Initiate a connection on a given socket.
+
+		@see https://nodejs.org/api/net.html#net_socket_connect
+	**/
+	@:overload(function(path:String, ?connectListener:Void->Void):Socket {})
+	@:overload(function(port:Int, ?host:String, ?connectListener:Void->Void):Socket {})
+	@:overload(function(options:SocketConnectOptionsTcp):Socket {})
+	function connect(options:SocketConnectOptionsUnix, ?connectListener:Void->Void):Socket;
+
+	/**
+		If `true`, `socket.connect(options[, connectListener])` was called and has not yet finished.
+		It will stay `true` until the socket becomes connected,
+		then it is set to `false` and the `'connect'` event is emitted.
+		Note that the `socket.connect(options[, connectListener])` callback is a listener
+		for the `'connect'` event.
+
+		@see https://nodejs.org/api/net.html#net_socket_connecting
+	**/
+	var connectiong(default, null):Bool;
 
 	#if haxe4
 	/**
 		Ensures that no more I/O activity happens on this socket.
 		Only necessary in case of errors (parse error or so).
 
-		If `exception` is specified, an 'error' event will be emitted and
-		any listeners for that event will receive exception as an argument.
+		@see https://nodejs.org/api/net.html#net_socket_destroy_exception
 	**/
-	function destroy(?exception:Error):Void;
+	function destroy(?exception:Error):Socket;
 	#end
 
 	/**
-		Sets the socket to timeout after `timeout` milliseconds of inactivity on the socket.
-		By default `Socket` do not have a timeout.
+		A boolean value that indicates if the connection is destroyed or not.
+		Once a connection is destroyed no further data can be transferred using it.
 
-		When an idle timeout is triggered the socket will receive a 'timeout' event but the connection will not be severed.
-		The user must manually `end` or `destroy` the socket.
+		@see https://nodejs.org/api/net.html#net_socket_destroyed
 
-		If `timeout` is 0, then the existing idle timeout is disabled.
-
-		The optional `callback` parameter will be added as a one time listener for the 'timeout' event.
+		define in Stream/Readable.hx
 	**/
-	function setTimeout(timeout:Int, ?callback:Void->Void):Void;
+	// var destroyed(default, null):Bool;
 
 	/**
-		Disables the Nagle algorithm.
-		By default TCP connections use the Nagle algorithm, they buffer data before sending it off.
-		Setting true for `noDelay` will immediately fire off data each time `write` is called.
-		`noDelay` defaults to true.
+		Half-closes the socket. i.e., it sends a FIN packet. It is possible the server will still send some data.
+
+		@see https://nodejs.org/api/net.html#net_socket_end_data_encoding_callback
 	**/
-	function setNoDelay(?noDelay:Bool):Void;
+	@:overload(function(?data:String, ?encoding:String, ?callback:Void->Void):Socket {})
+	@:overload(function(?data:Buffer, ?encoding:String, ?callback:Void->Void):Socket {})
+	function end(?data:ArrayBufferView, ?encoding:String, ?callback:Void->Void):Socket;
 
 	/**
-		Enable/disable keep-alive functionality, and optionally set the initial delay
-		before the first keepalive probe is sent on an idle socket.
+		The string representation of the local IP address the remote client is connecting on.
+		For example, in a server listening on `'0.0.0.0'`, if a client connects on `'192.168.1.1'`,
+		the value of socket.localAddress would be `'192.168.1.1'`.
 
-		`enable` defaults to false.
-
-		Set `initialDelay` (in milliseconds) to set the delay between the last data packet received and
-		the first keepalive probe.
-
-		Setting 0 for `initialDelay` will leave the value unchanged from the default (or previous) setting.
-		Defaults to 0.
+		@see https://nodejs.org/api/net.html#net_socket_localaddress
 	**/
-	@:overload(function(?initialDelay:Int):Void {})
-	function setKeepAlive(enable:Bool, ?initialDelay:Int):Void;
+	var localAddress(default, null):String;
 
 	/**
-		Calling `unref` on a socket will allow the program to exit if this is the only active socket in the event system.
-		If the socket is already `unref`d calling `unref` again will have no effect.
+		The numeric representation of the local port.
+		For example, `80` or `21`.
+
+		@see https://nodejs.org/api/net.html#net_socket_localport
 	**/
-	function unref():Socket;
+	var localPort(default, null):Int;
 
 	/**
-		Opposite of `unref`, calling `ref` on a previously `unref`d socket will not let the program exit
+		Pauses the reading of data.
+		That is, `'data'` events will not be emitted. Useful to throttle back an upload.
+
+		@see https://nodejs.org/api/net.html#net_socket_pause
+	**/
+	function pause():Socket;
+
+	/**
+		This is `true` if the socket is not connected yet,
+		either because `.connect()` has not yet been called or
+		because it is still in the process of connecting (see `socket.connecting`).
+
+		@see https://nodejs.org/api/net.html#net_socket_pending
+	**/
+	var pending(default, null):Bool;
+
+	/**
+		Opposite of `unref()`, calling `ref()` on a previously `unref`ed socket will not let the program exit
 		if it's the only socket left (the default behavior).
-		If the socket is `ref`d calling `ref` again will have no effect.
+		If the socket is `ref`ed calling ref again will have no effect.
+
+		@see https://nodejs.org/api/net.html#net_socket_ref
 	**/
 	function ref():Socket;
 
 	/**
 		The string representation of the remote IP address.
-		For example, '74.125.127.100' or '2001:4860:a005::68'.
+		For example, `'74.125.127.100'` or `'2001:4860:a005::68'`.
+		Value may be `null` if the socket is destroyed (for example, if the client disconnected).
+
+		@see https://nodejs.org/api/net.html#net_socket_remoteaddress
 	**/
-	var remoteAddress(default, null):String;
+	var remoteAddress(default, null):Null<String>;
 
 	/**
 		The string representation of the remote IP family.
-		'IPv4' or 'IPv6'.
+		`'IPv4'` or `'IPv6'`.
+
+		@see https://nodejs.org/api/net.html#net_socket_remotefamily
 	**/
 	var remoteFamily(default, null):SocketAddressFamily;
 
 	/**
-		The numeric representation of the remote port. For example, 80 or 21.
+		The numeric representation of the remote port.
+		For example, `80` or `21`.
+
+		@see https://nodejs.org/api/net.html#net_socket_remoteport
 	**/
 	var remotePort(default, null):Int;
 
 	/**
-		The string representation of the local IP address the remote client is connecting on.
-		For example, if you are listening on '0.0.0.0' and the client connects on '192.168.1.1',
-		the value would be '192.168.1.1'.
+		Resumes reading after a call to `socket.pause()`.
+
+		@see https://nodejs.org/api/net.html#net_socket_resume
 	**/
-	var localAddress(default, null):String;
+	function resume():Socket;
 
 	/**
-		The numeric representation of the local port. For example, 80 or 21.
+		Set the encoding for the socket as a Readable Stream.
+		See `readable.setEncoding()` for more information.
+
+		@see https://nodejs.org/api/net.html#net_socket_setencoding_encoding
 	**/
-	var localPort(default, null):Int;
+	function setEncoding(?encoding:String):Socket;
 
 	/**
-		The amount of received bytes.
+		Enable/disable keep-alive functionality, and optionally set the initial delay
+		before the first keepalive probe is sent on an idle socket.
+
+		@see https://nodejs.org/api/net.html#net_socket_setkeepalive_enable_initialdelay
 	**/
-	var bytesRead(default, null):Int;
+	function setKeepAlive(?enable:Bool, ?initialDelay:Int):Socket;
 
 	/**
-		The amount of bytes sent.
+		Disables the Nagle algorithm.
+		By default TCP connections use the Nagle algorithm, they buffer data before sending it off.
+		Setting true for noDelay will immediately fire off data each time `socket.write()` is called.
+
+		@see https://nodejs.org/api/net.html#net_socket_setnodelay_nodelay
 	**/
-	var bytesWritten(default, null):Int;
+	function setNoDelay(?noDelay:Bool):Socket;
 
 	/**
-		Always true for TLSSocket instances.
+		Sets the socket to timeout after timeout milliseconds of inactivity on the socket.
+		By default net.Socket do not have a timeout.
 
-		May be used to distinguish TLS sockets from regular ones.
+		@see https://nodejs.org/api/net.html#net_socket_settimeout_timeout_callback
 	**/
-	var encrypted(default, null):Bool;
+	function setTimeout(timeout:Int, ?callback:Void->Void):Socket;
+
+	/**
+		Calling `unref()` on a socket will allow the program to exit if this is the only active socket in the event system.
+		If the socket is already `unref`ed calling `unref()` again will have no effect.
+
+		@see https://nodejs.org/api/net.html#net_socket_unref
+	**/
+	function unref():Socket;
+
+	/**
+		Sends data on the socket.
+		The second parameter specifies the encoding in the case of a string — it defaults to UTF8 encoding.
+
+		@see https://nodejs.org/api/net.html#net_socket_write_data_encoding_callback
+	**/
+	@:overload(function(data:String, ?encoding:String, ?callback:Void->Void):Bool {})
+	@:overload(function(data:Buffer, ?encoding:String, ?callback:Void->Void):Bool {})
+	function write(data:ArrayBufferView, ?encoding:String, ?callback:Void->Void):Bool;
 }
