@@ -23,7 +23,6 @@
 package js.node;
 
 import js.node.url.URL;
-import haxe.DynamicAccess;
 import haxe.extern.EitherType;
 #if haxe4
 import js.lib.Error;
