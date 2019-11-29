@@ -318,10 +318,10 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 		**/
 		var CANCELLED;
 	} typedef
-	DnsLookupCallbackSingle = #if (haxe_ver >= 4) (err : DnsError, address : String, family : DnsAddressFamily) -> Void; #else DnsError->String->
+	DnsLookupCallbackSingle = #if (haxe_ver >= 4) (err : Null<DnsError>, address : String, family : DnsAddressFamily) -> Void; #else Null<DnsError>->String->
 		DnsAddressFamily->Void #end
 	typedef
-	DnsLookupCallbackAll = #if (haxe_ver >= 4) (err : DnsError, addresses : Array<DnsLookupCallbackAllEntry>) -> Void; #else DnsError->
+	DnsLookupCallbackAll = #if (haxe_ver >= 4) (err : Null<DnsError>, addresses : Array<DnsLookupCallbackAllEntry>) -> Void; #else Null<DnsError>->
 		Array<DnsLookupCallbackAllEntry>->Void; #end
 	typedef DnsLookupCallbackAllEntry = {address:String, family:DnsAddressFamily};
 	/**
@@ -367,7 +367,7 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_lookupservice_address_port_callback
 		**/
-		static function lookupService(address:String, port:Int, callback:DnsError->String->String->Void):Void;
+		static function lookupService(address:String, port:Int, callback:Null<DnsError>->String->String->Void):Void;
 
 		/**
 			Uses the DNS protocol to resolve a hostname (e.g. `'nodejs.org'`) into an array of the resource records.
@@ -376,13 +376,13 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolve_hostname_rrtype_callback
 		**/
-		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<String>->Void):Void {})
-		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressAny>->Void):Void {})
-		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressMX>->Void):Void {})
-		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressNaptr>->Void):Void {})
-		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSoa>->Void):Void {})
-		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSrv>->Void):Void {})
-		static function resolve(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<Array<String>>->Void):Void; // Txt
+		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<String>->Void):Void {})
+		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<DnsResolvedAddressAny>->Void):Void {})
+		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<DnsResolvedAddressMX>->Void):Void {})
+		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<DnsResolvedAddressNaptr>->Void):Void {})
+		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<DnsResolvedAddressSoa>->Void):Void {})
+		@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<DnsResolvedAddressSrv>->Void):Void {})
+		static function resolve(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<Array<String>>->Void):Void; // Txt
 
 		/**
 			Uses the DNS protocol to resolve a IPv4 addresses (`A` records) for the `hostname`.
@@ -390,8 +390,8 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolve4_hostname_options_callback
 		**/
-		@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<String>->Void):Void {})
-		static function resolve4(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<DnsResolvedAddress4>->Void):Void;
+		@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:Null<DnsError>->Array<String>->Void):Void {})
+		static function resolve4(hostname:String, ?options:{ttl:Bool}, callback:Null<DnsError>->Array<DnsResolvedAddress4>->Void):Void;
 
 		/**
 			Uses the DNS protocol to resolve a IPv6 addresses (`AAAA` records) for the `hostname`.
@@ -399,8 +399,8 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolve6_hostname_options_callback
 		**/
-		@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<String>->Void):Void {})
-		static function resolve6(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<DnsResolvedAddress6>->Void):Void;
+		@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:Null<DnsError>->Array<String>->Void):Void {})
+		static function resolve6(hostname:String, ?options:{ttl:Bool}, callback:Null<DnsError>->Array<DnsResolvedAddress6>->Void):Void;
 
 		/**
 			Uses the DNS protocol to resolve all records (also known as `ANY` or `*` query).
@@ -410,7 +410,7 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolveany_hostname_callback
 		**/
-		static function resolveAny(hostname:String, callback:DnsError->Array<DnsResolvedAddressAny>->Void):Void;
+		static function resolveAny(hostname:String, callback:Null<DnsError>->Array<DnsResolvedAddressAny>->Void):Void;
 
 		/**
 			Uses the DNS protocol to resolve `CNAME` records for the `hostname`.
@@ -419,7 +419,7 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolvecname_hostname_callback
 		**/
-		static function resolveCname(hostname:String, callback:DnsError->Array<String>->Void):Void;
+		static function resolveCname(hostname:String, callback:Null<DnsError>->Array<String>->Void):Void;
 
 		/**
 			Uses the DNS protocol to resolve mail exchange records (`MX` records) for the `hostname`.
@@ -428,7 +428,7 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolvemx_hostname_callback
 		**/
-		static function resolveMx(hostname:String, callback:DnsError->Array<DnsResolvedAddressMX>->Void):Void;
+		static function resolveMx(hostname:String, callback:Null<DnsError>->Array<DnsResolvedAddressMX>->Void):Void;
 
 		/**
 			Uses the DNS protocol to resolve regular expression based records (`NAPTR` records) for the `hostname`.
@@ -436,7 +436,7 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolvenaptr_hostname_callback
 		**/
-		static function resolveNaptr(hostname:String, callback:DnsError->Array<DnsResolvedAddressNaptr>->Void):Void;
+		static function resolveNaptr(hostname:String, callback:Null<DnsError>->Array<DnsResolvedAddressNaptr>->Void):Void;
 
 		/**
 			Uses the DNS protocol to resolve name server records (`NS` records) for the `hostname`.
@@ -445,7 +445,7 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolvens_hostname_callback
 		**/
-		static function resolveNs(hostname:String, callback:DnsError->Array<String>->Void):Void;
+		static function resolveNs(hostname:String, callback:Null<DnsError>->Array<String>->Void):Void;
 
 		/**
 			Uses the DNS protocol to resolve pointer records (`PTR` records) for the hostname.
@@ -453,7 +453,7 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolveptr_hostname_callback
 		**/
-		static function resolvePtr(hostname:String, callback:DnsError->Array<String>->Void):Void;
+		static function resolvePtr(hostname:String, callback:Null<DnsError>->Array<String>->Void):Void;
 
 		/**
 			Uses the DNS protocol to resolve a start of authority record (`SOA` record) for the `hostname`.
@@ -461,7 +461,7 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolvesoa_hostname_callback
 		**/
-		static function resolveSoa(hostname:String, callback:DnsError->DnsResolvedAddressSoa->Void):Void;
+		static function resolveSoa(hostname:String, callback:Null<DnsError>->DnsResolvedAddressSoa->Void):Void;
 
 		/**
 			Uses the DNS protocol to resolve service records (`SRV` records) for the `hostname`.
@@ -469,7 +469,7 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolvesrv_hostname_callback
 		**/
-		static function resolveSrv(hostname:String, callback:DnsError->Array<DnsResolvedAddressSrv>->Void):Void;
+		static function resolveSrv(hostname:String, callback:Null<DnsError>->Array<DnsResolvedAddressSrv>->Void):Void;
 
 		/**
 			Uses the DNS protocol to resolve text queries (`TXT` records) for the `hostname`.
@@ -479,14 +479,14 @@ typedef DnsResolvedAddressAny = EitherType<{type:String, address:String, ttl:Int
 
 			@see https://nodejs.org/api/dns.html#dns_dns_resolvetxt_hostname_callback
 		**/
-		static function resolveTxt(hostname:String, callback:DnsError->Array<Array<String>>->Void):Void;
+		static function resolveTxt(hostname:String, callback:Null<DnsError>->Array<Array<String>>->Void):Void;
 
 		/**
 			Performs a reverse DNS query that resolves an IPv4 or IPv6 address to an array of hostnames.
 
 			@see https://nodejs.org/api/dns.html#dns_dns_reverse_ip_callback
 		**/
-		static function reverse(ip:String, callback:DnsError->Array<String>->Void):Void;
+		static function reverse(ip:String, callback:Null<DnsError>->Array<String>->Void):Void;
 
 		/**
 			Sets the IP address and port of servers to be used when performing DNS resolution.

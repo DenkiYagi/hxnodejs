@@ -112,7 +112,7 @@ extern class DnsPromisesResolver {
 	/**
 		An alias of `DnsPromises.reverse()`.
 	**/
-	static function reverse(ip:String):Promise<{err:DnsError, hostnames:Array<String>}>;
+	static function reverse(ip:String):Promise<{err:Null<DnsError>, hostnames:Array<String>}>;
 
 	/**
 		An alias of `DnsPromises.setServers()`.
@@ -269,7 +269,7 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_reverse_ip
 	**/
-	static function reverse(ip:String):Promise<{err:DnsError, hostnames:Array<String>}>;
+	static function reverse(ip:String):Promise<{err:Null<DnsError>, hostnames:Array<String>}>;
 
 	/**
 		Sets the IP address and port of `servers` to be used when performing DNS resolution.

@@ -23,7 +23,6 @@
 package js.node.dns;
 
 import js.node.Dns;
-
 #if haxe4
 import js.lib.Error;
 #else
@@ -45,75 +44,75 @@ extern class Resolver {
 	/**
 		An alias of `Dns.resolve()`.
 	**/
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<String>->Void):Void {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressAny>->Void):Void {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressMX>->Void):Void {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressNaptr>->Void):Void {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSoa>->Void):Void {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<DnsResolvedAddressSrv>->Void):Void {})
-	static function resolve(hostname:String, ?rrtype:DnsRrtype, callback:DnsError->Array<Array<String>>->Void):Void; // Txt
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<String>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<DnsResolvedAddressAny>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<DnsResolvedAddressMX>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<DnsResolvedAddressNaptr>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<DnsResolvedAddressSoa>->Void):Void {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<DnsResolvedAddressSrv>->Void):Void {})
+	static function resolve(hostname:String, ?rrtype:DnsRrtype, callback:Null<DnsError>->Array<Array<String>>->Void):Void; // Txt
 
 	/**
 		An alias of `Dns.resolve4()`.
 	**/
-	@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<String>->Void):Void {})
-	static function resolve4(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<DnsResolvedAddress4>->Void):Void;
+	@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:Null<DnsError>->Array<String>->Void):Void {})
+	static function resolve4(hostname:String, ?options:{ttl:Bool}, callback:Null<DnsError>->Array<DnsResolvedAddress4>->Void):Void;
 
 	/**
 		An alias of `Dns.resolve6()`.
 	**/
-	@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<String>->Void):Void {})
-	static function resolve6(hostname:String, ?options:{ttl:Bool}, callback:DnsError->Array<DnsResolvedAddress6>->Void):Void;
+	@:overload(function(hostname:String, ?options:{ttl:Bool}, callback:Null<DnsError>->Array<String>->Void):Void {})
+	static function resolve6(hostname:String, ?options:{ttl:Bool}, callback:Null<DnsError>->Array<DnsResolvedAddress6>->Void):Void;
 
 	/**
 		An alias of `Dns.resolveAny()`.
 	**/
-	static function resolveAny(hostname:String, callback:DnsError->Array<DnsResolvedAddressAny>->Void):Void;
+	static function resolveAny(hostname:String, callback:Null<DnsError>->Array<DnsResolvedAddressAny>->Void):Void;
 
 	/**
 		An alias of `Dns.resolveCname()`.
 	**/
-	static function resolveCname(hostname:String, callback:DnsError->Array<String>->Void):Void;
+	static function resolveCname(hostname:String, callback:Null<DnsError>->Array<String>->Void):Void;
 
 	/**
 		An alias of `Dns.resolveMx()`.
 	**/
-	static function resolveMx(hostname:String, callback:DnsError->Array<DnsResolvedAddressMX>->Void):Void;
+	static function resolveMx(hostname:String, callback:Null<DnsError>->Array<DnsResolvedAddressMX>->Void):Void;
 
 	/**
 		An alias of `Dns.resolveNaptr()`.
 	**/
-	static function resolveNaptr(hostname:String, callback:DnsError->Array<DnsResolvedAddressNaptr>->Void):Void;
+	static function resolveNaptr(hostname:String, callback:Null<DnsError>->Array<DnsResolvedAddressNaptr>->Void):Void;
 
 	/**
 		An alias of `Dns.resolveNs()`.
 	**/
-	static function resolveNs(hostname:String, callback:DnsError->Array<String>->Void):Void;
+	static function resolveNs(hostname:String, callback:Null<DnsError>->Array<String>->Void):Void;
 
 	/**
 		An alias of `Dns.resolvePtr()`.
 	**/
-	static function resolvePtr(hostname:String, callback:DnsError->Array<String>->Void):Void;
+	static function resolvePtr(hostname:String, callback:Null<DnsError>->Array<String>->Void):Void;
 
 	/**
 		An alias of `Dns.resolveSoa()`.
 	**/
-	static function resolveSoa(hostname:String, callback:DnsError->DnsResolvedAddressSoa->Void):Void;
+	static function resolveSoa(hostname:String, callback:Null<DnsError>->DnsResolvedAddressSoa->Void):Void;
 
 	/**
 		An alias of `Dns.resolveSrv()`.
 	**/
-	static function resolveSrv(hostname:String, callback:DnsError->Array<DnsResolvedAddressSrv>->Void):Void;
+	static function resolveSrv(hostname:String, callback:Null<DnsError>->Array<DnsResolvedAddressSrv>->Void):Void;
 
 	/**
 		An alias of `Dns.resolveTxt()`.
 	**/
-	static function resolveTxt(hostname:String, callback:DnsError->Array<Array<String>>->Void):Void;
+	static function resolveTxt(hostname:String, callback:Null<DnsError>->Array<Array<String>>->Void):Void;
 
 	/**
 		An alias of `Dns.reverse()`.
 	**/
-	static function reverse(ip:String, callback:Error->Array<String>->Void):Void;
+	static function reverse(ip:String, callback:Null<DnsError>->Array<String>->Void):Void;
 
 	/**
 		These methods are from the `dns` module.
@@ -128,4 +127,3 @@ extern class Resolver {
 	**/
 	static function cancel():Void;
 }
-
