@@ -258,5 +258,4 @@ extern class Promises {
 	static function writeFile(filename:FsPath_, data:ArrayBufferView, ?options:String):Promise<Void>;
 }
 
-typedef FileHandle = {}
 typedef FsPath_ = EitherType<FsPath, FileHandle>

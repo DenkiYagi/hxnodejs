@@ -486,7 +486,7 @@ extern class Fs {
 	@:overload(function(filename:FsPath_, ?options:FsReadFileOptions, callback:Null<Error>->String->Void):Void {})
 	@:overload(function(filename:FsPath_, ?options:FsReadFileOptions, callback:Null<Error>->Buffer->Void):Void {})
 	@:overload(function(filename:FsPath_, ?options:String, callback:Null<Error>->String->Void):Void {})
-	static function readFile(filename:FsPath_, options:String, callback:Null<Error>->Buffer->Void):Void;
+	static function readFile(filename:FsPath_, ?options:String, callback:Null<Error>->Buffer->Void):Void;
 
 	/**
 		Returns the contents of the `path`.
