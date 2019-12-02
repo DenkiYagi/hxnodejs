@@ -64,6 +64,8 @@ import js.Promise;
 
 	/**
 		The `'exit'` event is emitted when the Node.js process is about to exit as a result of either:
+			- The `process.exit()` method being called explicitly.
+			- The Node.js event loop no longer having any additional work to perform.
 
 		@see https://nodejs.org/api/process.html#process_event_exit
 	**/
@@ -80,6 +82,10 @@ import js.Promise;
 
 	/**
 		The `'multipleResolves'` event is emitted whenever a `Promise` has been either:
+			- Resolved more than once.
+			- Rejected more than once.
+			- Rejected after resolve.
+			- Resolved after reject.
 
 		@see https://nodejs.org/api/process.html#process_event_multipleresolves
 	**/
@@ -151,12 +157,13 @@ extern class Process extends EventEmitter<Process> {
 	var allowedNodeEnvironmentFlags(default, never):Set<String>;
 
 	/**
-		The `process.arch` property returns a string identifying the operating system CPU architecture for which the
-		Node.js binary was compiled.
+		The operating system CPU architecture for which the Node.js binary was compiled.
+		Possible values are: `'arm'`, `'arm64'`, `'ia32'`, `'mips'`, `'mipsel'`, `'ppc'`, `'ppc64'`, `'s390'`,
+		`'s390x'`, `'x32'`, and `'x64'`.
 
 		@see https://nodejs.org/api/process.html#process_process_arch
 	**/
-	var arch:String;
+	var arch(default, null):String;
 
 	/**
 		The `process.argv` property returns an array containing the command line arguments passed when the Node.js
@@ -185,7 +192,7 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_channel
 	**/
-	var channel:DynamicAccess<String>;
+	var channel:Dynamic;
 
 	/**
 		The `process.chdir()` method changes the current working directory of the Node.js process or throws an exception
@@ -373,7 +380,10 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_initgroups_user_extragroup
 	**/
-	function initgroups(user:EitherType<String, Int>, extra_group:EitherType<String, Int>):Void;
+	@:overload(function(user:String, extra_group:String):Void {})
+	@:overload(function(user:String, extra_group:Int):Void {})
+	@:overload(function(user:Int, extra_group:String):Void {})
+	function initgroups(user:Int, extra_group:Int):Void;
 
 	/**
 		The `process.kill()` method sends the `signal` to the process identified by `pid`.
@@ -600,6 +610,8 @@ extern class Process extends EventEmitter<Process> {
 
 	/**
 		The `process.version` property returns the Node.js version string.
+
+		@see https://nodejs.org/api/process.html#process_process_version
 	**/
 	var version(default, null):String;
 
@@ -607,8 +619,10 @@ extern class Process extends EventEmitter<Process> {
 		The `process.versions` property returns an object listing the version strings of Node.js and its dependencies.
 		`process.versions.modules` indicates the current ABI version, which is increased whenever a C++ API changes.
 		Node.js will refuse to load modules that were compiled against a different module ABI version.
+
+		@see https://nodejs.org/api/process.html#process_process_versions
 	**/
-	var versions:DynamicAccess<String>;
+	var versions:KeyValue<String, String>;
 }
 
 @:jsRequire("process", "hrtime")
