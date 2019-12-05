@@ -44,75 +44,75 @@ extern class DnsPromisesResolver {
 	/**
 		An alias of `DnsPromises.resolve()`.
 	**/
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<String>}> {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<DnsResolvedAddressAny>}> {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<DnsResolvedAddressMX>}> {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<DnsResolvedAddressNaptr>}> {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<DnsResolvedAddressSoa>}> {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<DnsResolvedAddressSrv>}> {})
-	static function resolve(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<Array<String>>}>;
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<String>> {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<DnsResolvedAddressAny>> {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<DnsResolvedAddressMX>> {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<DnsResolvedAddressNaptr>> {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<DnsResolvedAddressSoa>> {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<DnsResolvedAddressSrv>> {})
+	static function resolve(hostname:String, ?rrtype:DnsRrtype):Promise<Array<Array<String>>>;
 
 	/**
 		An alias of `DnsPromises.resolve4()`.
 	**/
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<String>}> {})
-	static function resolve4(hostname:String, ?options:{ttl:Bool}):Promise<{err:Null<DnsError>, addresses:Array<DnsResolvedAddress4>}>;
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<String>> {})
+	static function resolve4(hostname:String, ?options:{ttl:Bool}):Promise<Array<DnsResolvedAddress4>>;
 
 	/**
 		An alias of `DnsPromises.resolve6()`.
 	**/
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<String>}> {})
-	static function resolve6(hostname:String, ?options:{ttl:Bool}):Promise<{err:Null<DnsError>, addressses:Array<DnsResolvedAddress6>}>;
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<String>> {})
+	static function resolve6(hostname:String, ?options:{ttl:Bool}):Promise<Array<DnsResolvedAddress6>>;
 
 	/**
 		An alias of `DnsPromises.resolveAny()`.
 	**/
-	static function resolveAny(hostname:String):Promise<{err:Null<DnsError>, ret:Array<DnsResolvedAddressAny>}>;
+	static function resolveAny(hostname:String):Promise<Array<DnsResolvedAddressAny>>;
 
 	/**
 		An alias of `DnsPromises.resolveCname()`.
 	**/
-	static function resolveCname(hostname:String):Promise<{err:Null<DnsError>, addresses:Array<String>}>;
+	static function resolveCname(hostname:String):Promise<Array<String>>;
 
 	/**
 		An alias of `DnsPromises.resolveMx()`.
 	**/
-	static function resolveMx(hostname:String):Promise<{err:Null<DnsError>, addresses:Array<DnsResolvedAddressMX>}>;
+	static function resolveMx(hostname:String):Promise<Array<DnsResolvedAddressMX>>;
 
 	/**
 		An alias of `DnsPromises.resolveNaptr()`.
 	**/
-	static function resolveNaptr(hostname:String):Promise<{err:Null<DnsError>, address:Array<DnsResolvedAddressNaptr>}>;
+	static function resolveNaptr(hostname:String):Promise<Array<DnsResolvedAddressNaptr>>;
 
 	/**
 		An alias of `DnsPromises.resolveNs()`.
 	**/
-	static function resolveNs(hostname:String):Promise<{err:Null<DnsError>, addresses:Array<String>}>;
+	static function resolveNs(hostname:String):Promise<Array<String>>;
 
 	/**
 		An alias of `DnsPromises.resolvePtr()`.
 	**/
-	static function resolvePtr(hostname:String):Promise<{err:Null<DnsError>, addresses:Array<String>}>;
+	static function resolvePtr(hostname:String):Promise<Array<String>>;
 
 	/**
 		An alias of `DnsPromises.resolveSoa()`.
 	**/
-	static function resolveSoa(hostname:String):Promise<{err:Null<DnsError>, address:DnsResolvedAddressSoa}>;
+	static function resolveSoa(hostname:String):Promise<DnsResolvedAddressSoa>;
 
 	/**
 		An alias of `DnsPromises.resolveSrv()`.
 	**/
-	static function resolveSrv(hostname:String):Promise<{err:Null<DnsError>, addresses:Array<DnsResolvedAddressSrv>}>;
+	static function resolveSrv(hostname:String):Promise<Array<DnsResolvedAddressSrv>>;
 
 	/**
 		An alias of `DnsPromises.resolveTxt()`.
 	**/
-	static function resolveTxt(hostname:String):Promise<{err:Null<DnsError>, reccords:Array<Array<String>>}>;
+	static function resolveTxt(hostname:String):Promise<Array<Array<String>>>;
 
 	/**
 		An alias of `DnsPromises.reverse()`.
 	**/
-	static function reverse(ip:String):Promise<{err:Null<DnsError>, hostnames:Array<String>}>;
+	static function reverse(ip:String):Promise<Array<String>>;
 
 	/**
 		An alias of `DnsPromises.setServers()`.
@@ -142,9 +142,9 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_lookup_hostname_options
 	**/
-	@:overload(function(hostname:String, ?options:DnsAddressFamily):Promise<{err:Null<DnsError>, address:String, family:DnsAddressFamily}> {})
-	@:overload(function(hostname:String, ?options:DnsLookupOptions):Promise<{err:Null<DnsError>, address:String, family:DnsAddressFamily}> {})
-	static function lookup(hostname:String, options:DnsLookupOptions):Promise<{err:Null<DnsError>, addresses:Array<DnsLookupCallbackAllEntry>}>;
+	@:overload(function(hostname:String, ?options:DnsAddressFamily):Promise<{address:String, family:DnsAddressFamily}> {})
+	@:overload(function(hostname:String, ?options:DnsLookupOptions):Promise<{address:String, family:DnsAddressFamily}> {})
+	static function lookup(hostname:String, options:DnsLookupOptions):Promise<Array<DnsLookupCallbackAllEntry>>; // when `options.all` is true
 
 	/**
 		Resolves the given `address` and `port` into a hostname and service
@@ -152,22 +152,21 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_lookupservice_address_port
 	**/
-	static function lookupService(address:String, port:Int):Promise<{err:Null<DnsError>, hostname:String, service:String}>;
+	static function lookupService(address:String, port:Int):Promise<{hostname:String, service:String}>;
 
 	/**
 		Uses the DNS protocol to resolve a hostname (e.g. `'nodejs.org'`) into an array of the resource records.
-		The `callback` function has arguments `(err, records)`.
 		When successful, `records` will be an array of resource records.
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolve_hostname_rrtype
 	**/
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<String>}> {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<DnsResolvedAddressAny>}> {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<DnsResolvedAddressMX>}> {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<DnsResolvedAddressNaptr>}> {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<DnsResolvedAddressSoa>}> {})
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<DnsResolvedAddressSrv>}> {})
-	static function resolve(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<Array<String>>}>;
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<String>> {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<DnsResolvedAddressAny>> {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<DnsResolvedAddressMX>> {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<DnsResolvedAddressNaptr>> {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<DnsResolvedAddressSoa>> {})
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<DnsResolvedAddressSrv>> {})
+	static function resolve(hostname:String, ?rrtype:DnsRrtype):Promise<Array<Array<String>>>;
 
 	/**
 		Uses the DNS protocol to resolve a IPv4 addresses (`A` records) for the `hostname`.
@@ -175,8 +174,8 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolve4_hostname_options
 	**/
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<String>}> {})
-	static function resolve4(hostname:String, ?options:{ttl:Bool}):Promise<{err:Null<DnsError>, addresses:Array<DnsResolvedAddress4>}>;
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<String>> {})
+	static function resolve4(hostname:String, ?options:{ttl:Bool}):Promise<Array<DnsResolvedAddress4>>;
 
 	/**
 		Uses the DNS protocol to resolve IPv6 addresses (`AAAA` records) for the `hostname`.
@@ -184,8 +183,8 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolve6_hostname_options
 	**/
-	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<{err:Null<DnsError>, records:Array<String>}> {})
-	static function resolve6(hostname:String, ?options:{ttl:Bool}):Promise<{err:Null<DnsError>, addressses:Array<DnsResolvedAddress6>}>;
+	@:overload(function(hostname:String, ?rrtype:DnsRrtype):Promise<Array<String>> {})
+	static function resolve6(hostname:String, ?options:{ttl:Bool}):Promise<Array<DnsResolvedAddress6>>;
 
 	/**
 		Uses the DNS protocol to resolve all records (also known as `ANY` or `*` query).
@@ -195,7 +194,7 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolveany_hostname
 	**/
-	static function resolveAny(hostname:String):Promise<{err:Null<DnsError>, ret:Array<DnsResolvedAddressAny>}>;
+	static function resolveAny(hostname:String):Promise<Array<DnsResolvedAddressAny>>;
 
 	/**
 		Uses the DNS protocol to resolve `CNAME` records for the `hostname`.
@@ -203,7 +202,7 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolvecname_hostname
 	**/
-	static function resolveCname(hostname:String):Promise<{err:Null<DnsError>, addresses:Array<String>}>;
+	static function resolveCname(hostname:String):Promise<Array<String>>;
 
 	/**
 		Uses the DNS protocol to resolve mail exchange records (`MX` records) for the `hostname`.
@@ -211,7 +210,7 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolvemx_hostname
 	**/
-	static function resolveMx(hostname:String):Promise<{err:Null<DnsError>, addresses:Array<DnsResolvedAddressMX>}>;
+	static function resolveMx(hostname:String):Promise<Array<DnsResolvedAddressMX>>;
 
 	/**
 		Uses the DNS protocol to resolve regular expression based records (`NAPTR` records) for the `hostname`.
@@ -219,7 +218,7 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolvenaptr_hostname
 	**/
-	static function resolveNaptr(hostname:String):Promise<{err:Null<DnsError>, address:Array<DnsResolvedAddressNaptr>}>;
+	static function resolveNaptr(hostname:String):Promise<Array<DnsResolvedAddressNaptr>>;
 
 	/**
 		Uses the DNS protocol to resolve name server records (`NS` records) for the `hostname`.
@@ -227,7 +226,7 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolvens_hostname
 	**/
-	static function resolveNs(hostname:String):Promise<{err:Null<DnsError>, addresses:Array<String>}>;
+	static function resolveNs(hostname:String):Promise<Array<String>>;
 
 	/**
 		Uses the DNS protocol to resolve pointer records (`PTR` records) for the `hostname`.
@@ -235,7 +234,7 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolveptr_hostname
 	**/
-	static function resolvePtr(hostname:String):Promise<{err:Null<DnsError>, addresses:Array<String>}>;
+	static function resolvePtr(hostname:String):Promise<Array<String>>;
 
 	/**
 		Uses the DNS protocol to resolve a start of authority record (`SOA` record) for the `hostname`.
@@ -243,7 +242,7 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolvesoa_hostname
 	**/
-	static function resolveSoa(hostname:String):Promise<{err:Null<DnsError>, address:DnsResolvedAddressSoa}>;
+	static function resolveSoa(hostname:String):Promise<DnsResolvedAddressSoa>;
 
 	/**
 		Uses the DNS protocol to resolve service records (`SRV` records) for the `hostname`.
@@ -251,7 +250,7 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolvesrv_hostname
 	**/
-	static function resolveSrv(hostname:String):Promise<{err:Null<DnsError>, addresses:Array<DnsResolvedAddressSrv>}>;
+	static function resolveSrv(hostname:String):Promise<Array<DnsResolvedAddressSrv>>;
 
 	/**
 		Uses the DNS protocol to resolve text queries (`TXT` records) for the `hostname`.
@@ -262,14 +261,14 @@ extern class DnsPromises {
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_resolvetxt_hostname
 	**/
-	static function resolveTxt(hostname:String):Promise<{err:Null<DnsError>, reccords:Array<Array<String>>}>;
+	static function resolveTxt(hostname:String):Promise<Array<Array<String>>>;
 
 	/**
 		Performs a reverse DNS query that resolves an IPv4 or IPv6 address to an array of hostnames.
 
 		@see https://nodejs.org/api/dns.html#dns_dnspromises_reverse_ip
 	**/
-	static function reverse(ip:String):Promise<{err:Null<DnsError>, hostnames:Array<String>}>;
+	static function reverse(ip:String):Promise<Array<String>>;
 
 	/**
 		Sets the IP address and port of `servers` to be used when performing DNS resolution.
