@@ -445,7 +445,7 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_platform
 	**/
-	var platform(default, null):String;
+	var platform(default, null):Platform;
 
 	/**
 		The `process.ppid` property returns the PID of the current parent process.
@@ -691,6 +691,19 @@ typedef MemoryUsage = {
 	heapTotal:Int,
 	heapUsed:Int,
 	external:Int
+}
+
+/**
+	Enumerations of operating system platform.
+**/
+@:enum abstract Platform(String) from String to String {
+	var AIX = "aix";
+	var Darwin = "darwin";
+	var FreeBSD = "freebsd";
+	var Linux = "linux";
+	var OpenBSD = "openbsd";
+	var SunOS = "sunos";
+	var Win32 = "win32";
 }
 
 /**
