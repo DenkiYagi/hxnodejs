@@ -34,7 +34,7 @@ import js.Promise;
 
 	@see https://nodejs.org/api/dns.html#dns_class_dnspromises_resolver
 **/
-@:jsRequire("dnsPromises", "Resolver")
+@:jsRequire("dns", "promises", "Resolver")
 extern class DnsPromisesResolver {
 	/**
 		An alias of `DnsPromises.getServers()`.
