@@ -21,4 +21,53 @@ package js.node.http2;
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-extern class ClientHttp2Stream {}
+import js.node.Http2.HeadersObject;
+import js.node.events.EventEmitter.Event;
+
+/**
+	Enumeration of events for `ClientHttp2Stream` objects.
+**/
+@:enum abstract ClientHttp2StreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+	/**
+		Emitted when the server sends a `100 Continue` status, usually because the request contained `Expect: 100-continue`.
+		This is an instruction that the client should send the request body.
+
+		@see https://nodejs.org/api/http2.html#http2_event_continue
+	**/
+	var Continue:ClientHttp2StreamEvent<Void->Void> = "continue";
+
+	/**
+		The `'headers'` event is emitted when an additional block of headers is received for a stream,
+		such as when a block of `1xx` informational headers is received.
+		The listener callback is passed the HTTP/2 Headers Object and flags associated with the headers.
+
+		@see https://nodejs.org/api/http2.html#http2_event_headers
+	**/
+	var Headers:ClientHttp2StreamEvent<HeadersObject->Int->Void> = "header";
+
+	/**
+		The `'push'` event is emitted when response headers for a Server Push stream are received.
+		The listener callback is passed the HTTP/2 Headers Object and flags associated with the headers.
+
+		@see https://nodejs.org/api/http2.html#http2_event_push
+	**/
+	var push:ClientHttp2StreamEvent<HeadersObject->Int->Void> = "push";
+
+	/**
+		The `'response'` event is emitted when a response `HEADERS` frame has been received
+		for this stream from the connected HTTP/2 server.
+		The listener is invoked with two arguments: an Object containing the received HTTP/2 Headers Object,
+		and flags associated with the headers.
+
+		@see https://nodejs.org/api/http2.html#http2_event_response
+	**/
+	var Response:ClientHttp2StreamEvent<HeadersObject->Int->Void> = "response";
+}
+
+/**
+	The `ClientHttp2Stream` class is an extension of `Http2Stream` that is used exclusively on HTTP/2 Clients.
+	`Http2Stream` instances on the client provide events such as `'response'` and `'push'` that are only relevant on the client.
+
+	@see  https://nodejs.org/api/http2.html#http2_class_clienthttp2stream
+**/
+extern class ClientHttp2Stream extends Http2Stream {}

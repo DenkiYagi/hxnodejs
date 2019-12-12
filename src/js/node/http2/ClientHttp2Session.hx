@@ -21,8 +21,8 @@ package js.node.http2;
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-import js.node.events.EventEmitter.Event;
 import js.node.Http2.HeadersObject;
+import js.node.events.EventEmitter.Event;
 
 /**
 	Enumeration of events for `ClientHttp2Session` objects.
