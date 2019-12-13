@@ -27,6 +27,11 @@ import js.node.tls.TLSSocket;
 import js.node.stream.Readable;
 import js.node.Http2.HeadersObject;
 import js.node.events.EventEmitter.Event;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
 
 /**
 	Enumeration of events for `Http2ServerRequest` objects.
@@ -85,7 +90,7 @@ extern class Http2ServerRequest extends Readable<Http2ServerRequest> {
 		See `request.socket`.
 		@see https://nodejs.org/api/http2.html#http2_request_connection
 	**/
-    @:deprecated
+	@:deprecated
 	var connection(default, null):EitherType<Socket, TLSSocket>;
 
 	/**
@@ -106,11 +111,11 @@ extern class Http2ServerRequest extends Readable<Http2ServerRequest> {
 	var headers(default, null):HeadersObject;
 
 	/**
-			In case of server request, the HTTP version sent by the client.
-			In the case of client response, the HTTP version of the connected-to server.
-			Returns `'2.0'`.
+		In case of server request, the HTTP version sent by the client.
+		In the case of client response, the HTTP version of the connected-to server.
+		Returns `'2.0'`.
 
-			@see https://nodejs.org/api/http2.html#http2_request_httpversion
+		@see https://nodejs.org/api/http2.html#http2_request_httpversion
 	**/
 	var httpVersion(default, null):String;
 
@@ -175,7 +180,7 @@ extern class Http2ServerRequest extends Readable<Http2ServerRequest> {
 
 		@see https://nodejs.org/api/http2.html#http2_request_trailers
 	**/
-	var trailers(default, null):TrailersObject;
+	var trailers(default, null):Class<Dynamic>;
 
 	/**
 		Request URL string.

@@ -24,10 +24,13 @@ package js.node.http2;
 import haxe.extern.EitherType;
 import js.node.net.Socket;
 import js.node.tls.TLSSocket;
-import haxe.display.JsonModuleTypes.JsonFunctionSignature;
-import js.node.stream.Readable;
 import js.node.Http2.HeadersObject;
 import js.node.events.EventEmitter.Event;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
 
 /**
 	Enumeration of events for `Http2ServerResponse` objects.
@@ -116,7 +119,7 @@ extern class Http2ServerResponse extends Stream<Http2ServerResponse> {
 
 		@see https://nodejs.org/api/http2.html#http2_response_getheaders
 	**/
-	function getHeaders():Class<Dynamic>;
+	function getHeaders():HeadersObject;
 
 	/**
 		Returns `true` if the header identified by `name` is currently set in the outgoing headers.
@@ -191,4 +194,49 @@ extern class Http2ServerResponse extends Stream<Http2ServerResponse> {
 		@see https://nodejs.org/api/http2.html#http2_response_statusmessage
 	**/
 	var statusMessage(default, null):String;
+
+	/**
+		The Http2Stream object backing the response.
+
+		@see https://nodejs.org/api/http2.html#http2_response_stream
+	**/
+	var stream(default, null):Http2Stream;
+
+	/**
+		Is `true` after `response.end()` has been called. This property does not indicate
+		whether the data has been flushed,
+		for this use `writable.writableFinished` instead.
+
+		@see https://nodejs.org/api/http2.html#http2_response_writableended
+	**/
+	var writableEnded(default, null):Bool;
+
+	/**
+		If this method is called and `response.writeHead()` has not been called,
+		it will switch to implicit header mode and flush the implicit headers.
+
+		@see https://nodejs.org/api/http2.html#http2_response_write_chunk_encoding_callback
+	**/
+	@:overload(function(chunk:String, encoding:String, callback:Void->Void):Bool {})
+	function write(chunk:Buffer, ?encoding:String, ?callback:Void->Void):Bool;
+
+	/**
+		Sends a status `100 Continue` to the client, indicating that the request body should be sent.
+		See the `'checkContinue'` event on `Http2Server` and `Http2SecureServer`.
+
+		@see https://nodejs.org/api/http2.html#http2_response_writecontinue
+	**/
+	function writeContinue():Void;
+
+	/**
+		Sends a response header to the request. The status code is a 3-digit HTTP status code, like 404. The last argument, headers, are the response headers.
+
+		@see https://nodejs.org/api/http2.html#http2_response_writehead_statuscode_statusmessage_headers
+	**/
+	function writeHead(statusCode:Int, ?statusMessage:String, ?headers:HeadersObject):Http2ServerResponse;
+
+	/**
+		Call http2stream.pushStream() with the given headers, and wrap the given Http2Stream on a newly created Http2ServerResponse as the callback parameter if successful. When Http2ServerRequest is closed, the callback is called with an error ERR_HTTP2_INVALID_STREAM.
+	**/
+	function createPushResponse(headers:HeadersObject, callback:Null<Error>->ServerHttp2Stream->Void):Void;
 }

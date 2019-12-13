@@ -21,7 +21,6 @@ package js.node.http2;
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-import js.node.net.Server;
 import js.node.Http2.HeadersObject;
 import js.node.events.EventEmitter.Event;
 #if haxe4
@@ -31,67 +30,80 @@ import js.Error;
 #end
 
 /**
-	Enumeration of events for `Http2Server` objects.
+	Enumeration of events for `Http2SecureServer` objects.
 **/
-@:enum abstract Http2ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+@:enum abstract Http2SecureServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		If a `'request'` listener is registered or `Http2.createServer()` is supplied a callback function,
+		If a `'request'` listener is registered or `Http2.createSecureServer()` is supplied a callback function,
 		the `'checkContinue'` event is emitted each time a request
 		with an HTTP `Expect: 100-continue` is received.
-		If this event is not listened for, the server will automatically respond
-		with a status `100 Continue` as appropriate.
+		If this event is not listened for,
+		the server will automatically respond with a status `100 Continue` as appropriate.
 
-		@see https://nodejs.org/api/http2.html#http2_event_checkcontinue
+		@see https://nodejs.org/api/http2.html#http2_event_checkcontinue_1
 	**/
-	var CheckContinue:Http2ServerEvent<Http2ServerRequest->Http2ServerResponse->Void> = "checkCountinue";
+	var CheckContinue:Http2SecureServerEvent<Http2ServerRequest->Http2ServerResponse->Void> = "checkCountinue";
 
 	/**
 		Emitted each time there is a request.
 		There may be multiple requests per session.
 		See the Compatibility API.
 
-		@see https://nodejs.org/api/http2.html#http2_event_request
+		@see https://nodejs.org/api/http2.html#http2_event_request_1
 	**/
-	var Request:Http2ServerEvent<Http2ServerRequest->Http2ServerResponse->Void> = "request";
+	var Request:Http2SecureServerEvent<Http2ServerRequest->Http2ServerResponse->Void> = "request";
 
 	/**
-		The `'session'` event is emitted when a new `Http2Session` is created by the `Http2Server`.
+		The `'session'` event is emitted when a new `Http2Session` is created by the `Http2SecureServer`.
 
-		@see https://nodejs.org/api/http2.html#http2_event_session
+		@see https://nodejs.org/api/http2.html#http2_event_session_1
 	**/
-	var Session:Http2ServerEvent<Http2Session->Void> = "session";
+	var Session:Http2SecureServerEvent<Http2Session->Void> = "session";
 
 	/**
 		The `'sessionError'` event is emitted when an `'error'` event is emitted
-		by an `Http2Session` object associated with the `Http2Server`.
+		by an `Http2Session` object associated with the `Http2SecureServer`.
 
-		@see https://nodejs.org/api/http2.html#http2_event_sessionerror
+		@see https://nodejs.org/api/http2.html#http2_event_sessionerror_1
 	**/
-	var SessionError:Http2ServerEvent<Error->Void> = "sessionError";
+	var SessionError:Http2SecureServerEvent<Error->Void> = "sessionError";
 
 	/**
 		The `'stream'` event is emitted when a `'stream'` event has been emitted
 		by an `Http2Session` associated with the server.
 
-		@see https://nodejs.org/api/http2.html#http2_event_stream_1
+		@see https://nodejs.org/api/http2.html#http2_event_stream_2
 	**/
-	var Stream:Http2ServerEvent<Http2Stream->HeadersObject->Int->Void> = "stream";
+	var Stream:Http2SecureServerEvent<Http2Stream->HeadersObject->Int->Void> = "stream";
 
 	/**
 		The `'timeout'` event is emitted when there is no activity on the Server
-		for a given number of milliseconds set using `http2server.setTimeout()`.
-		Default: 0 (no timeout)
+		for a given number of milliseconds set using `http2secureserver.setTimeout()`.
+		Default: 2 minutes.
 
-		@see https://nodejs.org/api/http2.html#http2_event_timeout_2
+		@see https://nodejs.org/api/http2.html#http2_event_timeout_3
 	**/
-	var Timeout:Http2ServerEvent<Int->Void> = "timeout";
+	var Timeout:Http2SecureServerEvent<Int->Void> = "timeout";
+
+	/**
+		The `'unknownProtocol'` event is emitted when a connecting client fails to
+		negotiate an allowed protocol (i.e. HTTP/2 or HTTP/1.1).
+		The event handler receives the socket for handling.
+		If no listener is registered for this event, the connection is terminated.
+		See the Compatibility API.
+
+		@see https://nodejs.org/api/http2.html#http2_event_unknownprotocol
+	**/
+	var UnknownProtocol:Http2SecureServerEvent<js.node.net.Socket->Void> = "unknownProtocol";
 }
 
 /**
-	@see https://nodejs.org/api/http2.html#http2_class_clienthttp2session
+	Instances of Http2SecureServer are created using the http2.createSecureServer() function. The Http2SecureServer class is not exported directly by the http2 module.
+
+	@see
 **/
-@:jsRequire("http2", "Http2Server")
-extern class Http2Server extends Server {
+@:jsRequire("http2", "Http2SecureServer")
+extern class Http2SecureServer extends js.node.tls.Server {
 	/**
 		Stops the server from establishing new sessions.
 		This does not prevent new request streams from being created
