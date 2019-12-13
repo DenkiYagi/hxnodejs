@@ -25,8 +25,10 @@ package js.node.worker_threads;
 import haxe.DynamicAccess;
 #if haxe4
 import js.lib.Error;
+import js.lib.Promise;
 #else
 import js.Error;
+import js.Promise;
 #end
 import js.node.events.EventEmitter;
 import js.node.stream.Readable.IReadable;
@@ -130,6 +132,32 @@ extern class Worker extends EventEmitter<Worker> {
 		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_stdout
 	**/
 	var stdout:IWritable;
+
+	/**
+		Stop all JavaScript execution in the worker thread as soon as possible.
+		Returns a Promise for the exit code that is fulfilled when the `'exit'` event is emitted.
+
+		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_terminate
+	**/
+	function terminate():Promise<Int>;
+
+	/**
+		An integer identifier for the referenced thread.
+		Inside the worker thread, it is available as `require('worker_threads').threadId`.
+		This value is unique for each `Worker` instance inside a single process.
+
+		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_threadid_1
+	**/
+	static var threadId:Int;
+
+	/**
+		Calling `unref()` on a worker will allow the thread to exit if this is the only active handle in the event
+		system.
+		If the worker is already `unref()`ed calling `unref()` again will have no effect.
+
+		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_unref
+	**/
+	function unref():Void;
 }
 
 typedef WorkerOptions = {
