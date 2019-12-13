@@ -22,6 +22,9 @@
 
 package js.node;
 
+#if haxe4
+import js.lib.Symbol;
+#end
 import js.node.worker_threads.MessagePort;
 import js.node.Vm.VmContext;
 
@@ -57,4 +60,55 @@ extern class WorkerThreads {
 		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_parentport
 	**/
 	static var parentPort:Null<MessagePort>;
+
+	/**
+		Receive a single message from a given `MessagePort`.
+		If no message is available, `undefined` is returned, otherwise an object with a single `message` property that
+		contains the message payload, corresponding to the oldest message in the `MessagePort`’s queue.
+
+		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_receivemessageonport_port
+	**/
+	static function receiveMessageOnPort(port:MessagePort):Null<{message:Dynamic}>;
+
+	/**
+		Provides the set of JS engine resource constraints inside this Worker thread.
+		If the `resourceLimits` option was passed to the `Worker` constructor, this matches its values.
+
+		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_resourcelimits
+	**/
+	static var resourceLimits:ResourceLimits;
+
+	/**
+		A special value that can be passed as the `env` option of the `Worker` constructor, to indicate that the current
+		thread and the Worker thread should share read and write access to the same set of environment variables.
+
+		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_share_env
+	**/
+	#if haxe4
+	static final SHARE_ENV:Symbol;
+	#else
+	static var SHARE_ENV(default, never):Dynamic;
+	#end
+
+	/**
+		An integer identifier for the current thread.
+		On the corresponding worker object (if there is any), it is available as `worker.threadId`.
+		This value is unique for each `Worker` instance inside a single process.
+
+		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_threadid
+	**/
+	static var threadId:Int;
+
+	/**
+		An arbitrary JavaScript value that contains a clone of the data passed to this thread’s `Worker` constructor.
+
+		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_workerdata
+	**/
+	static var workerData:Dynamic;
+}
+
+typedef ResourceLimits = {
+	@:optional var maxYoungGenerationSizeMb:Int;
+	@:optional var maxOldGenerationSizeMb:Int;
+	@:optional var varcodeRangeSizeMb:Int;
 }
