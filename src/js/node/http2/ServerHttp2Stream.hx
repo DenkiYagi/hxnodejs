@@ -40,7 +40,7 @@ import js.Error;
 **/
 extern class ServerHttp2Stream extends Http2Stream {
 	/**
-		Sends an additional informational HEADERS frame to the connected HTTP/2 peer.
+		Sends an additional informational `HEADERS` frame to the connected HTTP/2 peer.
 
 		@see https://nodejs.org/api/http2.html#http2_http2stream_additionalheaders_headers
 	**/
@@ -51,7 +51,7 @@ extern class ServerHttp2Stream extends Http2Stream {
 
 		@see https://nodejs.org/api/http2.html#http2_http2stream_headerssent
 	**/
-	var headersSend(default, null):Bool;
+	var headersSent(default, null):Bool;
 
 	/**
 		Read-only property mapped to the `SETTINGS_ENABLE_PUSH` flag
@@ -75,7 +75,7 @@ extern class ServerHttp2Stream extends Http2Stream {
 	/**
 		When the `options.waitForTrailers` option is set, the `'wantTrailers'` event will be emitted
 		immediately after queuing the last chunk of payload data to be sent.
-		The http2stream.sendTrailers() method can then be used to sent trailing header fields to the peer.
+		The `http2stream.sendTrailers()` method can then be used to sent trailing header fields to the peer.
 
 		@see https://nodejs.org/api/http2.html#http2_http2stream_respond_headers_options
 	**/
@@ -121,7 +121,7 @@ typedef PushStreamOptions = {
 
 typedef RespondOptions = {
 	/**
-		Set to true to indicate that the response will not include payload data.
+		Set to `true` to indicate that the response will not include payload data.
 	**/
 	@:optional var endStream:Bool;
 

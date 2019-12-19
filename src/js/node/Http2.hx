@@ -40,9 +40,10 @@ import js.Error;
 #end
 
 /**
-	The http2 module provides an implementation of the HTTP/2 protocol.
+	The `http2` module provides an implementation of the HTTP/2 protocol.
 
-	The Core API provides a low-level interface designed specifically around support for HTTP/2 protocol features.
+	The Core API provides a low-level interface designed specifically around support
+	for HTTP/2 protocol features.
 	It is specifically not designed for compatibility with the existing HTTP/1 module API.
 	However, the Compatibility API is.
 
@@ -54,21 +55,21 @@ import js.Error;
 @:jsRequire("http2")
 extern class Http2 {
 	/**
-		Returns a `net.Server` instance that creates and manages Http2Session instances.
+		Returns a `net.Server` instance that creates and manages `Http2Session` instances.
 
 		@see https://nodejs.org/api/http2.html#http2_http2_createserver_options_onrequesthandler
 	**/
 	static function createServer(options:CreateServerOptions, ?onRequestHandler:Http2ServerRequest->Http2ServerResponse->Void):Http2Server;
 
 	/**
-		Returns a tls.Server instance that creates and manages Http2Session instances.
+		Returns a `tls.Server` instance that creates and manages `Http2Session` instances.
 
 		@see https://nodejs.org/api/http2.html#http2_http2_createsecureserver_options_onrequesthandler
 	**/
 	static function createSecureServer(options:CreateSecureServerOptions, ?onRequestHandler:Http2ServerRequest->Http2ServerResponse->Void):Http2SecureServer;
 
 	/**
-		Returns a ClientHttp2Session instance.
+		Returns a `ClientHttp2Session` instance.
 
 		@see https://nodejs.org/api/http2.html#http2_http2_connect_authority_options_listener
 	**/
@@ -222,7 +223,7 @@ typedef HeadersObject = {
 typedef CreateServerOptions = {
 	/**
 		Sets the maximum dynamic table size for deflating header fields.
-		Default: 4Kib.
+		Default: `4Kib`.
 	**/
 	@:optional var maxDeflateDynamicTableSize:Float;
 
@@ -263,7 +264,7 @@ typedef CreateServerOptions = {
 		The strategy used for determining the amount of padding to use for `HEADERS` and `DATA` frames.
 		Default: `http2.Constants.PADDING_STRATEGY_NONE`.
 	**/
-	@:optional var paddingStrategy:Int; // TODO: add options
+	@:optional var paddingStrategy:Int;
 
 	/**
 		Sets the maximum number of concurrent streams for the remote peer
@@ -280,8 +281,11 @@ typedef CreateServerOptions = {
 	@:optional var maxSessionInvalidFrames:Int;
 
 	/**
-		Sets the maximum number of rejected upon creation streams that will be tolerated before the session is closed.
-		Each rejection is associated with an `NGHTTP2_ENHANCE_YOUR_CALM` error that should tell the peer to not open any more streams, continuing to open streams is therefore regarded as a sign of a misbehaving peer.
+		Sets the maximum number of rejected upon creation streams that will be tolerated
+		before the session is closed.
+		Each rejection is associated with an `NGHTTP2_ENHANCE_YOUR_CALM` error that
+		should tell the peer to not open any more streams, continuing to open streams is therefore
+		regarded as a sign of a misbehaving peer.
 		Default: `100`.
 	**/
 	@:optional var maxSessionRejectedStreams:Int;
@@ -313,7 +317,9 @@ typedef CreateServerOptions = {
 	@:optional var Http2ServerRequest:Http2ServerRequest;
 
 	/**
-		Specifies the Http2ServerResponse class to use. Useful for extending the original Http2ServerResponse. Default: Http2ServerResponse.
+		Specifies the `Http2ServerResponse` class to use.
+		Useful for extending the original `Http2ServerResponse`.
+		Default: `Http2ServerResponse`.
 	**/
 	@:optional var Http2ServerResponse:Http2ServerResponse;
 
@@ -384,7 +390,7 @@ typedef CreateSecureServerOptions = {
 		Strategy used for determining the amount of padding to use for `HEADERS` and `DATA` frames.
 		Default: `http2.Constants.PADDING_STRATEGY_NONE`.
 	**/
-	@:optional var paddingStrategy:Int; // TODO
+	@:optional var paddingStrategy:Int;
 
 	/**
 		Sets the maximum number of concurrent streams for the remote peer
@@ -706,7 +712,7 @@ typedef ConnectOptions = {
 		If this option is specified, `path`, `host` and `port` are ignored, except for certificate validation.
 		Usually, a socket is already connected when passed to `tls.connect()`, but it can be connected later.
 		Connection/disconnection/destruction of socket is the user's responsibility;
-		calling `tls.connect()` will not cause net.connect() to be called.
+		calling `tls.connect()` will not cause `net.connect()` to be called.
 	**/
 	@:optional var socket:Socket;
 
@@ -819,7 +825,7 @@ typedef ConnectOptions = {
 	@:optional var honorCipherOrder:Bool;
 
 	/**
-		Private keys in PEM format.
+		Private keys in `PEM` format.
 	**/
 	@:optional var key:EitherType<EitherType<String, Array<String>>, EitherType<EitherType<Buffer, Array<Buffer>>, Array<Dynamic>>>;
 

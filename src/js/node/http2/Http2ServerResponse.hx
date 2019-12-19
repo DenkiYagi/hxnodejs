@@ -56,7 +56,8 @@ import js.Error;
 }
 
 /**
-	  This object is created internally by an HTTP server — not by the user. It is passed as the second parameter to the 'request' event.
+	  This object is created internally by an HTTP server — not by the user.
+	  It is passed as the second parameter to the `'request'` event.
 
 	@see https://nodejs.org/api/http2.html#http2_class_http2_http2serverresponse
 **/
@@ -70,7 +71,8 @@ extern class Http2ServerResponse extends Stream<Http2ServerResponse> {
 	function addTrailers(headers:HeadersObject):Void;
 
 	/**
-		See `response.socket`.
+		See `Http2ServerResponse.socket`.
+
 		@see https://nodejs.org/api/http2.html#http2_response_connection
 	**/
 	@:deprecated
@@ -112,9 +114,11 @@ extern class Http2ServerResponse extends Stream<Http2ServerResponse> {
 	function getHeaderNames():Array<String>;
 
 	/**
-		Returns a shallow copy of the current outgoing headers. Since a shallow copy is used,
-		array values may be mutated without additional calls to various header-related http module methods.
-		The keys of the returned object are the header names and the values are the respective header values.
+		Returns a shallow copy of the current outgoing headers.
+		Since a shallow copy is used, array values may be mutated
+		without additional calls to various header-related http module methods.
+		The keys of the returned object are the header names and the values are
+		the respective header values.
 		All header names are lowercase.
 
 		@see https://nodejs.org/api/http2.html#http2_response_getheaders
@@ -134,7 +138,7 @@ extern class Http2ServerResponse extends Stream<Http2ServerResponse> {
 
 		@see https://nodejs.org/api/http2.html#http2_response_headerssent
 	**/
-	var headersSend(default, null):Bool;
+	var headersSent(default, null):Bool;
 
 	/**
 		Removes a header that has been queued for implicit sending.
@@ -196,15 +200,15 @@ extern class Http2ServerResponse extends Stream<Http2ServerResponse> {
 	var statusMessage(default, null):String;
 
 	/**
-		The Http2Stream object backing the response.
+		The `Http2Stream` object backing the response.
 
 		@see https://nodejs.org/api/http2.html#http2_response_stream
 	**/
 	var stream(default, null):Http2Stream;
 
 	/**
-		Is `true` after `response.end()` has been called. This property does not indicate
-		whether the data has been flushed,
+		Is `true` after `response.end()` has been called.
+		This property does not indicate whether the data has been flushed,
 		for this use `writable.writableFinished` instead.
 
 		@see https://nodejs.org/api/http2.html#http2_response_writableended
@@ -229,14 +233,22 @@ extern class Http2ServerResponse extends Stream<Http2ServerResponse> {
 	function writeContinue():Void;
 
 	/**
-		Sends a response header to the request. The status code is a 3-digit HTTP status code, like 404. The last argument, headers, are the response headers.
+		Sends a response header to the request.
+		The status code is a 3-digit HTTP status code, like `404`.
+		The last argument, `headers`, are the response headers.
 
 		@see https://nodejs.org/api/http2.html#http2_response_writehead_statuscode_statusmessage_headers
 	**/
 	function writeHead(statusCode:Int, ?statusMessage:String, ?headers:HeadersObject):Http2ServerResponse;
 
 	/**
-		Call http2stream.pushStream() with the given headers, and wrap the given Http2Stream on a newly created Http2ServerResponse as the callback parameter if successful. When Http2ServerRequest is closed, the callback is called with an error ERR_HTTP2_INVALID_STREAM.
+		Call `http2stream.pushStream()` with the given headers,
+		and wrap the given `Http2Stream` on a newly created `Http2ServerResponse`
+		as the callback parameter if successful.
+		When `Http2ServerRequest` is closed,
+		the callback is called with an error `ERR_HTTP2_INVALID_STREAM`.
+
+		@see https://nodejs.org/api/http2.html#http2_response_createpushresponse_headers_callback
 	**/
 	function createPushResponse(headers:HeadersObject, callback:Null<Error>->ServerHttp2Stream->Void):Void;
 }

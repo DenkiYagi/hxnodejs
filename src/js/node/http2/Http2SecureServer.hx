@@ -21,6 +21,7 @@ package js.node.http2;
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+import js.node.dgram.Socket;
 import js.node.Http2.HeadersObject;
 import js.node.events.EventEmitter.Event;
 #if haxe4
@@ -94,13 +95,14 @@ import js.Error;
 
 		@see https://nodejs.org/api/http2.html#http2_event_unknownprotocol
 	**/
-	var UnknownProtocol:Http2SecureServerEvent<js.node.net.Socket->Void> = "unknownProtocol";
+	var UnknownProtocol:Http2SecureServerEvent<Socket->Void> = "unknownProtocol";
 }
 
 /**
-	Instances of Http2SecureServer are created using the http2.createSecureServer() function. The Http2SecureServer class is not exported directly by the http2 module.
+	Instances of `Http2SecureServer` are created using the `Http2.createSecureServer()` function.
+	The `Http2SecureServer` class is not exported directly by the `http2` module.
 
-	@see
+	@see https://nodejs.org/api/http2.html#http2_class_http2secureserver
 **/
 @:jsRequire("http2", "Http2SecureServer")
 extern class Http2SecureServer extends js.node.tls.Server {

@@ -55,16 +55,16 @@ import js.Error;
 }
 
 /**
-	  A `Http2ServerRequest` object is created by `http2.Server` or `http2.SecureServer`
-	  and passed as the first argument to the `'request'` event.
-	  It may be used to access a request status, headers, and data.
+	A `Http2ServerRequest` object is created by `http2.Server` or `http2.SecureServer`
+	and passed as the first argument to the `'request'` event.
+	It may be used to access a request status, headers, and data.
 
 	@see https://nodejs.org/api/http2.html#http2_class_http2_http2serverrequest
 **/
 @:jsRequire("http2", "Http2ServerRequest")
 extern class Http2ServerRequest extends Readable<Http2ServerRequest> {
 	/**
-		The `request.aborted` property will be true if the request has been aborted.
+		The `request.aborted` property will be `true` if the request has been aborted.
 
 		@see https://nodejs.org/api/http2.html#http2_request_aborted
 	**/
@@ -160,7 +160,7 @@ extern class Http2ServerRequest extends Readable<Http2ServerRequest> {
 	function setTimeout(msecs:Int, callback:Void->Void):Http2ServerRequest;
 
 	/**
-		Returns a Proxy object that acts as a `net.Socket` (or `tls.TLSSocket`) but
+		Returns a `Proxy` object that acts as a `net.Socket` (or `tls.TLSSocket`) but
 		applies getters, setters, and methods based on HTTP/2 logic.
 
 		@see https://nodejs.org/api/http2.html#http2_request_socket

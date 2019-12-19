@@ -29,10 +29,10 @@ import js.node.events.EventEmitter.Event;
 **/
 @:enum abstract ClientHttp2SessionEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		The `'altsvc'` event is emitted whenever an ALTSVC frame is received by the client.
+		The `'altsvc'` event is emitted whenever an `ALTSVC` frame is received by the client.
 		The event is emitted with the `ALTSVC` value, origin, and stream ID.
-		If no origin is provided in the `ALTSVC` frame,
-		origin will be an empty string.
+		If no `origin` is provided in the `ALTSVC` frame,
+		`origin` will be an empty string.
 
 		@see https://nodejs.org/api/http2.html#http2_event_altsvc
 	**/
@@ -79,7 +79,7 @@ typedef RequestOptions = {
 		with all other existing dependents made a dependent of the newly created stream.
 		Default: `false`.
 	**/
-	var exclusive:Bool;
+	@:optional var exclusive:Bool;
 
 	/**
 		Specifies the numeric identifier of a stream the newly created stream is dependent on.

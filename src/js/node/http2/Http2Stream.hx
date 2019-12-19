@@ -22,7 +22,6 @@ package js.node.http2;
  * DEALINGS IN THE SOFTWARE.
  */
 import js.node.stream.Duplex;
-import js.node.events.EventEmitter.Event;
 import js.node.events.EventEmitter;
 import js.node.Http2.HeadersObject;
 #if haxe4
@@ -87,7 +86,7 @@ import js.Error;
 	var Tailer:Http2StreamEvent<HeadersObject->Int->Void> = "trailers";
 
 	/**
-		The `'wantTrailers'` event is emitted when the `Http2Stream` has queued the final DATA frame
+		The `'wantTrailers'` event is emitted when the `Http2Stream` has queued the final `DATA` frame
 		to be sent on a frame and the `Http2Stream` is ready to send trailing headers.
 		When initiating a request or response,
 		the `waitForTrailers` option must be set for this event to be emitted.
@@ -98,9 +97,9 @@ import js.Error;
 }
 
 /**
-	Each instance of the Http2Stream class represents a bidirectional HTTP/2 communications stream
-	over an Http2Session instance.
-	Any single Http2Session may have up to 231-1 `Http2Stream` instances over its lifetime.
+	Each instance of the `Http2Stream` class represents a bidirectional HTTP/2 communications stream
+	over an `Http2Session` instance.
+	Any single `Http2Session` may have up to 2^31-1 `Http2Stream` instances over its lifetime.
 
 	@see https://nodejs.org/api/http2.html#http2_class_http2stream
 **/
@@ -175,7 +174,8 @@ extern class Http2Stream extends Duplex<Http2Stream> {
 
 	/**
 		Set to the `RST_STREAM` error code reported when the `Http2Stream` is destroyed after either
-		receiving an `RST_STREAM` frame from the connected peer, calling `http2stream.close()`, or `http2stream.destroy()`.
+		receiving an `RST_STREAM` frame from the connected peer,
+		calling `http2stream.close()`, or `http2stream.destroy()`.
 		Will be `null` if the `Http2Stream` has not been closed.
 
 		@see https://nodejs.org/api/http2.html#http2_http2stream_rstcode
@@ -190,14 +190,14 @@ extern class Http2Stream extends Duplex<Http2Stream> {
 	var sentHeaders(default, null):HeadersObject;
 
 	/**
-		An array of objects containing the outbound informational (additional) headers sent for this Http2Stream.
+		An array of objects containing the outbound informational (additional) headers sent for this `Http2Stream`.
 
 		@see https://nodejs.org/api/http2.html#http2_http2stream_sentinfoheaders
 	**/
 	var sentInfoHeaders(default, null):Array<HeadersObject>;
 
 	/**
-		An object containing the outbound trailers sent for this HttpStream.
+		An object containing the outbound trailers sent for this `HttpStream`.
 
 		@see https://nodejs.org/api/http2.html#http2_http2stream_senttrailers
 	**/
@@ -221,7 +221,7 @@ extern class Http2Stream extends Duplex<Http2Stream> {
 
 		@see https://nodejs.org/api/http2.html#http2_http2stream_state
 	**/
-	var state(default, null):StateObject; // TODO
+	var state(default, null):StateObject;
 
 	/**
 		Sends a trailing `HEADERS` frame to the connected HTTP/2 peer.
@@ -243,7 +243,7 @@ typedef PriorityOptions = {
 		with all other existing dependents made a dependent of this stream.
 		Default: `false`.
 	**/
-	var exclusive:Bool;
+	@:optional var exclusive:Bool;
 
 	/**
 		Specifies the numeric identifier of a stream this stream is dependent on.
@@ -285,7 +285,8 @@ typedef StateObject = {
 	var remoteClose:Int;
 
 	/**
-		The sum weight of all `Http2Stream` instances that depend on this `Http2Stream` as specified using `PRIORITY` frames.
+		The sum weight of all `Http2Stream` instances that depend on this `Http2Stream`
+		as specified using `PRIORITY` frames.
 	**/
 	var sumDependencyWeight:Int;
 

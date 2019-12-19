@@ -29,7 +29,7 @@ import haxe.extern.Rest;
 @:jsRequire("http2", "ServerHttp2Session")
 extern class ServerHttp2Session extends Http2Session {
 	/**
-		Submits an ALTSVC frame (as defined by RFC 7838) to the connected client.
+		Submits an `ALTSVC` frame (as defined by RFC 7838) to the connected client.
 
 		@see https://nodejs.org/api/http2.html#http2_serverhttp2session_altsvc_alt_originorstream
 	**/
@@ -39,7 +39,8 @@ extern class ServerHttp2Session extends Http2Session {
 	function altsvc(alt:String, origin_or_stream:{origin:String}):Void;
 
 	/**
-		Submits an ORIGIN frame (as defined by RFC 8336) to the connected client to advertise the set of origins
+		Submits an `ORIGIN` frame (as defined by RFC 8336) to the connected client
+		to advertise the set of origins
 		for which the server is capable of providing authoritative responses.
 
 		@see https://nodejs.org/api/http2.html#http2_serverhttp2session_origin_origins

@@ -21,7 +21,6 @@ package js.node.http2;
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-import js.node.events.EventEmitter.Event;
 import js.node.events.EventEmitter;
 import js.node.net.Socket;
 import js.node.tls.TLSSocket;
@@ -41,17 +40,23 @@ import js.Error;
 	/**
 		The `'close'` event is emitted once the `Http2Session` has been destroyed.
 		Its listener does not expect any arguments.
+
+		@see https://nodejs.org/api/http2.html#http2_event_close
 	**/
 	var Close:Http2SessionEvent<Void->Void> = "close";
 
 	/**
 		The `'connect'` event is emitted once the `Http2Session` has been successfully connected to
 		the remote peer and communication may begin.
+
+		@see https://nodejs.org/api/http2.html#http2_event_connect
 	**/
 	var Connect:Http2SessionEvent<Http2Session->Socket->Void> = "connect";
 
 	/**
 		The `'error'` event is emitted when an error occurs during the processing of an `Http2Session`.
+
+		@see https://nodejs.org/api/http2.html#http2_event_error
 	**/
 	var Error:Http2SessionEvent<Error->Void> = "error";
 
@@ -59,39 +64,53 @@ import js.Error;
 		The `'frameError'` event is emitted when an error occurs while attempting to send a frame on the session.
 		If the frame that could not be sent is associated with a specific `Http2Stream`,
 		an attempt to emit a `'frameError'` event on the `Http2Stream` is made.
+
+		@see https://nodejs.org/api/http2.html#http2_event_frameerror
 	**/
 	var FrameError:Http2SessionEvent<Int->Int->Int->Void> = "frameError";
 
 	/**
-		The `'goaway'` event is emitted when a GOAWAY frame is received.
+		The `'goaway'` event is emitted when a `GOAWAY` frame is received.
+
+		@see https://nodejs.org/api/http2.html#http2_event_goaway
 	**/
 	var Goaway:Http2SessionEvent<Int->Int->Buffer->Void> = "goaway";
 
 	/**
 		The `'localSettings'` event is emitted when an acknowledgment `SETTINGS` frame has been received.
+
+		@see https://nodejs.org/api/http2.html#http2_event_localsettings
 	**/
 	var LocalSettings:Http2SessionEvent<Http2SettingsObject->Void> = "localSettings";
 
 	/**
-		The `'ping'` event is emitted whenever a PING frame is received from the connected peer.
+		The `'ping'` event is emitted whenever a `PING` frame is received from the connected peer.
+
+		@see https://nodejs.org/api/http2.html#http2_event_ping
 	**/
 	var Ping:Http2SessionEvent<Http2SettingsObject->Void> = "ping";
 
 	/**
-		The `'remoteSettings'` event is emitted when a new SETTINGS frame is received from the connected peer.
+		The `'remoteSettings'` event is emitted when a new `SETTINGS` frame is received from the connected peer.
+
+		@see https://nodejs.org/api/http2.html#http2_event_remotesettings
 	**/
 	var remoteSettings:Http2SessionEvent<Http2SettingsObject->Void> = "remoteSettings";
 
 	/**
-		The `'stream'` event is emitted when a new Http2Stream is created.
+		The `'stream'` event is emitted when a new `Http2Stream` is created.
+
+		@see https://nodejs.org/api/http2.html#http2_event_stream
 	**/
 	var Stream:Http2SessionEvent<Http2SettingsObject->Void> = "stream";
 
 	/**
-		After the `Http2session.setTimeout()` method is used to set the timeout period for this Http2Session,
+		After the `Http2session.setTimeout()` method is used to set the timeout period for this `Http2Session`,
 		the `'timeout'` event is emitted if there is no activity on the `Http2Session`
 		after the configured number of milliseconds.
 		Its listener does not expect any arguments.
+
+		@see https://nodejs.org/api/http2.html#http2_event_timeout
 	**/
 	var Timeout:Http2SessionEvent<Void->Void> = "timeout";
 }
@@ -137,10 +156,10 @@ extern class Http2Session extends EventEmitter<Http2Session> {
 
 		@see https://nodejs.org/api/http2.html#http2_http2session_connecting
 	**/
-	var connectiong(default, null):Bool;
+	var connecting(default, null):Bool;
 
 	/**
-		Immediately terminates the Http2Session and the associated `net.Socket` or `tls.TLSSocket`.
+		Immediately terminates the `Http2Session` and the associated `net.Socket` or `tls.TLSSocket`.
 
 		@see https://nodejs.org/api/http2.html#http2_http2session_destroy_error_code
 	**/
@@ -181,7 +200,7 @@ extern class Http2Session extends EventEmitter<Http2Session> {
 
 	/**
 		If the `Http2Session` is connected to a `TLSSocket`,
-		the originSet property will return an `Array` of origins
+		the `originSet` property will return an `Array` of origins
 		for which the `Http2Session` may be considered authoritative.
 
 		@see https://nodejs.org/api/http2.html#http2_http2session_originset
@@ -189,7 +208,8 @@ extern class Http2Session extends EventEmitter<Http2Session> {
 	var originSet(default, null):Null<Array<String>>;
 
 	/**
-		Indicates whether the Http2Session is currently waiting for acknowledgment of a sent `SETTINGS` frame.
+		Indicates whether the `Http2Session` is currently waiting
+		for acknowledgment of a sent `SETTINGS` frame.
 		Will be `true` after calling the `http2session.settings()` method.
 		Will be `false` once all sent `SETTINGS` frames have been acknowledged.
 
@@ -223,10 +243,11 @@ extern class Http2Session extends EventEmitter<Http2Session> {
 	var remoteSettings(default, null):Http2SettingsObject;
 
 	/**
-		Used to set a callback function that is called when there is no activity on the `Http2Session` after `msecs` milliseconds.
+		Used to set a callback function that is called
+		when there is no activity on the `Http2Session` after `msecs` milliseconds.
 		The given `callback` is registered as a listener on the `'timeout'` event.
 
-			   @see https://nodejs.org/api/http2.html#http2_http2session_settimeout_msecs_callback
+		@see https://nodejs.org/api/http2.html#http2_http2session_settimeout_msecs_callback
 	**/
 	function setTimeout(msecs:Int, callback:Void->Void):Void;
 
@@ -246,16 +267,17 @@ extern class Http2Session extends EventEmitter<Http2Session> {
 	var state(default, null):Http2StateObject;
 
 	/**
-		Provides miscellaneous information about the current state of the `Http2Session`.
+		Updates the current local settings for this `Http2Session`
+		and sends a new `SETTINGS` frame to the connected HTTP/2 peer.
 
 		@see https://nodejs.org/api/http2.html#http2_http2session_state
 	**/
-	function settings(?settings:Http2SettingsObject, callback:Null<Error>->Http2SettingsObject->Int->Void):Void;
+	function settings(?settings:Http2SettingsObject, ?callback:Null<Error>->Http2SettingsObject->Int->Void):Void;
 
 	/**
-		The `http2session.type` will be equal to `http2.constants.NGHTTP2_SESSION_SERVER`
+		The `http2session.type` will be equal to `http2.Constants.NGHTTP2_SESSION_SERVER`
 		if this `Http2Session` instance is a server,
-		and `http2.constants.NGHTTP2_SESSION_CLIENT`
+		and `http2.Constants.NGHTTP2_SESSION_CLIENT`
 		if the instance is a client.
 
 		@see https://nodejs.org/api/http2.html#http2_http2session_type
@@ -270,6 +292,9 @@ extern class Http2Session extends EventEmitter<Http2Session> {
 	function unref():Socket;
 }
 
+/**
+	An object describing the current status of this Http2Session.
+**/
 typedef Http2StateObject = {
 	/**
 		The current local (receive) flow control window size for the `Http2Session`.

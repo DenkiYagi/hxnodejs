@@ -29,7 +29,8 @@ import js.node.events.EventEmitter.Event;
 **/
 @:enum abstract ClientHttp2StreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
-		Emitted when the server sends a `100 Continue` status, usually because the request contained `Expect: 100-continue`.
+		Emitted when the server sends a `100 Continue` status,
+		usually because the request contained `Expect: 100-continue`.
 		This is an instruction that the client should send the request body.
 
 		@see https://nodejs.org/api/http2.html#http2_event_continue
@@ -51,7 +52,7 @@ import js.node.events.EventEmitter.Event;
 
 		@see https://nodejs.org/api/http2.html#http2_event_push
 	**/
-	var push:ClientHttp2StreamEvent<HeadersObject->Int->Void> = "push";
+	var Push:ClientHttp2StreamEvent<HeadersObject->Int->Void> = "push";
 
 	/**
 		The `'response'` event is emitted when a response `HEADERS` frame has been received
@@ -66,7 +67,8 @@ import js.node.events.EventEmitter.Event;
 
 /**
 	The `ClientHttp2Stream` class is an extension of `Http2Stream` that is used exclusively on HTTP/2 Clients.
-	`Http2Stream` instances on the client provide events such as `'response'` and `'push'` that are only relevant on the client.
+	`Http2Stream` instances on the client provide events
+	such as `'response'` and `'push'` that are only relevant on the client.
 
 	@see  https://nodejs.org/api/http2.html#http2_class_clienthttp2stream
 **/
