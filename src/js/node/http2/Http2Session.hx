@@ -21,6 +21,7 @@ package js.node.http2;
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+import js.node.Http2.HeadersObject;
 import js.node.events.EventEmitter;
 import js.node.net.Socket;
 import js.node.tls.TLSSocket;
@@ -88,7 +89,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/http2.html#http2_event_ping
 	**/
-	var Ping:Http2SessionEvent<Http2SettingsObject->Void> = "ping";
+	var Ping:Http2SessionEvent<Buffer->Void> = "ping";
 
 	/**
 		The `'remoteSettings'` event is emitted when a new `SETTINGS` frame is received from the connected peer.
@@ -102,7 +103,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/http2.html#http2_event_stream
 	**/
-	var Stream:Http2SessionEvent<Http2SettingsObject->Void> = "stream";
+	var Stream:Http2SessionEvent<Http2Stream->HeadersObject->Int->Array<Class<Dynamic>>->Void> = "stream";
 
 	/**
 		After the `Http2session.setTimeout()` method is used to set the timeout period for this `Http2Session`,
@@ -121,7 +122,6 @@ import js.Error;
 
 	@see https://nodejs.org/api/http2.html#http2_class_http2session
 **/
-@:jsRequire("http2", "Http2Session")
 extern class Http2Session extends EventEmitter<Http2Session> {
 	/**
 		Value will be `null` if the `Http2Session` is not yet connected to a socket,

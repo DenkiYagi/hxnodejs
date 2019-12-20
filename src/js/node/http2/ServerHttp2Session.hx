@@ -26,7 +26,6 @@ import haxe.extern.Rest;
 /**
 	@see https://nodejs.org/api/http2.html#http2_class_serverhttp2session
 **/
-@:jsRequire("http2", "ServerHttp2Session")
 extern class ServerHttp2Session extends Http2Session {
 	/**
 		Submits an `ALTSVC` frame (as defined by RFC 7838) to the connected client.

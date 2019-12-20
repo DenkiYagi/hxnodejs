@@ -51,7 +51,6 @@ import js.node.events.EventEmitter.Event;
 /**
 	@see https://nodejs.org/api/http2.html#http2_class_clienthttp2session
 **/
-@:jsRequire("http2", "ClientHttp2Session")
 extern class ClientHttp2Session extends Http2Session {
 	/**
 		For HTTP/2 Client `Http2Session` instances only,

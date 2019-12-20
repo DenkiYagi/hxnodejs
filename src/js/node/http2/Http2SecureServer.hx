@@ -84,7 +84,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/http2.html#http2_event_timeout_3
 	**/
-	var Timeout:Http2SecureServerEvent<Int->Void> = "timeout";
+	var Timeout:Http2SecureServerEvent<Void->Void> = "timeout";
 
 	/**
 		The `'unknownProtocol'` event is emitted when a connecting client fails to

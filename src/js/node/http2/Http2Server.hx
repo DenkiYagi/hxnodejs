@@ -84,13 +84,12 @@ import js.Error;
 
 		@see https://nodejs.org/api/http2.html#http2_event_timeout_2
 	**/
-	var Timeout:Http2ServerEvent<Int->Void> = "timeout";
+	var Timeout:Http2ServerEvent<Void->Void> = "timeout";
 }
 
 /**
 	@see https://nodejs.org/api/http2.html#http2_class_clienthttp2session
 **/
-@:jsRequire("http2", "Http2Server")
 extern class Http2Server extends Server {
 	/**
 		Stops the server from establishing new sessions.

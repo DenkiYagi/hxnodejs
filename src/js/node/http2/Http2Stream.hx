@@ -66,7 +66,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/http2.html#http2_event_frameerror_1
 	**/
-	var FrameError:Http2StreamEvent<Int->Int->Void> = "frameError";
+	var FrameError:Http2StreamEvent<Int->Int->Int->Void> = "frameError";
 
 	/**
 		The `'timeout'` event is emitted after no activity is received for this `Http2Stream`
@@ -248,7 +248,7 @@ typedef PriorityOptions = {
 	/**
 		Specifies the numeric identifier of a stream this stream is dependent on.
 	**/
-	var parent:Bool;
+	var parent:Int;
 
 	/**
 		Specifies the relative dependency of a stream in relation to other streams with the same `parent`.
