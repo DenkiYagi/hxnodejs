@@ -65,8 +65,10 @@ typedef NetConnectOptionsUnix = {
 }
 
 /**
-	The net module provides you with an asynchronous network wrapper.
-	It contains methods for creating both servers and clients (called streams).
+	The `net` module provides an asynchronous network API
+	for creating stream-based TCP or IPC servers (`net.createServer()`) and clients (`net.createConnection()`).
+
+	@see https://nodejs.org/api/net.html#net_net
 **/
 @:jsRequire("net")
 extern class Net {

@@ -90,14 +90,14 @@ import js.node.events.EventEmitter.Event;
 
 		@see https://nodejs.org/api/net.html#net_event_lookup
 	**/
-	var Lookup:SocketEvent<Null<Error>->String->Null<DnsAddressFamily>->String->Void> = "lookup";
+	var Lookup:SocketEvent<Null<Error>->String->Null<String>->String->Void> = "lookup";
 
 	/**
 		Emitted when a socket is ready to be used.
 
 		@see https://nodejs.org/api/net.html#net_event_ready
 	**/
-	var Ready:SocketEvent<Error->Void> = "ready";
+	var Ready:SocketEvent<Void->Void> = "ready";
 
 	/**
 		Emitted if the socket times out from inactivity.
@@ -116,7 +116,7 @@ typedef SocketOptions = {
 	/**
 		allows you to specify the existing file descriptor of socket.
 	**/
-	@:optional var fd:Null<Int>;
+	@:optional var fd:Int;
 
 	/*+
 		Indicates whether half-opened TCP connections are allowed.
@@ -142,7 +142,7 @@ typedef SocketOptions = {
 	A member that both `SocketConnectOptionsTcp` and `SocketConnectOptionsUnix` contain
 **/
 typedef Onread = {
-	var buffer:EitherType<Buffer, ArrayBufferView>;
+	var buffer:EitherType<EitherType<Buffer, ArrayBufferView>, Void->EitherType<Buffer, ArrayBufferView>>;
 	var callback:Int->EitherType<Buffer, ArrayBufferView>->Bool;
 };
 
@@ -300,7 +300,7 @@ extern class Socket extends js.node.stream.Duplex<Socket> {
 	**/
 	@:overload(function(path:String, ?connectListener:Void->Void):Socket {})
 	@:overload(function(port:Int, ?host:String, ?connectListener:Void->Void):Socket {})
-	@:overload(function(options:SocketConnectOptionsTcp):Socket {})
+	@:overload(function(options:SocketConnectOptionsTcp, connectListener:Void->Void):Socket {})
 	function connect(options:SocketConnectOptionsUnix, ?connectListener:Void->Void):Socket;
 
 	/**
