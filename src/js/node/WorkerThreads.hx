@@ -40,7 +40,7 @@ extern class WorkerThreads {
 
 		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_ismainthread
 	**/
-	static var isMainThread:Bool;
+	static var isMainThread(default, null):Bool;
 
 	/**
 		Transfer a `MessagePort` to a different `vm` Context.
@@ -49,7 +49,7 @@ extern class WorkerThreads {
 
 		@see https://nodejs.org/api/worker_threads.html#worker_threads_worker_movemessageporttocontext_port_contextifiedsandbox
 	**/
-	static function moveMessagePortToContext(port:Int, contextifiedSandbox:VmContext<{}>):MessagePort;
+	static function moveMessagePortToContext(port:MessagePort, contextifiedSandbox:VmContext<{}>):MessagePort;
 
 	/**
 		If this thread was spawned as a `Worker`, this will be a `MessagePort` allowing communication with the parent thread.
@@ -110,5 +110,5 @@ extern class WorkerThreads {
 typedef ResourceLimits = {
 	@:optional var maxYoungGenerationSizeMb:Int;
 	@:optional var maxOldGenerationSizeMb:Int;
-	@:optional var varcodeRangeSizeMb:Int;
+	@:optional var codeRangeSizeMb:Int;
 }

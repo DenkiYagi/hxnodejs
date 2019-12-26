@@ -162,6 +162,13 @@ extern class Worker extends EventEmitter<Worker> {
 
 typedef WorkerOptions = {
 	/**
+		List of arguments which would be stringified and appended to `process.argv` in the worker.
+		This is mostly similar to the `workerData` but the values will be available on the global `process.argv` as if
+		they were passed as CLI options to the script.
+	**/
+	@:optional var argv:Array<Dynamic>;
+
+	/**
 		If set, specifies the initial value of `process.env` inside the Worker thread. As a special value,
 		`worker.SHARE_ENV` may be used to specify that the parent thread and the child thread should share their
 		environment variables; in that case, changes to one thread’s `process.env` object will affect the other thread
