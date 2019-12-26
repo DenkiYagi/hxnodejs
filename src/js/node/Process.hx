@@ -192,7 +192,7 @@ extern class Process extends EventEmitter<Process> {
 
 		@see https://nodejs.org/api/process.html#process_process_channel
 	**/
-	var channel:Dynamic;
+	var channel:Null<Dynamic>;
 
 	/**
 		The `process.chdir()` method changes the current working directory of the Node.js process or throws an exception
