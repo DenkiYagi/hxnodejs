@@ -23,91 +23,329 @@
 package js.node;
 
 import js.node.vm.Script;
+import haxe.extern.EitherType;
+import js.lib.ArrayBufferView;
+import js.lib.Function;
 
-/**
-	Options object used by Vm.run* methods.
-**/
-typedef VmRunOptions = {
-	> ScriptOptions,
-	> ScriptRunOptions,
+typedef CompileFunctionOptions = {
+	/**
+		Specifies the filename used in stack traces produced by this script.
+		Default: `''`.
+	**/
+	@:optional var filename:String;
+
+	/**
+		Specifies the line number offset that is displayed in stack traces produced by this script.
+		Default: `0`.
+	**/
+	@:optional var lineOffset:Float;
+
+	/**
+		Specifies the column number offset that is displayed in stack traces produced by this script.
+		Default: `0`.
+	**/
+	@:optional var columnOffset:Float;
+
+	/**
+		Provides an optional `Buffer` or `ArrayBufferView` with V8's code cache data for the supplied source.
+	**/
+	@:optional var cachedData:EitherType<Buffer, ArrayBufferView>;
+
+	/**
+		Specifies whether to produce new cache data.
+		Default: `false`.
+	**/
+	@:optional var produceCachedData:Bool;
+
+	/**
+		The contextified sandbox in which the said function should be compiled in.
+	**/
+	@:optional var parsingContext:ContextifiedObject;
+
+	/**
+		An array containing a collection of context extensions (objects wrapping the current scope) to be applied while compiling.
+		Default: `[]`.
+	**/
+	@:optional var contextExtensions:Array<Class<Dynamic>>;
+}
+
+typedef CreateContextOptions = {
+	/**
+		Human-readable name of the newly created context.
+		Default: `'VM Context i'`, where `i` is an ascending numerical index of the created context.
+	**/
+	var name:String;
+
+	/**
+		Origin corresponding to the newly created context for display purposes.
+		The origin should be formatted like a URL, but with only the scheme, host, and port (if necessary),
+		like the value of the `url.origin` property of a `URL` object.
+		Most notably, this string should omit the trailing slash, as that denotes a path.
+		Default: `''`.
+	**/
+	var origin:String;
+
+	var codeGeneration:{
+		/**
+			If set to false, any calls to `eval` or function constructors (`Function`, `GeneratorFunction`, etc)
+			will throw an `EvalError`.
+			Default: `true`.
+		**/
+		strings:Bool,
+
+		/**
+			If set to false any attempt to compile a WebAssembly module will throw a `WebAssembly.CompileError`.
+			Default: `true`.
+		**/
+		wasm:Bool
+	};
+}
+
+typedef RunInContextOptions = {
+	/**
+		Specifies the filename used in stack traces produced by this script.
+		Default: `'evalmachine.<anonymous>'`.
+	**/
+	@:optional var filename:String;
+
+	/**
+		Specifies the line number offset that is displayed in stack traces produced by this script.
+		Default: `0`.
+	**/
+	@:optional var lineOffset:Int;
+
+	/**
+		Specifies the column number offset that is displayed in stack traces produced by this script.
+		Default: `0`.
+	**/
+	@:optional var columnOffset:Int;
+
+	/**
+		When `true`, if an `Error` occurs while compiling the `code`,
+		the line of code causing the error is attached to the stack trace.
+		Default: `true`.
+	**/
+	@:optional var displayErrors:Bool;
+
+	/**
+		Specifies the number of milliseconds to execute `code` before terminating execution.
+		If execution is terminated, an `Error` will be thrown.
+		This value must be a strictly positive integer.
+	**/
+	@:optional var timeout:Int;
+
+	/**
+		If `true`, the execution will be terminated when `SIGINT` (Ctrl+C) is received.
+		Existing handlers for the event that have been attached via `process.on('SIGINT')`
+		will be disabled during script execution, but will continue to work after that.
+		If execution is terminated, an `Error` will be thrown.
+		Default: `false`.
+	**/
+	@:optional var breakOnSigint:Bool;
+
+	/**
+		Provides an optional `Buffer` or `ArrayBufferView` with V8's code cache data
+		for the supplied source.
+		When supplied, the `cachedDataRejected` value will be set to either `true` or `false`
+		depending on acceptance of the data by V8.
+	**/
+	@:optional var cachedData:EitherType<Buffer, ArrayBufferView>;
+
+	/**
+		When `true` and no `cachedData` is present, V8 will attempt to produce code cache data for `code`.
+		Upon success, a `Buffer` with V8's code cache data will be produced and stored
+		in the `cachedData` property of the returned `vm.Script` instance.
+		The `cachedDataProduced` value will be set to either `true` or `false` depending on
+		whether code cache data is produced successfully.
+		This option is deprecated in favor of `script.createCachedData()`.
+		Default: `false`.
+	**/
+	@:optional var produceCachedData:Bool;
+
+	/**
+		Called during evaluation of this module when `import()` is called.
+		If this option is not specified, calls to `import()` will reject with `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`.
+		This option is part of the experimental modules API, and should not be considered stable.
+	**/
+	@:optional var importModuleDynamically:String->Module->EitherType<ModuleNamespaceObject, Module>;
+}
+
+typedef RunInNewContextOptions = {
+	/**
+		Specifies the filename used in stack traces produced by this script.
+		Default: `'evalmachine.<anonymous>'`.
+	**/
+	@:optional var filename:String;
+
+	/**
+		Specifies the line number offset that is displayed in stack traces produced by this script.
+		Default: `0`.
+	**/
+	@:optional var lineOffset:Int;
+
+	/**
+		Specifies the column number offset that is displayed in stack traces produced by this script.
+		Default: `0`.
+	**/
+	@:optional var columnOffset:Int;
+
+	/**
+		When `true`, if an `Error` occurs while compiling the `code`,
+		the line of code causing the error is attached to the stack trace.
+		Default: `true`.
+	**/
+	@:optional var displayErrors:Bool;
+
+	/**
+		Specifies the number of milliseconds to execute `code` before terminating execution.
+		If execution is terminated, an `Error` will be thrown.
+		This value must be a strictly positive integer.
+	**/
+	@:optional var timeout:Int;
+
+	/**
+		If `true`, the execution will be terminated when `SIGINT` (Ctrl+C) is received.
+		Existing handlers for the event that have been attached via `process.on('SIGINT')`
+		will be disabled during script execution, but will continue to work after that.
+		If execution is terminated, an `Error` will be thrown.
+		Default: `false`.
+	**/
+	@:optional var breakOnSigint:Bool;
+
+	/**
+		Human-readable name of the newly created context.
+		Default: `'VM Context i'`, where `i` is an ascending numerical index of the created context.
+	**/
+	@:optional var contextName:String;
+
+	/**
+		Origin corresponding to the newly created context for display purposes.
+		The origin should be formatted like a URL, but with only the scheme, host, and port (if necessary),
+		like the value of the `url.origin` property of a `URL` object.
+		Most notably, this string should omit the trailing slash, as that denotes a path.
+		Default: `''`.
+	**/
+	@:optional var contextOrigin:String;
+
+	/**
+
+	**/
+	@:optional var contextCodeGeneration:{
+		/**
+			If set to `false` any calls to eval or function constructors (`Function`, `GeneratorFunction`, etc)
+			will throw an `EvalError`.
+			Default: `true`.
+		**/
+		strings:Bool,
+
+		/**
+			If set to false any attempt to compile a WebAssembly module will throw a `WebAssembly.CompileError`.
+			Default: `true`.
+		**/
+		wasm:Bool,
+	};
+
+	/**
+		Provides an optional `Buffer` or `ArrayBufferView` with V8's code cache data
+		for the supplied source.
+		When supplied, the `cachedDataRejected` value will be set to either `true` or `false`
+		depending on acceptance of the data by V8.
+	**/
+	@:optional var cachedData:EitherType<Buffer, ArrayBufferView>;
+
+	/**
+		When `true` and no `cachedData` is present, V8 will attempt to produce code cache data for `code`.
+		Upon success, a `Buffer` with V8's code cache data will be produced and stored
+		in the `cachedData` property of the returned `vm.Script` instance.
+		The `cachedDataProduced` value will be set to either `true` or `false` depending on
+		whether code cache data is produced successfully.
+		This option is deprecated in favor of `script.createCachedData()`.
+		Default: `false`.
+	**/
+	@:optional var produceCachedData:Bool;
+
+	/**
+		Called during evaluation of this module when `import()` is called.
+		If this option is not specified, calls to `import()` will reject with `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`.
+		This option is part of the experimental modules API, and should not be considered stable.
+	**/
+	@:optional var importModuleDynamically:String->Module->EitherType<ModuleNamespaceObject, Module>;
 }
 
 /**
-	Using this class JavaScript code can be compiled and
-	run immediately or compiled, saved, and run later.
+	The `vm` module provides APIs for compiling and running code within V8 Virtual Machine contexts.
+	The `vm` module is not a security mechanism.
+	Do not use it to run untrusted code.
+	The term "sandbox" is used throughout these docs simply to refer to a separate context,
+	and does not confer any security guarantees.
+
+	@see https://nodejs.org/api/vm.html#vm_vm_executing_javascript
 **/
 @:jsRequire("vm")
 extern class Vm {
 	/**
-		Compiles `code`, runs it and returns the result.
-		Running code does not have access to local scope.
+		Compiles the given code into the provided context/sandbox
+		(if no context is supplied, the current context is used),
+		and returns it wrapped inside a function with the given `params`.
 
-		`filename` is optional, it's used only in stack traces.
-
-		In case of syntax error in `code` emits the syntax error to stderr and throws an exception.
+		@see https://nodejs.org/api/vm.html#vm_vm_compilefunction_code_params_options
 	**/
-	static function runInThisContext(code:String, ?options:VmRunOptions):Dynamic;
+	static function compileFunction(code:String, params:Array<String>, options:CompileFunctionOptions):Function;
 
 	/**
-		Compiles `code`, contextifies `sandbox` if passed or creates a new contextified sandbox if it's omitted,
-		and then runs the code with the sandbox as the global object and returns the result.
+		If given a `sandbox` object, the `vm.createContext()` method will prepare that sandbox
+		so that it can be used in calls to `vm.runInContext()` or `script.runInContext()`.
+		Inside such scripts, the sandbox object will be the global object,
+		retaining all of its existing properties but also having the built-in objects
+		and functions any standard global object has.
+		Outside of scripts run by the vm module, global variables will remain unchanged.
 
-		`runInNewContext` takes the same options as `runInThisContext`.
-
-		Note that running untrusted code is a tricky business requiring great care. `runInNewContext` is quite useful,
-		but safely running untrusted code requires a separate process.
+		@see https://nodejs.org/api/vm.html#vm_vm_createcontext_sandbox_options
 	**/
-	@:overload(function(code:String, ?sandbox:{}):Dynamic {})
-	static function runInNewContext(code:String, sandbox:{}, ?options:VmRunOptions):Dynamic;
+	static function createContext(?sandbox:Class<Dynamic>, ?options:CreateContextOptions):ContextifiedObject;
 
 	/**
-		Compiles `code`, then runs it in `contextifiedSandbox` and returns the result.
+		The `vm.runInContext()` method compiles code, runs it within the context of the contextifiedSandbox, then returns the result.
+		Running code does not have access to the local scope.
+		The contextifiedSandbox object must have been previously contextified using the vm.createContext() method.
 
-		Running code does not have access to local scope. The `contextifiedSandbox` object must have been previously
-		contextified via `createContext`; it will be used as the global object for code.
-
-		`runInContext` takes the same options as `runInThisContext`.
-
-		Note that running untrusted code is a tricky business requiring great care. `runInContext` is quite useful,
-		but safely running untrusted code requires a separate process.
+		@see https://nodejs.org/api/vm.html#vm_vm_runincontext_code_contextifiedsandbox_options
 	**/
-	static function runInContext(code:String, contextifiedSandbox:VmContext<Dynamic>, ?options:VmRunOptions):Dynamic;
+	static function isContext(sandbox:Class<Dynamic>):Bool;
 
 	/**
+		The `vm.runInContext()` method compiles `code`,
+		runs it within the context of the `contextifiedSandbox`, then returns the result.
+		Running code does not have access to the local scope.
+		The `contextifiedSandbox` object must have been previously contextified
+		using the `vm.createContext()` method.
 
-		If given a sandbox object, will "contextify" that sandbox so that it can be used in calls to `runInContext` or
-		`Script.runInContext`. Inside scripts run as such, sandbox will be the global object, retaining all its existing
-		properties but also having the built-in objects and functions any standard global object has. Outside of scripts
-		run by the vm module, sandbox will be unchanged.
-
-		If not given a sandbox object, returns a new, empty contextified sandbox object you can use.
-
-		This function is useful for creating a sandbox that can be used to run multiple scripts, e.g. if you were
-		emulating a web browser it could be used to create a single sandbox representing a window's global object,
-		then run all <script> tags together inside that sandbox.
+		@see https://nodejs.org/api/vm.html#vm_vm_runincontext_code_contextifiedsandbox_options
 	**/
-	static function createContext<T:{}>(?sandbox:T):VmContext<T>;
+	@:overload(function(code:String, contextifiedSandbox:ContextifiedObject, ?options:RunInContextOptions):Dynamic {})
+	static function runInContext(code:String, contextifiedSandbox:ContextifiedObject, ?options:String):Dynamic;
 
 	/**
-		Returns whether or not a sandbox object has been contextified by calling `createContext` on it.
+		The `vm.runInNewContext()` first contextifies the given sandbox object
+		(or creates a new sandbox if passed as undefined), compiles the code,
+		runs it within the context of the created context, then returns the result.
+		Running code does not have access to the local scope.
+
+		@see https://nodejs.org/api/vm.html#vm_vm_runinnewcontext_code_sandbox_options
 	**/
-	static function isContext(sandbox:{}):Bool;
+	@:overload(function(code:String, sandbox:ContextifiedObject, ?options:RunInNewContextOptions):Dynamic {})
+	static function runInNewContext(code:String, sandbox:ContextifiedObject, ?options:String):Dynamic;
 
 	/**
-		Compiles and executes `code` inside the V8 debug context.
-		The primary use case is to get access to the V8 debug object:
+		`vm.runInThisContext()` compiles code,
+		runs it within the context of the current global and returns the result.
+		Running code does not have access to local scope, but does have access to the current global object.
 
-		Note that the debug context and object are intrinsically tied to V8's debugger implementation
-		and may change (or even get removed) without prior warning.
+		@see https://nodejs.org/api/vm.html#vm_vm_runinthiscontext_code_options
 	**/
-	static function runInDebugContext(code:String):Dynamic;
-
-	@:deprecated("use new js.node.vm.Script(...) instead")
-	static function createScript(code:String, ?options:ScriptOptions):Script;
+	@:overload(function(code:String, sandbox:ContextifiedObject, ?options:RunInContextOptions):Dynamic {})
+	static function runInThisContext(code:String, sandbox:ContextifiedObject, ?options:String):Dynamic;
 }
 
-/**
-	Type of context objects returned by `Vm.createContext`.
-**/
-@:forward
-abstract VmContext<T:{}>(T) from T to T {}
+class ContextifiedObject {}
+class ModuleNamespaceObject {}

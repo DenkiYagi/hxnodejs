@@ -22,78 +22,223 @@
 
 package js.node.vm;
 
-import js.node.Vm.VmContext;
+import js.node.vm.Module;
+import js.node.Vm.ContextifiedObject;
+import haxe.io.ArrayBufferView;
+import haxe.extern.EitherType;
 
 typedef ScriptOptions = {
 	/**
-		The filename that shows up in any stack traces produced.
+		Specifies the filename used in stack traces produced by this script.
+		Default: `'evalmachine.<anonymous>'`.
 	**/
 	@:optional var filename:String;
 
 	/**
-		Whether or not to print any errors to stderr, with the line of code that caused them highlighted,
-		before throwing an exception.
-
-		Will capture both syntax errors from compiling code and runtime errors thrown by executing the compiled code.
-
-		Defaults to true.
+		Specifies the line number offset that is displayed in stack traces produced by this script.
+		Default: `0`.
 	**/
-	@:optional var displayErrors:Bool;
+	@:optional var lineOffset:Int;
+
+	/**
+		Specifies the column number offset that is displayed in stack traces produced by this script.
+		Default: `0`.
+	**/
+	@:optional var columnOffset:Int;
+
+	/**
+		Provides an optional `Buffer` or `ArrayBufferView` with V8's code cache data for the supplied source.
+		When supplied, the `cachedDataRejected` value will be set to either `true` or `false`
+		depending on acceptance of the data by V8.
+	**/
+	@:optional var cachedData:EitherType<Buffer, ArrayBufferView>;
+
+	/**
+		When `true` and no `cachedData` is present, V8 will attempt to produce code cache data for `code`.
+		Upon success, a `Buffer` with V8's code cache data will be produced and stored
+		in the `cachedData` property of the returned `vm.Script` instance.
+		The `cachedDataProduced` value will be set to either `true` or `false`
+		depending on whether code cache data is produced successfully.
+		This option is `deprecated` in favor of `script.createCachedData()`.
+		Default: `false`.
+	**/
+	@:optional var produceCachedData:Bool;
+
+	/**
+		Called during evaluation of this module when `import()` is called.
+		If this option is not specified,
+		calls to `import()` will reject with `ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`.
+		This option is part of the experimental modules API, and should not be considered stable.
+	**/
+	@:optional var importModuleDynamically:String->Module->EitherType<js.node.Vm.ModuleNamespaceObject, Module>;
 }
 
-typedef ScriptRunOptions = {
+typedef RunInContextOptions = {
 	/**
-		Whether or not to print any errors to stderr, with the line of code that caused them highlighted,
-		before throwing an exception.
-
-		Will capture both syntax errors from compiling code and runtime errors thrown by executing the compiled code.
-
-		Defaults to true.
+		When `true`, if an `Error` occurs while compiling the `code`,
+		the line of code causing the error is attached to the stack trace.
+		Default: true.
 	**/
 	@:optional var displayErrors:Bool;
 
 	/**
-		Number of milliseconds to execute code before terminating execution.
-		If execution is terminated, an Error will be thrown.
+		Specifies the number of milliseconds to execute code before terminating execution.
+		If execution is terminated, an `Error` will be thrown.
+		This value must be a strictly positive integer.
 	**/
 	@:optional var timeout:Int;
+
+	/**
+		If `true`, the execution will be terminated when `SIGINT` (Ctrl+C) is received.
+		Existing handlers for the event that have been attached via `process.on('SIGINT')`
+		will be disabled during script execution, but will continue to work after that.
+		If execution is terminated, an `Error` will be thrown.
+		Default: `false`.
+	**/
+	@:optional var breakOnSigint:Bool;
+}
+
+typedef RunInNewContextOptions = {
+	/**
+		When `true`, if an `Error` occurs while compiling the `code`,
+		the line of code causing the error is attached to the stack trace.
+		Default: true.
+	**/
+	@:optional var displayErrors:Bool;
+
+	/**
+		Specifies the number of milliseconds to execute `code` before terminating execution.
+		If execution is terminated, an `Error` will be thrown.
+		This value must be a strictly positive integer.
+	**/
+	@:optional var timeout:Int;
+
+	/**
+		If `true`, the execution will be terminated when `SIGINT` (Ctrl+C) is received.
+		Existing handlers for the event that have been attached via `process.on('SIGINT')`
+		will be disabled during script execution, but will continue to work after that.
+		If execution is terminated, an `Error` will be thrown.
+		Default: `false`.
+	**/
+	@:optional var breakOnSigint:Bool;
+
+	/**
+		Human-readable name of the newly created context.
+		Default: `'VM Context i'`, where `i` is an ascending numerical index of the created context.
+	**/
+	@:optional var contextName:String;
+
+	/**
+		Origin corresponding to the newly created context for display purposes.
+		The origin should be formatted like a URL, but with only the scheme, host, and port (if necessary),
+		like the value of the `url.origin` property of a `URL` object.
+		Most notably, this string should omit the trailing slash, as that denotes a path.
+		Default: `''`.
+	**/
+	@:optional var contextOrigin:String;
+
+	/**
+
+	**/
+	@:optional var contextCodeGeneration:ContextCodeGenerationOptions;
+}
+
+typedef ContextCodeGenerationOptions = {
+	/**
+		If set to false any calls to `eval` or
+		function constructors (`Function`, `GeneratorFunction`, etc) will throw an `EvalError`.
+		Default: `true`.
+	**/
+	@:optional var strings:Bool;
+
+	/**
+		If set to false
+		any attempt to compile a WebAssembly module will throw a `WebAssembly.CompileError`.
+		Default: `true`.
+	**/
+	@:optional var wasm:Bool;
+}
+
+typedef RunInThisContextOptions = {
+	/**
+		When `true`, if an `Error` occurs while compiling the `code`,
+		the line of code causing the error is attached to the stack trace.
+		Default: `true`.
+	**/
+	@:optional var displayErrors:Bool;
+
+	/**
+		Specifies the number of milliseconds to execute code before terminating execution.
+		If execution is terminated, an `Error` will be thrown.
+		This value must be a strictly positive integer.
+	**/
+	@:optional var timeout:Int;
+
+	/**
+		If `true`, the execution will be terminated when `SIGINT` (Ctrl+C) is received.
+		Existing handlers for the event that have been attached via `process.on('SIGINT')`
+		will be disabled during script execution, but will continue to work after that.
+		If execution is terminated, an `Error` will be thrown.
+		Default: `false`.
+	**/
+	@:optional var breakOnSigint:Bool;
 }
 
 /**
-	A class for holding precompiled scripts, and running them in specific sandboxes.
+	Instances of the `vm.Script` class contain precompiled scripts that can be executed in specific sandboxes (or "contexts").
+
+	@see https://nodejs.org/api/vm.html#vm_class_vm_script
 **/
 @:jsRequire("vm", "Script")
 extern class Script {
 	/**
-		Creating a new `Script` compiles `code` but does not run it. Instead, the created `Script` object
-		represents this compiled code.
+		If `options` is a string, then it specifies the filename.
 
-		This script can be run later many times using methods below.
+		Creating a new `vm.Script` object compiles `code` but does not run it.
+		The compiled `vm.Script` can be run later multiple times.
+		The code is not bound to any global object; rather,
+		it is bound before each run, just for that run.
 
-		The returned script is not bound to any global object. It is bound before each run, just for that run.
+		@see https://nodejs.org/api/vm.html#vm_constructor_new_vm_script_code_options
 	**/
-	function new(code:String, ?options:ScriptOptions);
+	@:overload(function(code:String, ?options:ScriptOptions):Script {})
+	function new(code:String, ?options:String);
 
 	/**
-		Similar to `Vm.runInThisContext` but a method of a precompiled `Script` object.
-		`runInThisContext` runs the code of script and returns the result.
-		Running code does not have access to local scope, but does have access to the current global object.
+		Creates a code cache that can be used with the Script constructor's `cachedData` option.
+		Returns a Buffer.
+		This method may be called at any time and any number of times.
+
+		@see https://nodejs.org/api/vm.html#vm_script_createcacheddata
 	**/
-	function runInThisContext(?options:ScriptRunOptions):Dynamic;
+	function createCachedData():Buffer;
 
 	/**
-		Similar to `Vm.runInContext` but a method of a precompiled `Script` object.
-		`runInContext` runs script's compiled code in `contextifiedSandbox` and returns the result.
+		Runs the compiled code contained by the `vm.Script` object
+		within the given `contextifiedSandbox` and returns the result.
 		Running code does not have access to local scope.
+
+		@see https://nodejs.org/api/vm.html#vm_script_runincontext_contextifiedsandbox_options
 	**/
-	function runInContext(contextifiedSandbox:VmContext<Dynamic>, ?options:ScriptRunOptions):Dynamic;
+	function runInContext(contextifiedSandbox:ContextifiedObject, ?options:RunInContextOptions):Dynamic;
 
 	/**
-		Similar to `Vm.runInNewContext` but a method of a precompiled `Script` object.
-		`runInNewContext` contextifies sandbox if passed or creates a new contextified sandbox if it's omitted,
-		and then runs script's compiled code with the sandbox as the global object and returns the result.
+		First contextifies the given `sandbox`,
+		runs the compiled code contained by the `vm.Script` object within the created sandbox,
+		and returns the result.
 		Running code does not have access to local scope.
+
+		@see https://nodejs.org/api/vm.html#vm_script_runinnewcontext_sandbox_options
 	**/
-	@:overload(function(sandbox:{}, ?options:ScriptRunOptions):Dynamic {})
-	function runInNewContext(?sandbox:{}):Dynamic;
+	function runInNewContext(?sandbox:ContextifiedObject, ?options:RunInNewContextOptions):Dynamic;
+
+	/**
+		Runs the compiled code contained by the `vm.Script`
+		within the context of the current `global` object.
+		Running code does not have access to local scope,
+		but does have access to the current `global` object.
+
+		@see https://nodejs.org/api/vm.html#vm_script_runinthiscontext_options
+	**/
+	function runInThisContext(?options:RunInThisContextOptions):Dynamic;
 }
