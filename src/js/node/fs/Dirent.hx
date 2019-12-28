@@ -87,5 +87,5 @@ extern class Dirent {
 
 		@see https://nodejs.org/api/fs.html#fs_dirent_name
 	**/
-	var name:EitherType<String, Buffer>;
+	var name(default, null):EitherType<String, Buffer>;
 }
