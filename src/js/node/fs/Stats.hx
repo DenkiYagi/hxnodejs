@@ -84,7 +84,7 @@ extern class Stats {
 		@see https://nodejs.org/api/fs.html#fs_stats_dev
 	**/
 	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var dev:Int;
+	var dev(default, null):Int;
 
 	/**
 		The file system specific "Inode" number for the file.
@@ -92,7 +92,7 @@ extern class Stats {
 		@see https://nodejs.org/api/fs.html#fs_stats_ino
 	**/
 	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var ino:Int;
+	var ino(default, null):Int;
 
 	/**
 		A bit-field describing the file type and mode.
@@ -100,7 +100,7 @@ extern class Stats {
 		@see https://nodejs.org/api/fs.html#fs_stats_mode
 	**/
 	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var mode:Int;
+	var mode(default, null):Int;
 
 	/**
 		The number of hard-links that exist for the file.
@@ -108,7 +108,7 @@ extern class Stats {
 		@see https://nodejs.org/api/fs.html#fs_stats_nlink
 	**/
 	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var nlink:Int;
+	var nlink(default, null):Int;
 
 	/**
 		The numeric user identifier of the user that owns the file (POSIX).
@@ -116,7 +116,7 @@ extern class Stats {
 		@see https://nodejs.org/api/fs.html#fs_stats_uid
 	**/
 	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var uid:Int;
+	var uid(default, null):Int;
 
 	/**
 		The numeric group identifier of the group that owns the file (POSIX).
@@ -124,7 +124,7 @@ extern class Stats {
 		@see https://nodejs.org/api/fs.html#fs_stats_gid
 	**/
 	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var gid:Int;
+	var gid(default, null):Int;
 
 	/**
 		A numeric device identifier if the file is considered "special".
@@ -132,7 +132,7 @@ extern class Stats {
 		@see https://nodejs.org/api/fs.html#fs_stats_rdev
 	**/
 	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var rdev:Int;
+	var rdev(default, null):Int;
 
 	/**
 		The size of the file in bytes.
@@ -140,7 +140,7 @@ extern class Stats {
 		@see https://nodejs.org/api/fs.html#fs_stats_size
 	**/
 	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var size:Int;
+	var size(default, null):Int;
 
 	/**
 		The file system block size for i/o operations.
@@ -148,7 +148,7 @@ extern class Stats {
 		@see https://nodejs.org/api/fs.html#fs_stats_blksize
 	**/
 	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var blksize:Int;
+	var blksize(default, null):Int;
 
 	/**
 		The number of blocks allocated for this file.
@@ -156,23 +156,23 @@ extern class Stats {
 		@see https://nodejs.org/api/fs.html#fs_stats_blocks
 	**/
 	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var blocks:Int;
+	var blocks(default, null):Int;
 
 	/**
 		The timestamp indicating the last time this file was accessed expressed in milliseconds since the POSIX Epoch.
 
 		@see https://nodejs.org/api/fs.html#fs_stats_atimems
 	**/
-	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var atimeMs:Float;
+	// TODO: If bigint is implemented, change to EitherType<Float, BigInt>.
+	var atimeMs(default, null):Float;
 
 	/**
 		The timestamp indicating the last time this file was modified expressed in milliseconds since the POSIX Epoch.
 
 		@see https://nodejs.org/api/fs.html#fs_stats_mtimems
 	**/
-	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var mtimeMs:Float;
+	// TODO: If bigint is implemented, change to EitherType<Float, BigInt>.
+	var mtimeMs(default, null):Float;
 
 	/**
 		The timestamp indicating the last time the file status was changed expressed in milliseconds since the POSIX
@@ -180,33 +180,35 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_ctimems
 	**/
-	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var ctimeMs:Float;
+	// TODO: If bigint is implemented, change to EitherType<Float, BigInt>.
+	var ctimeMs(default, null):Float;
 
 	/**
 		https://nodejs.org/api/fs.html#fs_stats_birthtimems
 
 		@see https://nodejs.org/api/fs.html#fs_stats_birthtimems
 	**/
-	// TODO: If bigint is implemented, change to EitherType<Int, BigInt>.
-	var birthtimeMs:Float;
+	// TODO: If bigint is implemented, change to EitherType<Float, BigInt>.
+	var birthtimeMs(default, null):Float;
 
-	// It should be implemented bigint.
 	/**
 		Only present when `bigint: true` is passed into the method that generates the object.
 		The timestamp indicating the last time this file was accessed expressed in nanoseconds since the POSIX Epoch.
 
 		@see https://nodejs.org/api/fs.html#fs_stats_atimens
 	**/
-	// var atimeNs;
+	// TODO: If bigint is implemented, change to BigInt.
+	var atimeNs(default, null):Dynamic;
+
 	/**
 		Only present when `bigint: true` is passed into the method that generates the object.
 		The timestamp indicating the last time this file was modified expressed in nanoseconds since the POSIX Epoch.
 
 		@see https://nodejs.org/api/fs.html#fs_stats_mtimens
 	**/
-	// var mtimeNs;
-	// It should be implemented bigint.
+	// TODO: If bigint is implemented, change to BigInt.
+	var mtimeNs(default, null):Dynamic;
+
 	/**
 		Only present when `bigint: true` is passed into the method that generates the object.
 		The timestamp indicating the last time the file status was changed
@@ -214,41 +216,43 @@ extern class Stats {
 
 		@see https://nodejs.org/api/fs.html#fs_stats_ctimens
 	**/
-	// var ctimeNs;
-	// It should be implemented bigint.
+	// TODO: If bigint is implemented, change to BigInt.
+	var ctimeNs(default, null):Dynamic;
+
 	/**
 		Only present when `bigint: true` is passed into the method that generates the object.
 		The timestamp indicating the creation time of this file expressed in nanoseconds since the POSIX Epoch.
 
 		@see https://nodejs.org/api/fs.html#fs_stats_birthtimens
 	**/
-	// var birthtimeNs;
+	// TODO: If bigint is implemented, change to BigInt.
+	var birthtimeNs(default, null):Dynamic;
 
 	/**
 		The timestamp indicating the last time this file was accessed.
 
 		@see https://nodejs.org/api/fs.html#fs_stats_atime
 	**/
-	var atime:Date;
+	var atime(default, null):Date;
 
 	/**
 		The timestamp indicating the last time this file was modified.
 
 		@see https://nodejs.org/api/fs.html#fs_stats_mtime
 	**/
-	var mtime:Date;
+	var mtime(default, null):Date;
 
 	/**
 		The timestamp indicating the last time the file status was changed.
 
 		@see https://nodejs.org/api/fs.html#fs_stats_ctime
 	**/
-	var ctime:Date;
+	var ctime(default, null):Date;
 
 	/**
 		The timestamp indicating the creation time of this file.
 
 		@see https://nodejs.org/api/fs.html#fs_stats_birthtime
 	**/
-	var birthtime:Date;
+	var birthtime(default, null):Date;
 }
