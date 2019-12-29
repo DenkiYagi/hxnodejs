@@ -41,7 +41,11 @@ import haxe.extern.EitherType;
 
 		@see https://nodejs.org/api/fs.html#fs_event_open
 	**/
+	#if haxe4
+	var Open:ReadStreamEvent<(fd:Int) -> Void> = "open";
+	#else
 	var Open:ReadStreamEvent<Int->Void> = "open";
+	#end
 
 	/**
 		Emitted when the `fs.ReadStream` is ready to be used.
@@ -63,14 +67,14 @@ extern class ReadStream extends js.node.stream.Readable<ReadStream> {
 
 		@see https://nodejs.org/api/fs.html#fs_readstream_bytesread
 	**/
-	var bytesRead:Int;
+	var bytesRead(default, null):Int;
 
 	/**
 		The path to the file the stream is reading from as specified in the first argument to `fs.createReadStream()`.
 		If `path` is passed as a string, then `readStream.path` will be a string.
 		If `path` is passed as a `Buffer`, then `readStream.path` will be a `Buffer`.
 	**/
-	var path:EitherType<String, Buffer>;
+	var path(default, null):EitherType<String, Buffer>;
 
 	/**
 		This property is `true` if the underlying file has not been opened yet, i.e. before the `'ready'` event is
@@ -78,5 +82,5 @@ extern class ReadStream extends js.node.stream.Readable<ReadStream> {
 
 		@see https://nodejs.org/api/fs.html#fs_readstream_pending
 	**/
-	var pending:Bool;
+	var pending(default, null):Bool;
 }
