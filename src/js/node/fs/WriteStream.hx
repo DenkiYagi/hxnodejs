@@ -41,7 +41,11 @@ import js.node.Fs.FsPath;
 
 		@see https://nodejs.org/api/fs.html#fs_event_open_1
 	**/
+	#if haxe4
+	var Open:WriteStreamEvent<(fd:Int) -> Void> = "open";
+	#else
 	var Open:WriteStreamEvent<Int->Void> = "open";
+	#end
 
 	/**
 		Emitted when the `fs.WriteStream` is ready to be used.
@@ -62,7 +66,7 @@ extern class WriteStream extends js.node.stream.Writable<WriteStream> {
 
 		@see https://nodejs.org/api/fs.html#fs_writestream_byteswritten
 	**/
-	var bytesWritten:Int;
+	var bytesWritten(default, null):Int;
 
 	/**
 		The path to the file the stream is writing to as specified in the first argument to `fs.createWriteStream()`.
@@ -71,7 +75,7 @@ extern class WriteStream extends js.node.stream.Writable<WriteStream> {
 
 		@see https://nodejs.org/api/fs.html#fs_writestream_path
 	**/
-	var path:FsPath;
+	var path(default, null):FsPath;
 
 	/**
 		This property is `true` if the underlying file has not been opened yet, i.e. before the `'ready'` event is
@@ -79,5 +83,5 @@ extern class WriteStream extends js.node.stream.Writable<WriteStream> {
 
 		@see https://nodejs.org/api/fs.html#fs_writestream_pending
 	**/
-	var pending:Bool;
+	var pending(default, null):Bool;
 }
