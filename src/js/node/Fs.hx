@@ -33,7 +33,6 @@ import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.fs.Dir;
 import js.node.fs.Dirent;
-import js.node.fs.Constants;
 import js.node.fs.FSWatcher;
 import js.node.fs.ReadStream;
 import js.node.fs.WriteStream;
@@ -135,7 +134,7 @@ extern class Fs {
 
 		@see https://nodejs.org/api/fs.html#fs_fs_constants
 	 */
-	static var constants(default, never):js.node.fs.Constants;
+	static var constants(default, never):FsConstants;
 
 	/**
 		Asynchronously copies `src` to `dest`.
@@ -764,7 +763,7 @@ typedef FsTime = EitherType<Int, EitherType<String, Date>>;
 	public static var F_OK(get, never):FsAccessMode;
 
 	static extern inline function get_F_OK() {
-		return cast Constants.F_OK;
+		return cast Fs.constants.F_OK;
 	}
 
 	/**
@@ -773,7 +772,7 @@ typedef FsTime = EitherType<Int, EitherType<String, Date>>;
 	public static var R_OK(get, never):FsAccessMode;
 
 	static extern inline function get_R_OK() {
-		return cast Constants.R_OK;
+		return cast Fs.constants.R_OK;
 	}
 
 	/**
@@ -782,7 +781,7 @@ typedef FsTime = EitherType<Int, EitherType<String, Date>>;
 	public static var W_OK(get, never):FsAccessMode;
 
 	static extern inline function get_W_OK() {
-		return cast Constants.W_OK;
+		return cast Fs.constants.W_OK;
 	}
 
 	/**
@@ -792,7 +791,7 @@ typedef FsTime = EitherType<Int, EitherType<String, Date>>;
 	public static var X_OK(get, never):FsAccessMode;
 
 	static extern inline function get_X_OK() {
-		return cast Constants.X_OK;
+		return cast Fs.constants.X_OK;
 	}
 }
 
@@ -806,7 +805,7 @@ typedef FsTime = EitherType<Int, EitherType<String, Date>>;
 	public static var COPYFILE_EXCL(get, never):FsCopyFlag;
 
 	static extern inline function get_COPYFILE_EXCL() {
-		return cast Constants.COPYFILE_EXCL;
+		return cast Fs.constants.COPYFILE_EXCL;
 	}
 
 	/**
@@ -816,7 +815,7 @@ typedef FsTime = EitherType<Int, EitherType<String, Date>>;
 	public static var COPYFILE_FICLONE(get, never):FsCopyFlag;
 
 	static extern inline function get_COPYFILE_FICLONE() {
-		return cast Constants.COPYFILE_FICLONE;
+		return cast Fs.constants.COPYFILE_FICLONE;
 	}
 
 	/**
@@ -826,7 +825,7 @@ typedef FsTime = EitherType<Int, EitherType<String, Date>>;
 	public static var COPYFILE_FICLONE_FORCE(get, never):FsCopyFlag;
 
 	static extern inline function get_COPYFILE_FICLONE_FORCE() {
-		return cast Constants.COPYFILE_FICLONE_FORCE;
+		return cast Fs.constants.COPYFILE_FICLONE_FORCE;
 	}
 }
 
@@ -1189,4 +1188,242 @@ typedef FsWatchFileOptions = {
 		Default: `5007`.
 	**/
 	@:optional var interval:Int;
+}
+
+/**
+	The following constants are exported by `fs.constants`.
+
+	@see https://nodejs.org/api/fs.html#fs_fs_constants_1
+**/
+typedef FsConstants = {
+	/**
+		Flag indicating that the file is visible to the calling process.
+		This is useful for determining if a file exists, but says nothing about `rwx` permissions.
+		Default if no mode is specified.
+	**/
+	var F_OK(default, never):Int;
+
+	/**
+		Flag indicating that the file can be read by the calling process.
+	**/
+	var R_OK(default, never):Int;
+
+	/**
+		Flag indicating that the file can be written by the calling process.
+	**/
+	var W_OK(default, never):Int;
+
+	/**
+		Flag indicating that the file can be executed by the calling process.
+		This has no effect on Windows (will behave like `fs.constants.F_OK`).
+	**/
+	var X_OK(default, never):Int;
+
+	/**
+		If present, the copy operation will fail with an error if the destination path already exists.
+	**/
+	var COPYFILE_EXCL(default, never):Int;
+
+	/**
+		If present, the copy operation will attempt to create a copy-on-write reflink.
+		If the underlying platform does not support copy-on-write, then a fallback copy mechanism is used.
+	**/
+	var COPYFILE_FICLONE(default, never):Int;
+
+	/**
+		If present, the copy operation will attempt to create a copy-on-write reflink.
+		If the underlying platform does not support copy-on-write, then the operation will fail with an error.
+	**/
+	var COPYFILE_FICLONE_FORCE(default, never):Int;
+
+	/**
+		Flag indicating to open a file for read-only access.
+	**/
+	var O_RDONLY(default, never):Int;
+
+	/**
+		Flag indicating to open a file for write-only access.
+	**/
+	var O_WRONLY(default, never):Int;
+
+	/**
+		Flag indicating to open a file for read-write access.
+	**/
+	var O_RDWR(default, never):Int;
+
+	/**
+		Flag indicating to create the file if it does not already exist.
+	**/
+	var O_CREAT(default, never):Int;
+
+	/**
+		Flag indicating that opening a file should fail if the `O_CREAT` flag is set and the file already exists.
+	**/
+	var O_EXCL(default, never):Int;
+
+	/**
+		Flag indicating that if path identifies a terminal device, opening the path shall not cause that terminal to
+		become the controlling terminal for the process (if the process does not already have one).
+	**/
+	var O_NOCTTY(default, never):Int;
+
+	/**
+		Flag indicating that if the file exists and is a regular file, and the file is opened successfully for write
+		access, its length shall be truncated to zero.
+	**/
+	var O_TRUNC(default, never):Int;
+
+	/**
+		Flag indicating that data will be appended to the end of the file.
+	**/
+	var O_APPEND(default, never):Int;
+
+	/**
+		Flag indicating that the open should fail if the path is not a directory.
+	**/
+	var O_DIRECTORY(default, never):Int;
+
+	/**
+		Flag indicating reading accesses to the file system will no longer result in an update to the `atime`
+		information associated with the file.
+		This flag is available on Linux operating systems only.
+	**/
+	var O_NOATIME(default, never):Int;
+
+	/**
+		Flag indicating that the open should fail if the path is a symbolic link.
+	**/
+	var O_NOFOLLOW(default, never):Int;
+
+	/**
+		Flag indicating that the file is opened for synchronized I/O with write operations waiting for file integrity.
+	**/
+	var O_SYNC(default, never):Int;
+
+	/**
+		Flag indicating that the file is opened for synchronized I/O with write operations waiting for data integrity.
+	**/
+	var O_DSYNC(default, never):Int;
+
+	/**
+		Flag indicating to open the symbolic link itself rather than the resource it is pointing to.
+	**/
+	var O_SYMLINK(default, never):Int;
+
+	/**
+		When set, an attempt will be made to minimize caching effects of file I/O.
+	**/
+	var O_DIRECT(default, never):Int;
+
+	/**
+		Flag indicating to open the file in nonblocking mode when possible.
+	**/
+	var O_NONBLOCK(default, never):Int;
+
+	/**
+		When set, a memory file mapping is used to access the file.
+		This flag is available on Windows operating systems only.
+		On other operating systems, this flag is ignored.
+	**/
+	var UV_FS_O_FILEMAP(default, never):Int;
+
+	/**
+		Bit mask used to extract the file type code.
+	**/
+	var S_IFMT(default, never):Int;
+
+	/**
+		File type constant for a regular file.
+	**/
+	var S_IFREG(default, never):Int;
+
+	/**
+		File type constant for a directory.
+	**/
+	var S_IFDIR(default, never):Int;
+
+	/**
+		File type constant for a character-oriented device file.
+	**/
+	var S_IFCHR(default, never):Int;
+
+	/**
+		File type constant for a block-oriented device file.
+	**/
+	var S_IFBLK(default, never):Int;
+
+	/**
+		File type constant for a FIFO/pipe.
+	**/
+	var S_IFIFO(default, never):Int;
+
+	/**
+		File type constant for a symbolic link.
+	**/
+	var S_IFLNK(default, never):Int;
+
+	/**
+		File type constant for a socket.
+	**/
+	var S_IFSOCK(default, never):Int;
+
+	/**
+		File mode indicating readable, writable, and executable by owner.
+	**/
+	var S_IRWXU(default, never):Int;
+
+	/**
+		File mode indicating readable by owner.
+	**/
+	var S_IRUSR(default, never):Int;
+
+	/**
+		File mode indicating writable by owner.
+	**/
+	var S_IWUSR(default, never):Int;
+
+	/**
+		File mode indicating executable by owner.
+	**/
+	var S_IXUSR(default, never):Int;
+
+	/**
+		File mode indicating readable, writable, and executable by group.
+	**/
+	var S_IRWXG(default, never):Int;
+
+	/**
+		File mode indicating readable by group.
+	**/
+	var S_IRGRP(default, never):Int;
+
+	/**
+		File mode indicating writable by group.
+	**/
+	var S_IWGRP(default, never):Int;
+
+	/**
+		File mode indicating executable by group.
+	**/
+	var S_IXGRP(default, never):Int;
+
+	/**
+		File mode indicating readable, writable, and executable by others.
+	**/
+	var S_IRWXO(default, never):Int;
+
+	/**
+		File mode indicating readable by others.
+	**/
+	var S_IROTH(default, never):Int;
+
+	/**
+		File mode indicating writable by others.
+	**/
+	var S_IWOTH(default, never):Int;
+
+	/**
+		File mode indicating executable by others.
+	**/
+	var S_IXOTH(default, never):Int;
 }
