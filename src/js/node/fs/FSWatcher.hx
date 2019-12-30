@@ -49,7 +49,7 @@ import js.Error;
 		@see https://nodejs.org/api/fs.html#fs_event_change
 	**/
 	var Change:FSWatcherEvent<FSWatcherChangeType->EitherType<String, Buffer>->Void> = "change";
-	
+
 	/**
 		Emitted when the watcher stops watching for changes.
 		The closed `fs.FSWatcher` object is no longer usable in the event handler.
@@ -64,7 +64,7 @@ import js.Error;
 
 		@see https://nodejs.org/api/fs.html#fs_event_error
 	**/
-	var Error:FSWatcherEvent<Error->Void> = "error";
+	var Error:FSWatcherEvent<Null<Error>->Void> = "error";
 }
 
 /**

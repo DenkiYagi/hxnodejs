@@ -39,7 +39,7 @@ import js.node.Fs;
 	@see https://nodejs.org/api/fs.html#fs_fs_promises_api
 **/
 @:jsRequire("fs", "promises")
-extern class Promises {
+extern class FsPromises {
 	/**
 		Tests a user's permissions for the file or directory specified by `path`.
 		The `mode` argument is an optional integer that specifies the accessibility checks to be performed.
@@ -49,7 +49,8 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_access_path_mode
 	**/
-	static function access(path:FsPath, ?mode:Int):Promise<Void>;
+	@:overload(function(path:FsPathOrHandle):Promise<Void> {})
+	static function access(path:FsPath, mode:FsAccessMode):Promise<Void>;
 
 	/**
 		Asynchronously append data to a file, creating the file if it does not yet exist.
@@ -58,10 +59,8 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_appendfile_path_data_options
 	**/
-	@:overload(function(path:FsPath_, data:String, ?options:FsWriteFileOptions):Promise<Void> {})
-	@:overload(function(path:FsPath_, data:String, ?options:String):Promise<Void> {})
-	@:overload(function(path:FsPath_, data:Buffer, ?options:FsWriteFileOptions):Promise<Void> {})
-	static function appendFile(path:FsPath_, data:Buffer, ?options:String):Promise<Void>;
+	@:overload(function(path:FsPathOrHandle, data:EitherType<String, Buffer>):Promise<Void> {})
+	static function appendFile(path:FsPathOrHandle, data:EitherType<String, Buffer>, options:EitherType<String, FsWriteFileOptions>):Promise<Void>;
 
 	/**
 		Changes the permissions of a file then resolves the `Promise` with no arguments upon succces.
@@ -84,7 +83,8 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_copyfile_src_dest_flags
 	**/
-	static function copyFile(src:FsPath, dest:FsPath, ?flags:Int):Promise<Void>;
+	@:overload(function(path:FsPath, dest:FsPath):Promise<Void> {})
+	static function copyFile(src:FsPath, dest:FsPath, flags:Int):Promise<Void>;
 
 	/**
 		Changes the permissions on a symbolic link then resolves the `Promise` with no arguments upon success.
@@ -115,14 +115,16 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_lstat_path_options
 	**/
-	static function lstat(path:FsPath, ?options:FsFstatOptions):Promise<Stats>;
+	@:overload(function(path:FsPath):Promise<Stats> {})
+	static function lstat(path:FsPath, options:FsFstatOptions):Promise<Stats>;
 
 	/**
 		Asynchronously creates a directory then resolves the `Promise` with no arguments upon success.
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_mkdir_path_options
 	**/
-	static function mkdir(path:FsPath, ?options:FsMkdirOptions):Promise<Void>;
+	@:overload(function(path:FsPath):Promise<Void> {})
+	static function mkdir(path:FsPath, options:FsMkdirOptions):Promise<Void>;
 
 	/**
 		Creates a unique temporary directory and resolves the `Promise` with the created folder path.
@@ -133,8 +135,8 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_mkdtemp_prefix_options
 	**/
-	@:overload(function(prefix:String, ?options:String):Promise<String> {})
-	static function mkdtemp(prefix:String, ?options:FsMkdtempOptions):Promise<String>;
+	@:overload(function(prefix:String):Promise<String> {})
+	static function mkdtemp(prefix:String, options:EitherType<String, FsMkdtempOptions>):Promise<String>;
 
 	/**
 		Asynchronous file open that returns a `Promise` that, when resolved, yields a `FileHandle` object.
@@ -142,8 +144,8 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_open_path_flags_mode
 	**/
-	@:overload(function(path:FsPath, flags:FsOpenFlag, ?mode:Int):Promise<FileHandle> {})
-	static function open(path:FsPath, flags:Int, ?mode:Int):Promise<FileHandle>;
+	@:overload(function(path:FsPath, flags:EitherType<Int, FsOpenFlag>):Promise<FileHandle> {})
+	static function open(path:FsPath, flags:EitherType<Int, FsOpenFlag>, mode:Int):Promise<FileHandle>;
 
 	/**
 		Asynchronously open a directory.
@@ -151,7 +153,8 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fs_opendir_path_options_callback
 	**/
-	static function opendir(path:FsPath, ?options:FsOpendirOptions):Promise<Dir>;
+	@:overload(function(path:FsPath):Promise<Dir> {})
+	static function opendir(path:FsPath, options:FsOpendirOptions):Promise<Dir>;
 
 	/**
 		Reads the contents of a directory then resolves the `Promise` with an array of the names of the files in the
@@ -159,22 +162,17 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_readdir_path_options
 	**/
-	@:overload(function(path:FsPath, ?options:String):Promise<Array<String>> {})
-	@:overload(function(path:FsPath, ?options:String):Promise<Array<Buffer>> {})
-	@:overload(function(path:FsPath, ?options:String):Promise<Array<Dirent>> {})
-	@:overload(function(path:FsPath, ?options:FSReaddirOptions):Promise<Array<String>> {})
-	@:overload(function(path:FsPath, ?options:FSReaddirOptions):Promise<Array<Buffer>> {})
-	static function readdir(path:FsPath, ?options:FSReaddirOptions):Promise<Array<Dirent>>;
+	@:overload(function(path:FsPath):Promise<EitherType<Array<String>, EitherType<Array<Buffer>, Array<Dirent>>>> {})
+	static function readdir(path:FsPath,
+		options:EitherType<String, FSReaddirOptions>):Promise<EitherType<Array<String>, EitherType<Array<Buffer>, Array<Dirent>>>>;
 
 	/**
 		Asynchronously reads the entire contents of a file.
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_readfile_path_options
 	**/
-	@:overload(function(filename:FsPath_, ?options:FsReadFileOptions):Promise<String> {})
-	@:overload(function(filename:FsPath_, ?options:FsReadFileOptions):Promise<Buffer> {})
-	@:overload(function(filename:FsPath_, ?options:String):Promise<String> {})
-	static function readFile(filename:FsPath_, options:String):Promise<Buffer>;
+	@:overload(function(filename:FsPathOrHandle):Promise<Buffer> {})
+	static function readFile(filename:FsPathOrHandle, options:EitherType<String, FsReadFileOptions>):Promise<EitherType<String, Buffer>>;
 
 	/**
 		Asynchronous `readlink(2)`.
@@ -182,10 +180,8 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_readlink_path_options
 	**/
-	@:overload(function(path:FsPath, ?options:String):Promise<String> {})
-	@:overload(function(path:FsPath, ?options:String):Promise<Buffer> {})
-	@:overload(function(path:FsPath, ?options:FsMkdtempOptions):Promise<String> {})
-	static function readlink(path:FsPath, ?options:FsMkdtempOptions):Promise<Buffer>;
+	@:overload(function(path:FsPath):Promise<String> {})
+	static function readlink(path:FsPath, options:EitherType<String, FsMkdtempOptions>):Promise<EitherType<String, Buffer>>;
 
 	/**
 		Determines the actual location of `path` using the same semantics as the `fs.realpath.native()` function then
@@ -193,10 +189,8 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_realpath_path_options
 	**/
-	@:overload(function(path:FsPath, ?options:String):Promise<String> {})
-	@:overload(function(path:FsPath, ?options:String):Promise<Buffer> {})
-	@:overload(function(path:FsPath, ?options:FsMkdtempOptions):Promise<String> {})
-	static function realpath(path:FsPath, ?options:FsMkdtempOptions):Promise<Buffer>;
+	@:overload(function(path:FsPath):Promise<String> {})
+	static function realpath(path:FsPath, options:EitherType<String, FsMkdtempOptions>):Promise<EitherType<String, Buffer>>;
 
 	/**
 		Renames `oldPath` to `newPath` and resolves the `Promise` with no arguments upon success.
@@ -206,18 +200,28 @@ extern class Promises {
 	static function rename(oldPath:FsPath, newPath:FsPath):Promise<Void>;
 
 	/**
+		Removes the directory identified by path then resolves the Promise with no arguments upon success.
+
+		@see https://nodejs.org/api/fs.html#fs_fspromises_rmdir_path_options
+	**/
+	@:overload(function(path:FsPath):Promise<Void> {})
+	static function rmdir(path:FsPath, options:FsRmdirOptions):Promise<Void>;
+
+	/**
 		The `Promise` is resolved with the `fs.Stats` object for the given `path`.
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_stat_path_options
 	**/
-	static function stat(path:FsPath, ?options:FsFstatOptions):Promise<Stats>;
+	@:overload(function(path:FsPath):Promise<Stats> {})
+	static function stat(path:FsPath, options:FsFstatOptions):Promise<Stats>;
 
 	/**
 		Creates a symbolic link then resolves the `Promise` with no arguments upon success.
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_symlink_target_path_type
 	**/
-	static function symlink(target:FsPath, path:FsPath, ?type:SymlinkType):Promise<Void>;
+	@:overload(function(target:FsPath, path:FsPath):Promise<Void> {})
+	static function symlink(target:FsPath, path:FsPath, type:SymlinkType):Promise<Void>;
 
 	/**
 		Truncates the `path` then resolves the `Promise` with no arguments upon success.
@@ -225,7 +229,8 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_truncate_path_len
 	**/
-	static function truncate(path:FsPath, ?len:Int):Promise<Void>;
+	@:overload(function(target:FsPath):Promise<Void> {})
+	static function truncate(path:FsPath, len:Int):Promise<Void>;
 
 	/**
 		Asynchronous `unlink(2)`.
@@ -241,7 +246,7 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_utimes_path_atime_mtime
 	**/
-	static function utimes(path:FsPath, atime:Time, mtime:Time):Promise<Void>;
+	static function utimes(path:FsPath, atime:FsTime, mtime:FsTime):Promise<Void>;
 
 	/**
 		Asynchronously writes data to a file, replacing the file if it already exists.
@@ -250,12 +255,9 @@ extern class Promises {
 
 		@see https://nodejs.org/api/fs.html#fs_fspromises_writefile_file_data_options
 	**/
-	@:overload(function(filename:FsPath_, data:String, ?options:FsWriteFileOptions):Promise<Void> {})
-	@:overload(function(filename:FsPath_, data:String, ?options:String):Promise<Void> {})
-	@:overload(function(filename:FsPath_, data:Buffer, ?options:FsWriteFileOptions):Promise<Void> {})
-	@:overload(function(filename:FsPath_, data:Buffer, ?options:String):Promise<Void> {})
-	@:overload(function(filename:FsPath_, data:ArrayBufferView, ?options:FsWriteFileOptions):Promise<Void> {})
-	static function writeFile(filename:FsPath_, data:ArrayBufferView, ?options:String):Promise<Void>;
+	@:overload(function(filename:FsPathOrHandle, data:EitherType<String, EitherType<Buffer, ArrayBufferView>>):Promise<Void> {})
+	static function writeFile(filename:FsPathOrHandle, data:EitherType<String, EitherType<Buffer, ArrayBufferView>>,
+		options:EitherType<String, FsWriteFileOptions>):Promise<Void>;
 }
 
-typedef FsPath_ = EitherType<FsPath, FileHandle>
+typedef FsPathOrHandle = EitherType<FsPath, FileHandle>;

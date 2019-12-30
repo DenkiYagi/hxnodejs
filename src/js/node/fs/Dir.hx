@@ -45,7 +45,7 @@ extern class Dir {
 		@see https://nodejs.org/api/fs.html#fs_dir_closesync
 	**/
 	@:overload(function():Promise<Void> {})
-	function close(callback:?Error->Void):Void;
+	function close(callback:Null<Error>->Void):Void;
 
 	/**
 		Synchronously close the directory's underlying resource handle. Subsequent reads will result in errors.
@@ -69,7 +69,7 @@ extern class Dir {
 		@see https://nodejs.org/api/fs.html#fs_dir_read_callback
 	**/
 	@:overload(function():Promise<Null<Dirent>> {})
-	function read(callback:?Error->?Null<Dirent>->Void):Void;
+	function read(callback:Null<Error>->Dirent->Void):Void;
 
 	/**
 		Synchronously read the next directory entry via `readdir(3)` as an `fs.Dirent`.

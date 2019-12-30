@@ -22,6 +22,7 @@
 
 package js.node.fs;
 
+import haxe.extern.EitherType;
 #if haxe4
 import js.lib.Promise;
 #else
@@ -46,10 +47,8 @@ extern class FileHandle {
 
 		@see https://nodejs.org/api/fs.html#fs_filehandle_appendfile_data_options
 	**/
-	@:overload(function(data:String, ?options:FsWriteFileOptions):Promise<Void> {})
-	@:overload(function(data:String, ?options:String):Promise<Void> {})
-	@:overload(function(data:Buffer, ?options:FsWriteFileOptions):Promise<Void> {})
-	function appendFile(data:Buffer, ?options:String):Promise<Void>;
+	@:overload(function(data:EitherType<String, Buffer>):Promise<Void> {})
+	function appendFile(data:EitherType<String, Buffer>, options:EitherType<String, FsWriteFileOptions>):Promise<Void>;
 
 	/**
 		Modifies the permissions on the file.
@@ -85,7 +84,7 @@ extern class FileHandle {
 
 		@see https://nodejs.org/api/fs.html#fs_filehandle_fd
 	**/
-	var fd:Int;
+	var fd(default, null):Int;
 
 	/**
 		Read data from the file.
@@ -100,17 +99,16 @@ extern class FileHandle {
 
 		@see https://nodejs.org/api/fs.html#fs_fs_readfile_path_options_callback
 	**/
-	@:overload(function(options:FsReadFileOptions):Promise<String> {})
-	@:overload(function(options:FsReadFileOptions):Promise<Buffer> {})
-	@:overload(function(options:String):Promise<String> {})
-	function readFile(options:String):Promise<Buffer>;
+	@:overload(function():Promise<Buffer> {})
+	function readFile(options:EitherType<String, FsReadFileOptions>):Promise<EitherType<String, Buffer>>;
 
 	/**
 		Retrieves the `fs.Stats` for the file.
 
 		@see https://nodejs.org/api/fs.html#fs_filehandle_stat_options
 	**/
-	function stat(path:FsPath, ?options:FsFstatOptions):Promise<Stats>;
+	@:overload(function():Promise<Stats> {})
+	function stat(options:FsFstatOptions):Promise<Stats>;
 
 	/**
 		Asynchronous `fsync(2)`.
@@ -125,6 +123,7 @@ extern class FileHandle {
 
 		@see https://nodejs.org/api/fs.html#fs_filehandle_truncate_len
 	**/
+	@:overload(function():Promise<Void> {})
 	function truncate(len:Int):Promise<Void>;
 
 	/**
@@ -133,7 +132,7 @@ extern class FileHandle {
 
 		@see https://nodejs.org/api/fs.html#fs_filehandle_utimes_atime_mtime
 	**/
-	function utimes(atime:Time, mtime:Time):Promise<Void>;
+	function utimes(atime:FsTime, mtime:FsTime):Promise<Void>;
 
 	/**
 		Write `buffer` to the file.
@@ -152,17 +151,14 @@ extern class FileHandle {
 
 		@see https://nodejs.org/api/fs.html#fs_filehandle_writefile_data_options
 	**/
-	@:overload(function(data:String, options:FsWriteFileOptions):Promise<Void> {})
-	@:overload(function(data:String, options:String):Promise<Void> {})
-	@:overload(function(data:Buffer, options:FsWriteFileOptions):Promise<Void> {})
-	@:overload(function(data:Buffer, options:String):Promise<Void> {})
-	@:overload(function(data:ArrayBufferView, options:FsWriteFileOptions):Promise<Void> {})
-	function writeFile(data:ArrayBufferView, options:String):Promise<Void>;
+	@:overload(function(data:EitherType<String, EitherType<Buffer, ArrayBufferView>>):Promise<Void> {})
+	function writeFile(data:EitherType<String, EitherType<Buffer, ArrayBufferView>>, options:EitherType<String, FsWriteFileOptions>):Promise<Void>;
 
 	/**
 		Write an array of `ArrayBufferViews` to the file.
 
 		@see https://nodejs.org/api/fs.html#fs_filehandle_writev_buffers_position
 	**/
-	function writev(buffers:Array<ArrayBufferView>, ?position:Int):Promise<{bytesWritten:Int, buffer:Array<ArrayBufferView>}>;
+	@:overload(function(buffers:Array<ArrayBufferView>):Promise<{bytesWritten:Int, buffer:Array<ArrayBufferView>}> {})
+	function writev(buffers:Array<ArrayBufferView>, position:Int):Promise<{bytesWritten:Int, buffer:Array<ArrayBufferView>}>;
 }
