@@ -56,7 +56,7 @@ extern class Zlib {
 
 		@see https://nodejs.org/api/zlib.html#zlib_zlib_constants
 	**/
-	static var constants(default, null):js.node.zlib.Constants;
+	static var constants(default, null):ZlibConstants;
 
 	/**
 		Creates and returns a new `BrotliCompress` object.
@@ -292,10 +292,10 @@ typedef BrotliOptions = {
 	/**
 		Key-value object containing indexed Brotli parameters.
 	**/
-	@:optional var params:EitherType<BrotliCompressorOptions, BrotliDecompressorOptions>;
+	@:optional var params:EitherType<BrotliCompressorParams, BrotliDecompressorOptions>;
 }
 
-abstract BrotliCompressorOptions(Dynamic) {
+abstract BrotliCompressorParams(Dynamic) {
 	public function new() {
 		this = {};
 	}
@@ -307,106 +307,145 @@ abstract BrotliCompressorOptions(Dynamic) {
 	}
 
 	extern inline function set_BROTLI_PARAM_MODE(value) {
-		Reflect.setField(this, js.node.zlib.Constants.BROTLI_PARAM_MODE, value);
-		return value;
+		return js.Syntax.code("{0}[{1}] = {2}", this, Zlib.constants.BROTLI_PARAM_MODE, value);
 	}
 
-	// /**
-	// 	Ranges from `BROTLI_MIN_QUALITY` to `BROTLI_MAX_QUALITY`, with a default of `BROTLI_DEFAULT_QUALITY`
-	// **/
-	// public var BROTLI_PARAM_QUALITY(get, set):Int;
-	// /**
-	// 	Integer value representing the expected input size; defaults to 0 for an unknown input size.
-	// **/
-	// public var BROTLI_PARAM_SIZE_HINT(get, set):Int;
-	// /**
-	// 	Ranges from `BROTLI_MIN_WINDOW_BITS` to `BROTLI_MAX_WINDOW_BITS`, with a default of `BROTLI_DEFAULT_WINDOW`,
-	// 	or up to `BROTLI_LARGE_MAX_WINDOW_BITS` if the `BROTLI_PARAM_LARGE_WINDOW` flag is set.
-	// **/
-	// public var BROTLI_PARAM_LGWIN(get, set):Int;
-	// /**
-	// 	Ranges from `BROTLI_MIN_INPUT_BLOCK_BITS` to `BROTLI_MAX_INPUT_BLOCK_BITS`.
-	// **/
-	// public var BROTLI_PARAM_LGBLOCK(get, set):Int;
-	// /**
-	// 	Boolean flag that decreases compression ratio in favour of decompression speed.
-	// **/
-	// public var BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING(get, set):Bool;
-	// /**
-	// 	Boolean flag enabling “Large Window Brotli” mode (not compatible with the Brotli format as standardized in RFC 7932).
-	// **/
-	// public var BROTLI_PARAM_LARGE_WINDOW(get, set):Bool;
-	// /**
-	// 	Ranges from 0 to `BROTLI_MAX_NPOSTFIX`.
-	// **/
-	// public var BROTLI_PARAM_NPOSTFIX(get, set):Int;
-	// /**
-	// 	Ranges from `0` to `15 << NPOSTFIX` in steps of `1 << NPOSTFIX`.
-	// **/
-	// public var BROTLI_PARAM_NDIRECT(get, set):Int;
-}
+	/**
+		Ranges from `BROTLI_MIN_QUALITY` to `BROTLI_MAX_QUALITY`, with a default of `BROTLI_DEFAULT_QUALITY`
+	**/
+	public var BROTLI_PARAM_QUALITY(get, set):Int;
 
-// /**
-// 	There are several options that can be set on Brotli encoders, affecting compression efficiency and speed.
-// 	@see https://nodejs.org/api/zlib.html#zlib_compressor_options
-// **/
-// typedef BrotliCompressorOptions = {
-// 	/**
-// 	**/
-// 	@:optional var BROTLI_PARAM_MODE:BrotliParamMode;
-// 	/**
-// 		Ranges from `BROTLI_MIN_QUALITY` to `BROTLI_MAX_QUALITY`, with a default of `BROTLI_DEFAULT_QUALITY`
-// 	**/
-// 	@:optional var BROTLI_PARAM_QUALITY:Int;
-// 	/**
-// 		Integer value representing the expected input size; defaults to 0 for an unknown input size.
-// 	**/
-// 	@:optional var BROTLI_PARAM_SIZE_HINT:Int;
-// 	/**
-// 		Ranges from `BROTLI_MIN_WINDOW_BITS` to `BROTLI_MAX_WINDOW_BITS`, with a default of `BROTLI_DEFAULT_WINDOW`,
-// 		or up to `BROTLI_LARGE_MAX_WINDOW_BITS` if the `BROTLI_PARAM_LARGE_WINDOW` flag is set.
-// 	**/
-// 	@:optional var BROTLI_PARAM_LGWIN:Int;
-// 	/**
-// 		Ranges from `BROTLI_MIN_INPUT_BLOCK_BITS` to `BROTLI_MAX_INPUT_BLOCK_BITS`.
-// 	**/
-// 	@:optional var BROTLI_PARAM_LGBLOCK:Int;
-// 	/**
-// 		Boolean flag that decreases compression ratio in favour of decompression speed.
-// 	**/
-// 	@:optional var BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING:Bool;
-// 	/**
-// 		Boolean flag enabling “Large Window Brotli” mode (not compatible with the Brotli format as standardized in RFC 7932).
-// 	**/
-// 	@:optional var BROTLI_PARAM_LARGE_WINDOW:Bool;
-// 	/**
-// 		Ranges from 0 to `BROTLI_MAX_NPOSTFIX`.
-// 	**/
-// 	@:optional var BROTLI_PARAM_NPOSTFIX:Int;
-// 	/**
-// 		Ranges from `0` to `15 << NPOSTFIX` in steps of `1 << NPOSTFIX`.
-// 	**/
-// 	@:optional var BROTLI_PARAM_NDIRECT:Int;
-// }
+	extern inline function get_BROTLI_PARAM_QUALITY() {
+		return js.Syntax.code("{0}[{1}]", this, Zlib.constants.BROTLI_PARAM_QUALITY);
+	}
+
+	extern inline function set_BROTLI_PARAM_QUALITY(value) {
+		return js.Syntax.code("{0}[{1}] = {2}", this, Zlib.constants.BROTLI_PARAM_QUALITY, value);
+	}
+
+	/**
+		Integer value representing the expected input size; defaults to 0 for an unknown input size.
+	**/
+	public var BROTLI_PARAM_SIZE_HINT(get, set):Int;
+
+	extern inline function get_BROTLI_PARAM_SIZE_HINT() {
+		return js.Syntax.code("{0}[{1}]", this, Zlib.constants.BROTLI_PARAM_SIZE_HINT);
+	}
+
+	extern inline function set_BROTLI_PARAM_SIZE_HINT(value) {
+		return js.Syntax.code("{0}[{1}] = {2}", this, Zlib.constants.BROTLI_PARAM_SIZE_HINT, value);
+	}
+
+	/**
+		Ranges from `BROTLI_MIN_WINDOW_BITS` to `BROTLI_MAX_WINDOW_BITS`, with a default of `BROTLI_DEFAULT_WINDOW`,
+		or up to `BROTLI_LARGE_MAX_WINDOW_BITS` if the `BROTLI_PARAM_LARGE_WINDOW` flag is set.
+	**/
+	public var BROTLI_PARAM_LGWIN(get, set):Int;
+
+	extern inline function get_BROTLI_PARAM_LGWIN() {
+		return js.Syntax.code("{0}[{1}]", this, Zlib.constants.BROTLI_PARAM_LGWIN);
+	}
+
+	extern inline function set_BROTLI_PARAM_LGWIN(value) {
+		return js.Syntax.code("{0}[{1}] = {2}", this, Zlib.constants.BROTLI_PARAM_LGWIN, value);
+	}
+
+	/**
+		Ranges from `BROTLI_MIN_INPUT_BLOCK_BITS` to `BROTLI_MAX_INPUT_BLOCK_BITS`.
+	**/
+	public var BROTLI_PARAM_LGBLOCK(get, set):Int;
+
+	extern inline function get_BROTLI_PARAM_LGBLOCK() {
+		return js.Syntax.code("{0}[{1}]", this, Zlib.constants.BROTLI_PARAM_LGBLOCK);
+	}
+
+	extern inline function set_BROTLI_PARAM_LGBLOCK(value) {
+		return js.Syntax.code("{0}[{1}] = {2}", this, Zlib.constants.BROTLI_PARAM_LGBLOCK, value);
+	}
+
+	/**
+		Boolean flag that decreases compression ratio in favour of decompression speed.
+	**/
+	public var BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING(get, set):Bool;
+
+	extern inline function get_BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING() {
+		return js.Syntax.code("{0}[{1}]", this, Zlib.constants.BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING);
+	}
+
+	extern inline function set_BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING(value) {
+		return js.Syntax.code("{0}[{1}] = {2}", this, Zlib.constants.BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING, value);
+	}
+
+	/**
+		Boolean flag enabling “Large Window Brotli” mode (not compatible with the Brotli format as standardized in RFC 7932).
+	**/
+	public var BROTLI_PARAM_LARGE_WINDOW(get, set):Bool;
+
+	extern inline function get_BROTLI_PARAM_LARGE_WINDOW() {
+		return js.Syntax.code("{0}[{1}]", this, Zlib.constants.BROTLI_PARAM_LARGE_WINDOW);
+	}
+
+	extern inline function set_BROTLI_PARAM_LARGE_WINDOW(value) {
+		return js.Syntax.code("{0}[{1}] = {2}", this, Zlib.constants.BROTLI_PARAM_LARGE_WINDOW, value);
+	}
+
+	/**
+		Ranges from 0 to `BROTLI_MAX_NPOSTFIX`.
+	**/
+	public var BROTLI_PARAM_NPOSTFIX(get, set):Int;
+
+	extern inline function get_BROTLI_PARAM_NPOSTFIX() {
+		return js.Syntax.code("{0}[{1}]", this, Zlib.constants.BROTLI_PARAM_NPOSTFIX);
+	}
+
+	extern inline function set_BROTLI_PARAM_NPOSTFIX(value) {
+		return js.Syntax.code("{0}[{1}] = {2}", this, Zlib.constants.BROTLI_PARAM_NPOSTFIX, value);
+	}
+
+	/**
+		Ranges from `0` to `15 << NPOSTFIX` in steps of `1 << NPOSTFIX`.
+	**/
+	public var BROTLI_PARAM_NDIRECT(get, set):Int;
+
+	extern inline function get_BROTLI_PARAM_NDIRECT() {
+		return js.Syntax.code("{0}[{1}]", this, Zlib.constants.BROTLI_PARAM_NDIRECT);
+	}
+
+	extern inline function set_BROTLI_PARAM_NDIRECT(value) {
+		return js.Syntax.code("{0}[{1}] = {2}", this, Zlib.constants.BROTLI_PARAM_NDIRECT, value);
+	}
+}
 
 /**
 	A value type for `BROTLI_PARAM_MODE` of `BrotliCompressorOptions`
 **/
-@:enum abstract BrotliParamMode(String) {
+abstract BrotliParamMode(Int) {
 	/**
 		(default)
 	**/
-	var BROTLI_MODE_GENERIC = "BROTLI_MODE_GENERIC";
+	public static var BROTLI_MODE_GENERIC(get, never):BrotliParamMode;
+
+	static extern inline function get_BROTLI_MODE_GENERIC() {
+		return cast Zlib.constants.BROTLI_MODE_GENERIC;
+	}
 
 	/**
 		adjusted for UTF-8 text
 	**/
-	var BROTLI_MODE_TEXT = "BROTLI_MODE_TEXT";
+	public static var BROTLI_MODE_TEXT(get, never):BrotliParamMode;
+
+	static extern inline function get_BROTLI_MODE_TEXT() {
+		return cast Zlib.constants.BROTLI_MODE_TEXT;
+	}
 
 	/**
 		adjusted for WOFF 2.0 fonts
 	**/
-	var BROTLI_MODE_FONT = "BROTLI_MODE_FONT";
+	public static var BROTLI_MODE_FONT(get, never):BrotliParamMode;
+
+	static extern inline function get_BROTLI_MODE_FONT() {
+		return cast Zlib.constants.BROTLI_MODE_FONT;
+	}
 }
 
 /**
@@ -475,4 +514,76 @@ typedef ZlibOptions = {
 		If `true`, returns an object with `buffer` and `engine`
 	**/
 	@:optional var info:Bool;
+}
+
+/**
+	@see https://nodejs.org/docs/latest-v12.x/api/zlib.html#zlib_brotli_constants
+**/
+typedef ZlibConstants = {
+	var Z_NO_FLUSH(default, never):Int;
+	var Z_PARTIAL_FLUSH(default, never):Int;
+	var Z_SYNC_FLUSH(default, never):Int;
+	var Z_FULL_FLUSH(default, never):Int;
+	var Z_FINISH(default, never):Int;
+	var Z_BLOCK(default, never):Int;
+	var Z_TREES(default, never):Int;
+	var Z_OK(default, never):Int;
+	var Z_STREAM_END(default, never):Int;
+	var Z_NEED_DICT(default, never):Int;
+	var Z_ERRNO(default, never):Int;
+	var Z_STREAM_ERROR(default, never):Int;
+	var Z_DATA_ERROR(default, never):Int;
+	var Z_MEM_ERROR(default, never):Int;
+	var Z_BUF_ERROR(default, never):Int;
+	var Z_VERSION_ERROR(default, never):Int;
+	var Z_NO_COMPRESSION(default, never):Int;
+	var Z_BEST_SPEED(default, never):Int;
+	var Z_BEST_COMPRESSION(default, never):Int;
+	var Z_DEFAULT_COMPRESSION(default, never):Int;
+	var Z_FILTERED(default, never):Int;
+	var Z_HUFFMAN_ONLY(default, never):Int;
+	var Z_RLE(default, never):Int;
+	var Z_FIXED(default, never):Int;
+	var Z_DEFAULT_STRATEGY(default, never):Int;
+	// Brotli Flush operations
+	var BROTLI_OPERATION_PROCESS(default, never):Int;
+	var BROTLI_OPERATION_FLUSH(default, never):Int;
+	var BROTLI_OPERATION_FINISH(default, never):Int;
+	var BROTLI_OPERATION_EMIT_METADATA(default, never):Int;
+	// BROTLI_PARAM_MODE
+	var BROTLI_PARAM_MODE(default, never):Int;
+	var BROTLI_MODE_GENERIC(default, never):Int;
+	var BROTLI_MODE_TEXT(default, never):Int;
+	var BROTLI_MODE_FONT(default, never):Int;
+	// BROTLI_PARAM_QUALITY
+	var BROTLI_PARAM_QUALITY(default, never):Int;
+	var BROTLI_MIN_QUALITY(default, never):Int;
+	var BROTLI_MAX_QUALITY(default, never):Int;
+	var BROTLI_DEFAULT_QUALITY(default, never):Int;
+	// BROTLI_PARAM_SIZE_HINT
+	var BROTLI_PARAM_SIZE_HINT(default, never):Int;
+	// BROTLI_PARAM_LGWIN
+	var BROTLI_PARAM_LGWIN(default, never):Int;
+	var BROTLI_MIN_WINDOW_BITS(default, never):Int;
+	var BROTLI_MAX_WINDOW_BITS(default, never):Int;
+	var BROTLI_DEFAULT_WINDOW(default, never):Int;
+	var BROTLI_LARGE_MAX_WINDOW_BITS(default, never):Int;
+	var BROTLI_PARAM_LARGE_WINDO(default, never):Int;
+	// BROTLI_PARAM_LGBLOCK
+	var BROTLI_PARAM_LGBLOCK(default, never):Int;
+	var BROTLI_MIN_INPUT_BLOCK_BITS(default, never):Int;
+	var BROTLI_MAX_INPUT_BLOCK_BITS(default, never):Int;
+	// BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING
+	var BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING(default, never):Int;
+	// BROTLI_PARAM_LARGE_WINDOW
+	var BROTLI_PARAM_LARGE_WINDOW(default, never):Int;
+	// BROTLI_PARAM_NPOSTFIX
+	var BROTLI_PARAM_NPOSTFIX(default, never):Int;
+	var BROTLI_MAX_NPOSTFIX(default, never):Int;
+	// BROTLI_PARAM_NDIRECT
+	var BROTLI_PARAM_NDIRECT(default, never):Int;
+	// BROTLI_DECODER_PARAM_DISABLE_RING_BUFFER_REALLOCATION
+	var BROTLI_DECODER_PARAM_DISABLE_RING_BUFFER_REALLOCATION(default, never):Int;
+	// BROTLI_DECODER_PARAM_LARGE_WINDOW
+	var BROTLI_DECODER_PARAM_LARGE_WINDOW(default, never):Int;
 }

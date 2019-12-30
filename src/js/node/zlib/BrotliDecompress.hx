@@ -29,4 +29,3 @@ package js.node.zlib;
 **/
 @:jsRequire("zlib", "Brotli")
 extern class BrotliDecompress {}
-
