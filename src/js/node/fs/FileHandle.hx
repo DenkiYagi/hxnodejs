@@ -97,7 +97,7 @@ extern class FileHandle {
 	/**
 		Asynchronously reads the entire contents of a file.
 
-		@see https://nodejs.org/api/fs.html#fs_fs_readfile_path_options_callback
+		@see https://nodejs.org/api/fs.html#fs_filehandle_readfile_options
 	**/
 	@:overload(function():Promise<Buffer> {})
 	function readFile(options:EitherType<String, FsReadFileOptions>):Promise<EitherType<String, Buffer>>;

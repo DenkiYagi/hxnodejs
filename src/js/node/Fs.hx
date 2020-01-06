@@ -79,7 +79,7 @@ extern class Fs {
 		@see https://nodejs.org/api/fs.html#fs_fs_appendfilesync_path_data_options
 	**/
 	@:overload(function(path:FsPathOrFD, data:EitherType<String, Buffer>):Void {})
-	static function appendFileSync(path:FsPathOrFD, data:EitherType<String, Buffer>, ?options:EitherType<String, FsWriteFileOptions>):Void;
+	static function appendFileSync(path:FsPathOrFD, data:EitherType<String, Buffer>, options:EitherType<String, FsWriteFileOptions>):Void;
 
 	/**
 		Asynchronously changes the permissions of a file.
@@ -133,7 +133,7 @@ extern class Fs {
 		The specific constants currently defined are described in [FS Constants](https://nodejs.org/api/fs.html#fs_fs_constants_1).
 
 		@see https://nodejs.org/api/fs.html#fs_fs_constants
-	 */
+	**/
 	static var constants(default, never):FsConstants;
 
 	/**
@@ -292,7 +292,7 @@ extern class Fs {
 		@see https://nodejs.org/api/fs.html#fs_fs_ftruncatesync_fd_len
 	**/
 	@:overload(function(fd:Int):Void {})
-	static function ftruncateSync(fd:Int, ?len:Int):Void;
+	static function ftruncateSync(fd:Int, len:Int):Void;
 
 	/**
 		Change the file system timestamps of the object referenced by the supplied file descriptor.
@@ -384,7 +384,7 @@ extern class Fs {
 		@see https://nodejs.org/api/fs.html#fs_fs_mkdir_path_options_callback
 	**/
 	@:overload(function(path:FsPath, callback:Null<Error>->Void):Void {})
-	static function mkdir(path:FsPath, options:FsMkdirOptions, callback:Null<Error>->Void):Void;
+	static function mkdir(path:FsPath, options:EitherType<Int, FsMkdirOptions>, callback:Null<Error>->Void):Void;
 
 	/**
 		Synchronously creates a directory.
@@ -394,7 +394,7 @@ extern class Fs {
 		@see https://nodejs.org/api/fs.html#fs_fs_mkdirsync_path_options
 	**/
 	@:overload(function(path:FsPath):Void {})
-	static function mkdirSync(path:FsPath, ?options:FsMkdirOptions):Void;
+	static function mkdirSync(path:FsPath, options:EitherType<Int, FsMkdirOptions>):Void;
 
 	/**
 		Creates a unique temporary directory.
