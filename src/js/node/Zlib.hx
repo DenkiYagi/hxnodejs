@@ -292,7 +292,7 @@ typedef BrotliOptions = {
 	/**
 		Key-value object containing indexed Brotli parameters.
 	**/
-	@:optional var params:EitherType<BrotliCompressorParams, BrotliDecompressorOptions>;
+	@:optional var params:EitherType<BrotliCompressorParams, BrotliDecompressorParams>;
 }
 
 abstract BrotliCompressorParams(Dynamic) {
@@ -453,7 +453,7 @@ abstract BrotliParamMode(Int) {
 
 	@see https://nodejs.org/api/zlib.html#zlib_decompressor_options
 **/
-abstract BrotliDecompressorOptions(Dynamic) {
+abstract BrotliDecompressorParams(Dynamic) {
 	public function new() {
 		this = {};
 	}
