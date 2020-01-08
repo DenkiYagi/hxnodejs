@@ -453,16 +453,33 @@ abstract BrotliParamMode(Int) {
 
 	@see https://nodejs.org/api/zlib.html#zlib_decompressor_options
 **/
-typedef BrotliDecompressorOptions = {
+abstract BrotliDecompressorOptions(Dynamic) {
+	public function new() {
+		this = {};
+	}
+
+	public var BROTLI_PARAM_MODE(get, set):BrotliParamMode;
+
+	extern inline function get_BROTLI_PARAM_MODE() {
+		return js.Syntax.code("{0}[{1}]", this, Zlib.constants.BROTLI_PARAM_MODE);
+	}
+
+	extern inline function set_BROTLI_PARAM_MODE(value) {
+		return js.Syntax.code("{0}[{1}] = {2}", this, Zlib.constants.BROTLI_PARAM_MODE, value);
+	}
+
 	/**
 		Boolean flag that affects internal memory allocation patterns.
 	**/
-	@:optional var BROTLI_DECODER_PARAM_DISABLE_RING_BUFFER_REALLOCATION:Bool;
+	public var BROTLI_DECODER_PARAM_DISABLE_RING_BUFFER_REALLOCATION(get, set):Bool;
 
-	/**
-		Boolean flag enabling “Large Window Brotli” mode (not compatible with the Brotli format as standardized in RFC 7932).
-	**/
-	@:optional var BROTLI_DECODER_PARAM_LARGE_WINDOW:Bool;
+	extern inline function get_BROTLI_DECODER_PARAM_DISABLE_RING_BUFFER_REALLOCATION() {
+		return js.Syntax.code("{0}[{1}]", this, Zlib.constants.BROTLI_DECODER_PARAM_DISABLE_RING_BUFFER_REALLOCATION);
+	}
+
+	extern inline function set_BROTLI_DECODER_PARAM_DISABLE_RING_BUFFER_REALLOCATION(value) {
+		return js.Syntax.code("{0}[{1}] = {2}", this, Zlib.constants.BROTLI_DECODER_PARAM_DISABLE_RING_BUFFER_REALLOCATION, value);
+	}
 }
 
 /**
@@ -470,6 +487,7 @@ typedef BrotliDecompressorOptions = {
 
 	@see https://nodejs.org/api/zlib.html#zlib_class_options
 **/
+@:native("Options")
 typedef ZlibOptions = {
 	/**
 		default: `Zlib.Z_NO_FLUSH`
@@ -517,7 +535,7 @@ typedef ZlibOptions = {
 }
 
 /**
-	@see https://nodejs.org/docs/latest-v12.x/api/zlib.html#zlib_brotli_constants
+	@see https://nodejs.org/api/zlib.html#zlib_constants
 **/
 typedef ZlibConstants = {
 	var Z_NO_FLUSH(default, never):Int;
@@ -527,6 +545,7 @@ typedef ZlibConstants = {
 	var Z_FINISH(default, never):Int;
 	var Z_BLOCK(default, never):Int;
 	var Z_TREES(default, never):Int;
+
 	var Z_OK(default, never):Int;
 	var Z_STREAM_END(default, never):Int;
 	var Z_NEED_DICT(default, never):Int;
