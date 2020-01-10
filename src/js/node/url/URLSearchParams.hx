@@ -29,8 +29,11 @@ import js.node.Iterator;
 	The `URLSearchParams` class can also be used standalone with one of the four following constructors.
 	The `URLSearchParams` class is also available on the global object.
 
-	The WHATWG `URLSearchParams` interface and the `querystring` module have similar purpose,
-	but the purpose of the querystring module is more general, as it allows the customization of delimiter characters (`&` and` `=`). On the other hand, this API is designed purely for URL query strings.
+	The WHATWG `URLSearchParams` interface and the `querystring` module have similar purpose, but the purpose of the
+	querystring module is more general, as it allows the customization of delimiter characters (`&` and` `=`).
+	On the other hand, this API is designed purely for URL query strings.
+
+	@see https://nodejs.org/api/url.html#url_class_urlsearchparams
 **/
 @:jsRequire("url", "URLSearchParams")
 extern class URLSearchParams {
@@ -42,11 +45,15 @@ extern class URLSearchParams {
 
 	/**
 		Append a new name-value pair to the query string.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_append_name_value
 	**/
 	function append(name:String, value:String):Void;
 
 	/**
 		Remove all name-value pairs whose name is `name`.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_delete_name
 	**/
 	function delete(name:String):Void;
 
@@ -54,11 +61,15 @@ extern class URLSearchParams {
 		Returns an ES6 `Iterator` over each of the name-value pairs in the query.
 		Each item of the iterator is a JavaScript `Array`.
 		The first item of the `Array` is the `name`, the second item of the `Array` is the `value`.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_entries
 	**/
 	function entries():Iterator<URLSearchParamsEntry>;
 
 	/**
 		Iterates over each name-value pair in the query and invokes the given function.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_foreach_fn_thisarg
 	**/
 	#if haxe4
 	@:overload(function(fn:(value:String) -> Void, ?thisArg:Dynamic):Void {})
@@ -73,47 +84,65 @@ extern class URLSearchParams {
 	/**
 		Returns the value of the first name-value pair whose name is `name`.
 		If there are no such pairs, `null` is returned.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_get_name
 	**/
 	function get(name:String):String;
 
 	/**
 		Returns the values of all name-value pairs whose name is `name`.
 		If there are no such pairs, an empty array is returned.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_getall_name
 	**/
 	function getAll(name:String):Array<String>;
 
 	/**
 		Returns `true` if there is at least one name-value pair whose name is `name`.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_has_name
 	**/
 	function has(name:String):Bool;
 
 	/**
 		Returns an ES6 `Iterator` over the names of each name-value pair.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_keys
 	**/
 	function keys():Iterator<String>;
 
 	/**
 		Sets the value in the `URLSearchParams` object associated with `name` to `value`.
-		If there are any pre-existing name-value pairs whose names are `name`, set the first such pair's value to `value` and remove all others.
+		If there are any pre-existing name-value pairs whose names are `name`, set the first such pair's value to
+		`value` and remove all others.
 		If not, append the name-value pair to the query string.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_set_name_value
 	**/
 	function set(name:String, value:String):Void;
 
 	/**
-		Sort all existing name-value pairs in-place by their names. Sorting is done with a [stable sorting algorithm](https://en.wikipedia.org/wiki/Sorting_algorithm#Stability),
+		Sort all existing name-value pairs in-place by their names.
+		Sorting is done with a [stable sorting algorithm](https://en.wikipedia.org/wiki/Sorting_algorithm#Stability),
 		so relative order between name-value pairs with the same name is preserved.
 
 		This method can be used, in particular, to increase cache hits.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_sort
 	**/
 	function sort():Void;
 
 	/**
 		Returns the search parameters serialized as a string, with characters percent-encoded where necessary.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_tostring
 	**/
 	function toString():String;
 
 	/**
 		Returns an ES6 `Iterator` over the values of each name-value pair.
+
+		@see https://nodejs.org/api/url.html#url_urlsearchparams_values
 	**/
 	function values():Iterator<String>;
 }

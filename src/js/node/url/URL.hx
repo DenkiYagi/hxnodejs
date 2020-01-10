@@ -25,49 +25,67 @@ package js.node.url;
 /**
 	Browser-compatible URL class, implemented by following the WHATWG URL Standard.
 	[Examples of parsed URLs](https://url.spec.whatwg.org/#example-url-parsing) may be found in the Standard itself.
+
+	@see https://nodejs.org/api/url.html#url_class_url
 **/
 @:jsRequire("url", "URL")
 extern class URL {
 	/**
 		Creates a new `URL` object by parsing the `input` relative to the `base`.
 		If `base` is passed as a string, it will be parsed equivalent to `new URL(base)`.
+
+		@see https://nodejs.org/api/url.html#url_constructor_new_url_input_base
 	**/
 	@:overload(function(input:String, ?base:URL):Void {})
 	function new(input:String, ?base:String):Void;
 
 	/**
 		Gets and sets the fragment portion of the URL.
+
+		@see https://nodejs.org/api/url.html#url_url_hash
 	**/
 	var hash:String;
 
 	/**
 		Gets and sets the host portion of the URL.
+
+		@see https://nodejs.org/api/url.html#url_url_host
 	**/
 	var host:String;
 
 	/**
 		Gets and sets the hostname portion of the URL
 		The key difference between `url.host` and `url.hostname` is that `url.hostname` does not include the port.
+
+		@see https://nodejs.org/api/url.html#url_url_hostname
 	**/
 	var hostname:String;
 
 	/**
 		Gets and sets the serialized URL.
+
+		@see https://nodejs.org/api/url.html#url_url_href
 	**/
 	var href:String;
 
 	/**
 		Gets the read-only serialization of the URL's origin.
+
+		@see https://nodejs.org/api/url.html#url_url_origin
 	**/
 	var origin(default, null):String;
 
 	/**
 		Gets and sets the password portion of the URL.
+
+		@see https://nodejs.org/api/url.html#url_url_password
 	**/
 	var password:String;
 
 	/**
 		Gets and sets the path portion of the URL.
+
+		@see https://nodejs.org/api/url.html#url_url_pathname
 	**/
 	var pathname:String;
 
@@ -75,17 +93,24 @@ extern class URL {
 		Gets and sets the port portion of the URL.
 
 		The port value may be a number or a string containing a number in the range `0` to `65535` (inclusive).
-		Setting the value to the default port of the `URL` objects given `protocol` will result in the port value becoming the empty string (`''`).
+		Setting the value to the default port of the `URL` objects given `protocol` will result in the port value
+		becoming the empty string (`''`).
+
+		@see https://nodejs.org/api/url.html#url_url_port
 	**/
 	var port:String;
 
 	/**
 		Gets and sets the protocol portion of the URL.
+
+		@see https://nodejs.org/api/url.html#url_url_protocol
 	**/
 	var protocol:String;
 
 	/**
 		Gets and sets the serialized query portion of the URL.
+
+		@see https://nodejs.org/api/url.html#url_url_search
 	**/
 	var search:String;
 
@@ -93,11 +118,15 @@ extern class URL {
 		Gets the `URLSearchParams` object representing the query parameters of the URL.
 		This property is read-only; to replace the entirety of query parameters of the URL, use the `url.search` setter.
 		See [URLSearchParams](https://nodejs.org/api/url.html#url_class_urlsearchparams) documentation for details.
+
+		@see https://nodejs.org/api/url.html#url_url_searchparams
 	**/
 	var searchParams(default, null):URLSearchParams;
 
 	/**
 		Gets and sets the username portion of the URL.
+
+		@see https://nodejs.org/api/url.html#url_url_username
 	**/
 	var username:String;
 
@@ -105,8 +134,11 @@ extern class URL {
 		The `toString()` method on the `URL` object returns the serialized URL.
 		The value returned is equivalent to that of `url.href` and `url.toJSON()`.
 
-		Because of the need for standard compliance, this method does not allow users to customize the serialization process of the URL.
+		Because of the need for standard compliance, this method does not allow users to customize the serialization
+		process of the URL.
 		For more flexibility, `require('url').format()` method might be of interest.
+
+		@see https://nodejs.org/api/url.html#url_url_tostring
 	**/
 	function toString():String;
 
@@ -115,6 +147,8 @@ extern class URL {
 		The value returned is equivalent to that of `url.href` and `url.toString()`.
 
 		This method is automatically called when an `URL` object is serialized with `JSON.stringify()`.
+
+		@see https://nodejs.org/api/url.html#url_url_tojson
 	**/
 	function toJSON():String;
 }

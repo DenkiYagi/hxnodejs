@@ -26,45 +26,61 @@ import js.node.url.URL;
 
 /**
 	The `url` module provides utilities for URL resolution and parsing.
+
+	@see https://nodejs.org/api/url.html#url_url
 **/
 @:jsRequire("url")
 extern class Url {
 	/**
-		Returns the Punycode ASCII serialization of the `domain`. If `domain` is an invalid domain, the empty string is returned.
+		Returns the Punycode ASCII serialization of the `domain`.
+		If `domain` is an invalid domain, the empty string is returned.
 
 		It performs the inverse operation to `url.domainToUnicode()`.
+
+		@see https://nodejs.org/api/url.html#url_url_domaintoascii_domain
 	**/
 	static function domainToASCII(domain:String):String;
 
 	/**
-		Returns the Unicode serialization of the `domain`. If `domain` is an invalid domain, the empty string is returned.
+		Returns the Unicode serialization of the `domain`.
+		If `domain` is an invalid domain, the empty string is returned.
 
 		It performs the inverse operation to `url.dmainToASCII()`.
+
+		@see https://nodejs.org/api/url.html#url_url_domaintounicode_domain
 	**/
 	static function domainToUnicode(domain:String):String;
 
 	/**
-		This function ensures the correct decodings of percent-encoded characters as well as ensuring a cross-platform valid absolute path string.
+		This function ensures the correct decodings of percent-encoded characters as well as ensuring a cross-platform
+		valid absolute path string.
+
+		@see https://nodejs.org/api/url.html#url_url_fileurltopath_url
 	**/
 	@:overload(function(url:String):String {})
 	static function fileURLToPath(url:URL):String;
 
 	/**
-		Returns a customizable serialization of a URL `String` representation of a [WHATWG URL](https://nodejs.org/api/url.html#url_the_whatwg_url_api) object.
+		Returns a customizable serialization of a URL `String` representation of a
+		[WHATWG URL](https://nodejs.org/api/url.html#url_the_whatwg_url_api) object.
 
 		The URL object has both a `toString()` method and href property that return string serializations of the URL.
 		These are not, however, customizable in any way.
 		The `url.format(URL[, options])` method allows for basic customization of the output.
 
 		`format(urlObject:UrlObject)` and `format(urlObject:String)` are deprecated.
+
+		@see https://nodejs.org/api/url.html#url_url_format_url_options
 	**/
 	@:overload(function(urlObject:UrlObject):String {})
 	@:overload(function(urlObject:String):String {})
 	static function format(url:URL, ?options:UrlFormatOptions):String;
 
 	/**
-		This function ensures that `path` is resolved absolutely,
-		and that the URL control characters are correctly encoded when converting into a File URL.
+		This function ensures that `path` is resolved absolutely, and that the URL control characters are correctly
+		encoded when converting into a File URL.
+
+		@see https://nodejs.org/api/url.html#url_url_pathtofileurl_path
 	**/
 	static function pathToFileURL(path:String):URL;
 
@@ -78,6 +94,8 @@ extern class Url {
 		If `slashesDenoteHost` is true, the first token after the literal string `//` and preceding the next `/` will be interpreted as the host.
 		For instance, given `//foo/bar`, the result would be `{host: 'foo', pathname: '/bar'}` rather than `{pathname: '//foo/bar'}`.
 		Defaults to false.
+
+		@see https://nodejs.org/api/url.html#url_url_parse_urlstring_parsequerystring_slashesdenotehost
 	**/
 	@:deprecated
 	static function parse(urlString:String, ?parseQueryString:Bool, ?slashesDenoteHost:Bool):UrlObject;
@@ -92,6 +110,8 @@ extern class Url {
 		resolve('http://example.com/', '/one')    // 'http://example.com/one'
 		resolve('http://example.com/one', '/two') // 'http://example.com/two'
 		```
+
+		@see https://nodejs.org/api/url.html#url_url_resolve_from_to
 	**/
 	@:deprecated
 	static function resolve(from:String, to:String):String;
@@ -120,7 +140,8 @@ typedef UrlFormatOptions = {
 	@:optional var search:Bool;
 
 	/**
-		`true` if Unicode characters appearing in the host component of the URL string should be encoded directly as opposed to being Punycode encoded.
+		`true` if Unicode characters appearing in the host component of the URL string should be encoded directly as
+		opposed to being Punycode encoded.
 
 		Default: `false`.
 	**/
@@ -130,6 +151,8 @@ typedef UrlFormatOptions = {
 /**
 	Parsed URL objects have some or all of the following fields, depending on whether or not they exist in the URL string.
 	Any parts that are not in the URL string will not be in the parsed object.
+
+	@see https://nodejs.org/api/url.html#url_legacy_urlobject
 **/
 @:deprecated
 typedef UrlObject = {
