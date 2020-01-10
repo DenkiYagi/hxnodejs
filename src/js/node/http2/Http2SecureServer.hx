@@ -104,7 +104,6 @@ import js.Error;
 
 	@see https://nodejs.org/api/http2.html#http2_class_http2secureserver
 **/
-@:jsRequire("http2", "Http2SecureServer")
 extern class Http2SecureServer extends js.node.tls.Server {
 	/**
 		Stops the server from establishing new sessions.
