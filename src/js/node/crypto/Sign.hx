@@ -39,7 +39,6 @@ import js.node.stream.Writable;
 	@see https://nodejs.org/api/crypto.html#crypto_class_sign
 **/
 extern class Sign extends Writable<Sign> {
-
 	/**
 		Calculates the signature on all the data passed through using either `Sign.update()` or `Sign.write()`.
 

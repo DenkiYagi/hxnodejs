@@ -67,7 +67,6 @@ extern class DiffieHellman implements IDiffieHellman {
 
 		@see https://nodejs.org/api/crypto.html#crypto_diffiehellman_computesecret_otherpublickey_inputencoding_outputencoding
 	**/
-
 	@:overload(function(other_public_key:String, input_encoding:String, ?output_encoding:String):Buffer {})
 	@:overload(function(other_public_key:String, input_encoding:String, ?output_encoding:String):String {})
 	@:overload(function(other_public_key:Buffer, ?output_encoding:String):Buffer {})
@@ -153,5 +152,5 @@ extern class DiffieHellman implements IDiffieHellman {
 
 		@see https://nodejs.org/api/crypto.html#crypto_diffiehellman_verifyerror
 	**/
-	var verifyError(default, null): Int;
+	var verifyError(default, null):Int;
 }

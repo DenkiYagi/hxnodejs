@@ -91,12 +91,12 @@ extern class Crypto {
 	/**
 		Creates and returns a cipher object, with the given `algorithm` and `password`.
 
-        @see https://nodejs.org/api/crypto.html#crypto_crypto_createcipher_algorithm_password_options
+		@see https://nodejs.org/api/crypto.html#crypto_crypto_createcipher_algorithm_password_options
 	**/
 	@:deprecated
 	@:overload(function(algorithm:CryptoAlgorithm, password:String, ?options:Transform<Cipher>):Cipher {})
 	@:overload(function(algorithm:CryptoAlgorithm, password:ArrayBufferView, ?options:Transform<Cipher>):Cipher {})
-	static function createCipher(algorithm:CryptoAlgorithm, password:Buffer, ?options: Transform<Cipher>):Cipher;
+	static function createCipher(algorithm:CryptoAlgorithm, password:Buffer, ?options:Transform<Cipher>):Cipher;
 
 	/**
 		Creates and returns a `Cipher` object, with the given `algorithm`, `key` and initialization vector (`iv`).
@@ -190,7 +190,7 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options
 	**/
-	static function createHash(algorithm:CryptoAlgorithm, ?options: Transform<Hash>):Hash;
+	static function createHash(algorithm:CryptoAlgorithm, ?options:Transform<Hash>):Hash;
 
 	/**
 		Creates and returns an `Hmac` object that uses the given `algorithm` and `key`.
@@ -201,7 +201,7 @@ extern class Crypto {
 	@:overload(function(algorithm:CryptoAlgorithm, key:String, ?options:Transform<Hmac>):DiffieHellman {})
 	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, ?options:Transform<Hmac>):DiffieHellman {})
 	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, ?options:Transform<Hmac>):DiffieHellman {})
-	static function createHmac(algorithm:CryptoAlgorithm, key:KeyObject, ?options: Transform<Hmac>):Hmac;
+	static function createHmac(algorithm:CryptoAlgorithm, key:KeyObject, ?options:Transform<Hmac>):Hmac;
 
 	/**
 		Creates and returns a new key object containing a private key.
@@ -210,7 +210,7 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createprivatekey_key
 	**/
-	static function createPrivateKey(key: PrivateKeyOptions):KeyObject;
+	static function createPrivateKey(key:PrivateKeyOptions):KeyObject;
 
 	/**
 		Creates and returns a new key object containing a public key.
@@ -220,14 +220,14 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createpublickey_key
 	**/
-    static function createPublicKey(key: PublicKeyOptions):KeyObject;
+	static function createPublicKey(key:PublicKeyOptions):KeyObject;
 
 	/**
 		Creates and returns a new key object containing a secret key for symmetric encryption or `Hmac`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createprivatekey_key
 	**/
-	static function createSecretKey(key: Buffer):KeyObject;
+	static function createSecretKey(key:Buffer):KeyObject;
 
 	/**
 		Creates and returns a `Sign` object that uses the given `algorithm`.
@@ -236,7 +236,7 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createsign_algorithm_options
 	**/
-	static function createSign(algorithm:CryptoAlgorithm, ?options: Writable<Dynamic>):Sign;
+	static function createSign(algorithm:CryptoAlgorithm, ?options:Writable<Dynamic>):Sign;
 
 	/**
 		Creates and returns a `Verify` object that uses the given `algorithm`.
@@ -245,7 +245,7 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createverify_algorithm_options
 	**/
-	static function createVerify(algorithm:CryptoAlgorithm, ?options: Writable<Dynamic>):Verify;
+	static function createVerify(algorithm:CryptoAlgorithm, ?options:Writable<Dynamic>):Verify;
 
 	/**
 		Generates a new asymmetric key pair of the given `type`.
@@ -269,7 +269,7 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_generatekeypairsync_type_options
 	**/
-	static function generateKeyPairSync(type:String, options: GenerateKeyPairOptions):Void;
+	static function generateKeyPairSync(type:String, options:GenerateKeyPairOptions):Void;
 
 	/**
 		Returns an array with the names of the supported cipher algorithms.
@@ -311,15 +311,15 @@ extern class Crypto {
 		Provides an asynchronous Password-Based Key Derivation Function 2 (PBKDF2) implementation.
 		A selected HMAC digest algorithm specified by digest is applied to derive a key of the requested byte length (`keylen`) from the `password`, `salt` and `iterations`.
 	**/
-	@:overload(function(pasword: String, salt: String, iterations: Int, keylen: Int, digests: String, callback: Error->Buffer->Void): Buffer {})
-	@:overload(function(pasword: String, salt: Buffer, iterations: Int, keylen: Int, digests: String, callback: Error->Buffer->Void): Buffer {})
-	@:overload(function(pasword: String, salt: ArrayBufferView, iterations: Int, keylen: Int, digests: String, callback: Error->Buffer->Void): Buffer {})
-	@:overload(function(pasword: Buffer, salt: String, iterations: Int, keylen: Int, digests: String, callback: Error->Buffer->Void): Buffer {})
-	@:overload(function(pasword: Buffer, salt: Buffer, iterations: Int, keylen: Int, digests: String, callback: Error->Buffer->Void): Buffer {})
-	@:overload(function(pasword: Buffer, salt: ArrayBufferView, iterations: Int, keylen: Int, digests: String, callback: Error->Buffer->Void): Buffer {})
-	@:overload(function(pasword: ArrayBufferView, salt: String, iterations: Int, keylen: Int, digests: String, callback: Error->Buffer->Void): Buffer {})
-	@:overload(function(pasword: ArrayBufferView, salt: Buffer, iterations: Int, keylen: Int, digests: String, callback: Error->Buffer->Void): Buffer {})
-	static function pbkdf2(password: ArrayBufferView, salt: ArrayBufferView, iterations: Int, keylen: Int, digest: String, callback: Error->Buffer->Void):Buffer;
+	@:overload(function(pasword:String, salt:String, iterations:Int, keylen:Int, digests:String, callback:Error->Buffer->Void):Buffer {})
+	@:overload(function(pasword:String, salt:Buffer, iterations:Int, keylen:Int, digests:String, callback:Error->Buffer->Void):Buffer {})
+	@:overload(function(pasword:String, salt:ArrayBufferView, iterations:Int, keylen:Int, digests:String, callback:Error->Buffer->Void):Buffer {})
+	@:overload(function(pasword:Buffer, salt:String, iterations:Int, keylen:Int, digests:String, callback:Error->Buffer->Void):Buffer {})
+	@:overload(function(pasword:Buffer, salt:Buffer, iterations:Int, keylen:Int, digests:String, callback:Error->Buffer->Void):Buffer {})
+	@:overload(function(pasword:Buffer, salt:ArrayBufferView, iterations:Int, keylen:Int, digests:String, callback:Error->Buffer->Void):Buffer {})
+	@:overload(function(pasword:ArrayBufferView, salt:String, iterations:Int, keylen:Int, digests:String, callback:Error->Buffer->Void):Buffer {})
+	@:overload(function(pasword:ArrayBufferView, salt:Buffer, iterations:Int, keylen:Int, digests:String, callback:Error->Buffer->Void):Buffer {})
+	static function pbkdf2(password:ArrayBufferView, salt:ArrayBufferView, iterations:Int, keylen:Int, digest:String, callback:Error->Buffer->Void):Buffer;
 
 	/**
 		Provides an asynchronous Password-Based Key Derivation Function 2 (PBKDF2) implementation.
@@ -328,15 +328,15 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_pbkdf2_password_salt_iterations_keylen_digest_callback
 	**/
-	@:overload(function(pasword:String, salt: String, iterations: Int, keylen: Int, digests: String): Buffer {})
-	@:overload(function(pasword:String, salt: Buffer, iterations: Int, keylen: Int, digests: String): Buffer {})
-	@:overload(function(pasword:String, salt: ArrayBufferView, iterations: Int, keylen: Int, digests: String): Buffer {})
-	@:overload(function(pasword:Buffer, salt: String, iterations: Int, keylen: Int, digests: String): Buffer {})
-	@:overload(function(pasword:Buffer, salt: Buffer, iterations: Int, keylen: Int, digests: String): Buffer {})
-	@:overload(function(pasword:Buffer, salt: ArrayBufferView, iterations: Int, keylen: Int, digests: String): Buffer {})
-	@:overload(function(pasword:ArrayBufferView, salt: String, iterations: Int, keylen: Int, digests: String): Buffer {})
-	@:overload(function(pasword:ArrayBufferView, salt: Buffer, iterations: Int, keylen: Int, digests: String): Buffer {})
-	static function pbkdf2Sync(password: ArrayBufferView, salt: ArrayBufferView, iterations: Int, keylen: Int, digest: String):Buffer;
+	@:overload(function(pasword:String, salt:String, iterations:Int, keylen:Int, digests:String):Buffer {})
+	@:overload(function(pasword:String, salt:Buffer, iterations:Int, keylen:Int, digests:String):Buffer {})
+	@:overload(function(pasword:String, salt:ArrayBufferView, iterations:Int, keylen:Int, digests:String):Buffer {})
+	@:overload(function(pasword:Buffer, salt:String, iterations:Int, keylen:Int, digests:String):Buffer {})
+	@:overload(function(pasword:Buffer, salt:Buffer, iterations:Int, keylen:Int, digests:String):Buffer {})
+	@:overload(function(pasword:Buffer, salt:ArrayBufferView, iterations:Int, keylen:Int, digests:String):Buffer {})
+	@:overload(function(pasword:ArrayBufferView, salt:String, iterations:Int, keylen:Int, digests:String):Buffer {})
+	@:overload(function(pasword:ArrayBufferView, salt:Buffer, iterations:Int, keylen:Int, digests:String):Buffer {})
+	static function pbkdf2Sync(password:ArrayBufferView, salt:ArrayBufferView, iterations:Int, keylen:Int, digest:String):Buffer;
 
 	/**
 		Decrypts `buffer` with `private_key`.
@@ -344,13 +344,13 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_privatedecrypt_privatekey_buffer
 	**/
-	@:overload(function(private_key:PrivateDecryptPrivateKey, buffer:Buffer): Buffer {})
-	@:overload(function(private_key:String, buffer:Buffer): Buffer {})
-	@:overload(function(private_key:Buffer, buffer:Buffer): Buffer {})
-	@:overload(function(private_key:KeyObject, buffer:Buffer): Buffer {})
-	@:overload(function(private_key:PrivateDecryptPrivateKey, buffer:ArrayBufferView): Buffer {})
-	@:overload(function(private_key:String, buffer:ArrayBufferView): Buffer {})
-	@:overload(function(private_key:Buffer, buffer:ArrayBufferView): Buffer {})
+	@:overload(function(private_key:PrivateDecryptPrivateKey, buffer:Buffer):Buffer {})
+	@:overload(function(private_key:String, buffer:Buffer):Buffer {})
+	@:overload(function(private_key:Buffer, buffer:Buffer):Buffer {})
+	@:overload(function(private_key:KeyObject, buffer:Buffer):Buffer {})
+	@:overload(function(private_key:PrivateDecryptPrivateKey, buffer:ArrayBufferView):Buffer {})
+	@:overload(function(private_key:String, buffer:ArrayBufferView):Buffer {})
+	@:overload(function(private_key:Buffer, buffer:ArrayBufferView):Buffer {})
 	static function privateDecrypt(private_key:KeyObject, buffer:ArrayBufferView):Buffer;
 
 	/**
@@ -359,13 +359,13 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_privateencrypt_privatekey_buffer
 	**/
-	@:overload(function(private_key:PrivateEncryptPrivateKey, buffer:Buffer): Buffer {})
-	@:overload(function(private_key:String, buffer:Buffer): Buffer {})
-	@:overload(function(private_key:Buffer, buffer:Buffer): Buffer {})
-	@:overload(function(private_key:KeyObject, buffer:Buffer): Buffer {})
-	@:overload(function(private_key:PrivateEncryptPrivateKey, buffer:ArrayBufferView): Buffer {})
-	@:overload(function(private_key:String, buffer:ArrayBufferView): Buffer {})
-	@:overload(function(private_key:Buffer, buffer:ArrayBufferView): Buffer {})
+	@:overload(function(private_key:PrivateEncryptPrivateKey, buffer:Buffer):Buffer {})
+	@:overload(function(private_key:String, buffer:Buffer):Buffer {})
+	@:overload(function(private_key:Buffer, buffer:Buffer):Buffer {})
+	@:overload(function(private_key:KeyObject, buffer:Buffer):Buffer {})
+	@:overload(function(private_key:PrivateEncryptPrivateKey, buffer:ArrayBufferView):Buffer {})
+	@:overload(function(private_key:String, buffer:ArrayBufferView):Buffer {})
+	@:overload(function(private_key:Buffer, buffer:ArrayBufferView):Buffer {})
 	static function privateEncrypt(private_key:KeyObject, buffer:ArrayBufferView):Buffer;
 
 	/**
@@ -374,14 +374,14 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_publicdecrypt_key_buffer
 	**/
-	@:overload(function(key:PublicDecryptKey, buffer:Buffer): Buffer {})
-	@:overload(function(key:String, buffer:Buffer): Buffer {})
-	@:overload(function(key:Buffer, buffer:Buffer): Buffer {})
-	@:overload(function(key:KeyObject, buffer:Buffer): Buffer {})
-	@:overload(function(key:PublicDecryptKey, buffer:ArrayBufferView): Buffer {})
-	@:overload(function(key:String, buffer:ArrayBufferView): Buffer {})
-	@:overload(function(key:Buffer, buffer:ArrayBufferView): Buffer {})
-	static function publicDecrypt(key:KeyObject, buffer:ArrayBufferView): Buffer;
+	@:overload(function(key:PublicDecryptKey, buffer:Buffer):Buffer {})
+	@:overload(function(key:String, buffer:Buffer):Buffer {})
+	@:overload(function(key:Buffer, buffer:Buffer):Buffer {})
+	@:overload(function(key:KeyObject, buffer:Buffer):Buffer {})
+	@:overload(function(key:PublicDecryptKey, buffer:ArrayBufferView):Buffer {})
+	@:overload(function(key:String, buffer:ArrayBufferView):Buffer {})
+	@:overload(function(key:Buffer, buffer:ArrayBufferView):Buffer {})
+	static function publicDecrypt(key:KeyObject, buffer:ArrayBufferView):Buffer;
 
 	/**
 		Encrypts the content of `buffer` with `key` and returns a new `Buffer` with encrypted content.
@@ -389,15 +389,14 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_publicencrypt_key_buffer
 	**/
-
-	@:overload(function(key: PublicEncryptKey, buffer: Buffer): Buffer {})
-	@:overload(function(key: String, buffer: Buffer): Buffer {})
-	@:overload(function(key: Buffer, buffer: Buffer): Buffer {})
-	@:overload(function(key: KeyObject, buffer: Buffer): Buffer {})
-	@:overload(function(key: PublicEncryptKey, buffer: ArrayBufferView): Buffer {})
-	@:overload(function(key: String, buffer: ArrayBufferView): Buffer {})
-	@:overload(function(key: Buffer, buffer: ArrayBufferView): Buffer {})
-	static function publicEncrypt(key: KeyObject, buffer: ArrayBufferView):Buffer;
+	@:overload(function(key:PublicEncryptKey, buffer:Buffer):Buffer {})
+	@:overload(function(key:String, buffer:Buffer):Buffer {})
+	@:overload(function(key:Buffer, buffer:Buffer):Buffer {})
+	@:overload(function(key:KeyObject, buffer:Buffer):Buffer {})
+	@:overload(function(key:PublicEncryptKey, buffer:ArrayBufferView):Buffer {})
+	@:overload(function(key:String, buffer:ArrayBufferView):Buffer {})
+	@:overload(function(key:Buffer, buffer:ArrayBufferView):Buffer {})
+	static function publicEncrypt(key:KeyObject, buffer:ArrayBufferView):Buffer;
 
 	/**
 		Generates cryptographically strong pseudo-random data.
@@ -405,17 +404,17 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_randombytes_size_callback
 	**/
-	static function randomBytes(size: Int, callback:Error->Buffer->Void):Buffer;
+	static function randomBytes(size:Int, callback:Error->Buffer->Void):Buffer;
 
 	/**
 		Synchronous version of `Crypto.randomFill()`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_randomfillsync_buffer_offset_size
 	**/
-	@:overload(function(buffer: Buffer, ?offset:Int, ?size: Int): Buffer {})
-	@:overload(function(buffer: Buffer, ?offset:Int, ?size: Int): ArrayBufferView {})
-	@:overload(function(buffer: ArrayBufferView, ?offset:Int, ?size: Int): Buffer {})
-	static function randomFillSync(buffer: ArrayBufferView, ?offset: Int, ?size: Int):ArrayBufferView;
+	@:overload(function(buffer:Buffer, ?offset:Int, ?size:Int):Buffer {})
+	@:overload(function(buffer:Buffer, ?offset:Int, ?size:Int):ArrayBufferView {})
+	@:overload(function(buffer:ArrayBufferView, ?offset:Int, ?size:Int):Buffer {})
+	static function randomFillSync(buffer:ArrayBufferView, ?offset:Int, ?size:Int):ArrayBufferView;
 
 	/**
 		This function is similar to `Crypto.randomBytes()` but requires the first argument to be a `Buffer` that will be filled.
@@ -423,8 +422,8 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_randomfill_buffer_offset_size_callback
 	**/
-	@:overload(function(buffer: Buffer, ?offset:Int, ?size: Int, callback: Error->Buffer->Void): Buffer {})
-	static function randomFill(buffer: ArrayBufferView, ?offset: Int, ?size: Int, callback: Error->Buffer->Void):Buffer;
+	@:overload(function(buffer:Buffer, ?offset:Int, ?size:Int, callback:Error->Buffer->Void):Buffer {})
+	static function randomFill(buffer:ArrayBufferView, ?offset:Int, ?size:Int, callback:Error->Buffer->Void):Buffer;
 
 	/**
 		Provides an asynchronous `scrypt` implementation.
@@ -433,15 +432,15 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_scrypt_password_salt_keylen_options_callback
 	**/
-	@:overload(function(passwordr: String, salt: String, keylen: Int, ?options: ScryptOptions, callback: Error->Buffer->Void):Void {})
-	@:overload(function(passwordr: String, salt: Buffer, keylen: Int, ?options: ScryptOptions, callback: Error->Buffer->Void):Void {})
-	@:overload(function(passwordr: String, salt: ArrayBufferView, keylen: Int, ?options: ScryptOptions, callback: Error->Buffer->Void):Void {})
-	@:overload(function(passwordr: Buffer, salt: String, keylen: Int, ?options: ScryptOptions, callback: Error->Buffer->Void):Void {})
-	@:overload(function(passwordr: Buffer, salt: Buffer, keylen: Int, ?options: ScryptOptions, callback: Error->Buffer->Void):Void {})
-	@:overload(function(passwordr: Buffer, salt: ArrayBufferView, keylen: Int, ?options: ScryptOptions, callback: Error->Buffer->Void):Void {})
-	@:overload(function(passwordr: ArrayBufferView, salt: String, keylen: Int, ?options: ScryptOptions, callback: Error->Buffer->Void):Void {})
-	@:overload(function(passwordr: ArrayBufferView, salt: Buffer, keylen: Int, ?options: ScryptOptions, callback: Error->Buffer->Void):Void {})
-	static function scrypt(password: ArrayBufferView, salt: ArrayBufferView, keylen: Int, ?options: ScryptOptions, callback: Error->Buffer->Void):Void;
+	@:overload(function(passwordr:String, salt:String, keylen:Int, ?options:ScryptOptions, callback:Error->Buffer->Void):Void {})
+	@:overload(function(passwordr:String, salt:Buffer, keylen:Int, ?options:ScryptOptions, callback:Error->Buffer->Void):Void {})
+	@:overload(function(passwordr:String, salt:ArrayBufferView, keylen:Int, ?options:ScryptOptions, callback:Error->Buffer->Void):Void {})
+	@:overload(function(passwordr:Buffer, salt:String, keylen:Int, ?options:ScryptOptions, callback:Error->Buffer->Void):Void {})
+	@:overload(function(passwordr:Buffer, salt:Buffer, keylen:Int, ?options:ScryptOptions, callback:Error->Buffer->Void):Void {})
+	@:overload(function(passwordr:Buffer, salt:ArrayBufferView, keylen:Int, ?options:ScryptOptions, callback:Error->Buffer->Void):Void {})
+	@:overload(function(passwordr:ArrayBufferView, salt:String, keylen:Int, ?options:ScryptOptions, callback:Error->Buffer->Void):Void {})
+	@:overload(function(passwordr:ArrayBufferView, salt:Buffer, keylen:Int, ?options:ScryptOptions, callback:Error->Buffer->Void):Void {})
+	static function scrypt(password:ArrayBufferView, salt:ArrayBufferView, keylen:Int, ?options:ScryptOptions, callback:Error->Buffer->Void):Void;
 
 	/**
 		Provides a synchronous `scrypt` implementation.
@@ -450,15 +449,15 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_scryptsync_password_salt_keylen_options
 	**/
-	@:overload(function(passwordr: String, salt: String, keylen: Int, ?options: ScryptOptions):Void {})
-	@:overload(function(passwordr: String, salt: Buffer, keylen: Int, ?options: ScryptOptions):Void {})
-	@:overload(function(passwordr: String, salt: ArrayBufferView, keylen: Int, ?options: ScryptOptions):Void {})
-	@:overload(function(passwordr: Buffer, salt: String, keylen: Int, ?options: ScryptOptions):Void {})
-	@:overload(function(passwordr: Buffer, salt: Buffer, keylen: Int, ?options: ScryptOptions):Void {})
-	@:overload(function(passwordr: Buffer, salt: ArrayBufferView, keylen: Int, ?options: ScryptOptions):Void {})
-	@:overload(function(passwordr: ArrayBufferView, salt: String, keylen: Int, ?options: ScryptOptions):Void {})
-	@:overload(function(passwordr: ArrayBufferView, salt: Buffer, keylen: Int, ?options: ScryptOptions):Void {})
-	static function scryptSync(password: ArrayBufferView, salt: ArrayBufferView, keylen: Int, ?options: ScryptOptions):Void;
+	@:overload(function(passwordr:String, salt:String, keylen:Int, ?options:ScryptOptions):Void {})
+	@:overload(function(passwordr:String, salt:Buffer, keylen:Int, ?options:ScryptOptions):Void {})
+	@:overload(function(passwordr:String, salt:ArrayBufferView, keylen:Int, ?options:ScryptOptions):Void {})
+	@:overload(function(passwordr:Buffer, salt:String, keylen:Int, ?options:ScryptOptions):Void {})
+	@:overload(function(passwordr:Buffer, salt:Buffer, keylen:Int, ?options:ScryptOptions):Void {})
+	@:overload(function(passwordr:Buffer, salt:ArrayBufferView, keylen:Int, ?options:ScryptOptions):Void {})
+	@:overload(function(passwordr:ArrayBufferView, salt:String, keylen:Int, ?options:ScryptOptions):Void {})
+	@:overload(function(passwordr:ArrayBufferView, salt:Buffer, keylen:Int, ?options:ScryptOptions):Void {})
+	static function scryptSync(password:ArrayBufferView, salt:ArrayBufferView, keylen:Int, ?options:ScryptOptions):Void;
 
 	/**
 		Load and set the engine for some or all OpenSSL functions (selected by flags).
@@ -473,7 +472,7 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_setfips_bool
 	**/
-	static function setFips(v: Bool): Void;
+	static function setFips(v:Bool):Void;
 
 	/**
 		Calculates and returns the signature for `data` using the given private key and algorithm.
@@ -481,14 +480,14 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_sign_algorithm_data_key
 	**/
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: {padding:Int, saltLength:Int}): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: String): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: Buffer): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: KeyObject): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: {padding:Int, saltLength:Int}): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: String): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: Buffer): Buffer {})
-	static function sign(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: KeyObject): Buffer;
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:{padding:Int, saltLength:Int}):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:String):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:Buffer):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:KeyObject):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:{padding:Int, saltLength:Int}):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:String):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:Buffer):Buffer {})
+	static function sign(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:KeyObject):Buffer;
 
 	/**
 		This function is based on a constant-time algorithm.
@@ -497,10 +496,10 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_timingsafeequal_a_b
 	**/
-	@:overload(function(a: Buffer, b: Buffer): Bool {})
-	@:overload(function(a: Buffer, b: ArrayBufferView): Bool {})
-	@:overload(function(a: ArrayBufferView, b: Buffer): Bool {})
-	static function timingSafeEqual(a: ArrayBufferView, b: ArrayBufferView): Bool;
+	@:overload(function(a:Buffer, b:Buffer):Bool {})
+	@:overload(function(a:Buffer, b:ArrayBufferView):Bool {})
+	@:overload(function(a:ArrayBufferView, b:Buffer):Bool {})
+	static function timingSafeEqual(a:ArrayBufferView, b:ArrayBufferView):Bool;
 
 	/**
 		Verifies the given signature for data using the given key and algorithm.
@@ -508,23 +507,22 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_verify_algorithm_data_key_signature
 	**/
-
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: {padding:Int, saltLength:Int}, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: {padding:Int, saltLength:Int}, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: String, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: String, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: Buffer, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: Buffer, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: KeyObject, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: Buffer, key: KeyObject, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: {padding:Int, saltLength:Int}, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: {padding:Int, saltLength:Int}, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: String, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: String, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: Buffer, signature: Buffer): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: Buffer, signature: ArrayBufferView): Buffer {})
-	@:overload(function(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: KeyObject, signature: Buffer): Buffer {})
-	static function verify(algorithm: Null<CryptoAlgorithm>, data: ArrayBufferView, key: KeyObject, signature: ArrayBufferView): Bool;
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:{padding:Int, saltLength:Int}, signature:Buffer):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:{padding:Int, saltLength:Int}, signature:ArrayBufferView):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:String, signature:Buffer):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:String, signature:ArrayBufferView):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:Buffer, signature:Buffer):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:Buffer, signature:ArrayBufferView):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:KeyObject, signature:Buffer):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:KeyObject, signature:ArrayBufferView):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:{padding:Int, saltLength:Int}, signature:Buffer):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:{padding:Int, saltLength:Int}, signature:ArrayBufferView):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:String, signature:Buffer):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:String, signature:ArrayBufferView):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:Buffer, signature:Buffer):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:Buffer, signature:ArrayBufferView):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:KeyObject, signature:Buffer):Buffer {})
+	static function verify(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:KeyObject, signature:ArrayBufferView):Bool;
 }
 
 /**
@@ -637,13 +635,13 @@ typedef PrivateDecryptPrivateKey = {
 	/**
 		The hash function to use for OAEP padding. Default: 'sha1'
 	**/
-	var oaeHash: String;
+	var oaeHash:String;
 
 	/**
 		An optional padding value defined in `Crypto.Constants`,
 		which may be: `Crypto.Constants.RSA_NO_PADDING`, `Crypto.Constants.RSA_PKCS1_PADDING`, or `Crypto.Constants.RSA_PKCS1_OAEP_PADDING`.
 	**/
-	var padding: Int;
+	var padding:Int;
 }
 
 /**
@@ -658,13 +656,13 @@ typedef PrivateEncryptPrivateKey = {
 	/**
 		An optional passphrase for the private key
 	**/
-	var passphrase: EitherType<String, Buffer>;
+	var passphrase:EitherType<String, Buffer>;
 
 	/**
 		An optional padding value defined in `Crypto.Constants`,
 		which may be: `Crypto.Constants.RSA_NO_PADDING` or `Crypto.Constants.RSA_PKCS1_PADDING`.
 	**/
-	var padding: Int;
+	var padding:Int;
 }
 
 /**
@@ -674,14 +672,15 @@ typedef PublicDecryptKey = {
 	/**
 		An optional passphrase for the private key
 	**/
-	var passphrase: EitherType<String, Buffer>;
+	var passphrase:EitherType<String, Buffer>;
 
 	/**
 		An optional padding value defined in `Crypto.Constants`,
 		which may be: `Crypto.Constants.RSA_NO_PADDING` or `Crypto.Constants.RSA_PKCS1_PADDING`.
 	**/
-	var padding: Int;
+	var padding:Int;
 }
+
 /**
 	An key type for `publicEncrypt` methods of `Crypto`.
 **/
@@ -694,18 +693,18 @@ typedef PublicEncryptKey = {
 	/**
 		The hash function to use for OAEP padding. Default: 'sha1'
 	**/
-	var oaeHash: String;
+	var oaeHash:String;
 
 	/**
 		An optional passphrase for the private key
 	**/
-	var passphrase: EitherType<String, Buffer>;
+	var passphrase:EitherType<String, Buffer>;
 
 	/**
 		An optional padding value defined in `Crypto.Constants`,
 		which may be: `Crypto.Constants.RSA_NO_PADDING`, `Crypto.Constants.RSA_PKCS1_PADDING`, or `Crypto.Constants.RSA_PKCS1_OAEP_PADDING`.
 	**/
-	var padding: Int;
+	var padding:Int;
 }
 
 /**
@@ -720,31 +719,30 @@ typedef ScryptOptions = {
 	/**
 		Block size parameter. Default: `8`.
 	**/
-	@:optional var blockSize: Int;
+	@:optional var blockSize:Int;
 
 	/**
 		Parallelization parameter. Default: `1`.
 	**/
-	@:optional var parallelization: Int;
+	@:optional var parallelization:Int;
 
 	/**
 		Alias for `cost`. Only one of both may be specified.
 	**/
-	@:optional var N: Int;
+	@:optional var N:Int;
 
 	/**
 		Alias for `blockSize`. Only one of both may be specified.
 	**/
-	@:optional var r: Int;
+	@:optional var r:Int;
 
 	/**
 		Alias for `parallelization`. Only one of both may be specified.
 	**/
-	@:optional var p: Int;
+	@:optional var p:Int;
 
 	/**
 		Memory upper bound. It is an error when (approximately) `128 * N * r > maxmem`. Default: `32 * 1024 * 1024`.
 	**/
-	var maxmem: Int;
+	var maxmem:Int;
 }
-

@@ -27,10 +27,10 @@ import js.node.Buffer;
 
 /**
 	Node.js uses a `KeyObject` class to represent a symmetric or asymmetric key, and each kind of key exposes different functions.
- 	The `Crypto.createSecretKey()`, `Crypto.createPublicKey()` and `Crypto.createPrivateKey()` methods are used to create `KeyObject` instances.
- 	`KeyObject` objects are not to be created directly using the new keyword.
+	The `Crypto.createSecretKey()`, `Crypto.createPublicKey()` and `Crypto.createPrivateKey()` methods are used to create `KeyObject` instances.
+	`KeyObject` objects are not to be created directly using the new keyword.
 
- 	@see https://nodejs.org/api/crypto.html#crypto_class_keyobject
+	@see https://nodejs.org/api/crypto.html#crypto_class_keyobject
 **/
 extern class KeyObject {
 	/**
@@ -38,15 +38,15 @@ extern class KeyObject {
 
 		@see https://nodejs.org/api/crypto.html#crypto_keyobject_asymmetrickeytype
 	**/
-    var asymmetricKeyType: AsymmetricKeyTypes;
+	var asymmetricKeyType:AsymmetricKeyTypes;
 
 	/**
 		For symmetric keys, this function allocates a `Buffer` containing the key material and ignores any options.
 
 		@see https://nodejs.org/api/crypto.html#crypto_keyobject_export_options
 	**/
-	@:overload(function(?options: ExportPrivateKeyOptions):String {})
-	static function export(?options: ExportPublicKeyOptions): Buffer;
+	@:overload(function(?options:ExportPrivateKeyOptions):String {})
+	static function export(?options:ExportPublicKeyOptions):Buffer;
 
 	/**
 		For secret keys, this property represents the size of the key in bytes.
@@ -54,7 +54,7 @@ extern class KeyObject {
 
 		@see https://nodejs.org/api/crypto.html#crypto_keyobject_symmetrickeysize
 	**/
-    var symmetricKeySize: Int;
+	var symmetricKeySize:Int;
 
 	/**
 		Depending on the type of this `KeyObject`,
@@ -62,7 +62,7 @@ extern class KeyObject {
 
 		@see https://nodejs.org/api/crypto.html#crypto_keyobject_type
 	**/
-    var type: KeyType;
+	var type:KeyType;
 }
 
 /**
@@ -108,16 +108,15 @@ extern class KeyObject {
 	An options type for `export` of `KeyObject` for public key.
 **/
 typedef ExportPublicKeyOptions = {
-
 	/**
 		Must be one of `'pkcs1'` (RSA only) or `'spki'`.
 	**/
-	var type: PublicEncodingType;
+	var type:PublicEncodingType;
 
 	/**
 		Must be `'pem'` or `'der'`.
 	**/
-	var format: EncodingFormat;
+	var format:EncodingFormat;
 }
 
 /**
@@ -127,30 +126,29 @@ typedef ExportPrivateKeyOptions = {
 	/**
 		Must be one of `'pkcs1'` (RSA only), `'pkcs8'` or `'sec1'` (EC only).
 	**/
-	var type: PrivateEncodingType;
+	var type:PrivateEncodingType;
 
 	/**
 		Must be `'pem'` or `'der'`.
 	**/
-	var format: EncodingFormat;
+	var format:EncodingFormat;
 
 	/**
 		If specified, the private key will be encrypted with the given cipher and passphrase using PKCS#5 v2.0 password based encryption.
 	**/
-    var cipher: String;
+	var cipher:String;
 
 	/**
 		The passphrase to use for encryption, see `cipher`.
 	**/
-    var passphrase: EitherType<String, Buffer>;
+	var passphrase:EitherType<String, Buffer>;
 }
 
 /**
 	Enumerations of key type
 **/
 @:enum abstract KeyType(String) from String to String {
-    var Secret = "secret";
-    var Public = "public";
-    var Private = "private";
+	var Secret = "secret";
+	var Public = "public";
+	var Private = "private";
 }
-

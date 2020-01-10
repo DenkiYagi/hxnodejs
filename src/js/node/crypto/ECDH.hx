@@ -44,14 +44,13 @@ extern class ECDH {
 		and the returned key is encoded using the specified `output_encoding`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_class_method_ecdh_convertkey_key_curve_inputencoding_outputencoding_format
-     **/
-
-	@:overload(function(key:String, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat): String {})
-	@:overload(function(key:String, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat): Buffer {})
-	@:overload(function(key:Buffer, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat): String {})
-	@:overload(function(key:Buffer, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat): Buffer {})
-	@:overload(function(key:ArrayBufferView, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat): String {})
-	function convertKey(key:ArrayBufferView, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat): Buffer;
+	**/
+	@:overload(function(key:String, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):String {})
+	@:overload(function(key:String, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):Buffer {})
+	@:overload(function(key:Buffer, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):String {})
+	@:overload(function(key:Buffer, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):Buffer {})
+	@:overload(function(key:ArrayBufferView, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):String {})
+	function convertKey(key:ArrayBufferView, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):Buffer;
 
 	/**
 		Computes the shared secret using `other_public_key` as the other party's public key and returns the computed shared secret.

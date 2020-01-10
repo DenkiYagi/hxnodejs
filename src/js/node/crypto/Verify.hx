@@ -82,6 +82,5 @@ typedef VerifyOptions = {
 		The special value `Crypto.Constants.RSA_PSS_SALTLEN_DIGEST` sets the salt length to the digest size,
 		`Crypto.Constants.RSA_PSS_SALTLEN_AUTO` (default) causes it to be determined automatically.
 	**/
-	@:optional var saltLength: Int;
+	@:optional var saltLength:Int;
 }
-

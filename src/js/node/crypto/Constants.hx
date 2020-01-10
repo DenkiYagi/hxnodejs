@@ -27,13 +27,13 @@ package js.node.crypto;
 **/
 @:jsRequire("crypto", "Constants")
 extern class Constants {
-
 	/**
 		OpenSSL Options
 
 		@see https://nodejs.org/api/crypto.html#crypto_openssl_options
 	**/
 	static var SSL_OP_ALL(default, null):Int;
+
 	static var SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION(default, null):Int;
 	static var SSL_OP_CIPHER_SERVER_PREFERENCE(default, null):Int;
 	static var SSL_OP_CISCO_ANYCONNECT(default, null):Int;
@@ -74,6 +74,7 @@ extern class Constants {
 		@see https://nodejs.org/api/crypto.html#crypto_openssl_engine_constants
 	**/
 	static var ENGINE_METHOD_RSA(default, null):Int;
+
 	static var ENGINE_METHOD_DSA(default, null):Int;
 	static var ENGINE_METHOD_DH(default, null):Int;
 	static var ENGINE_METHOD_RAND(default, null):Int;
@@ -91,6 +92,7 @@ extern class Constants {
 		@see https://nodejs.org/api/crypto.html#crypto_other_openssl_constants
 	**/
 	static var DH_CHECK_P_NOT_SAFE_PRIME(default, null):Int;
+
 	static var DH_CHECK_P_NOT_PRIME(default, null):Int;
 	static var DH_UNABLE_TO_CHECK_GENERATOR(default, null):Int;
 	static var DH_NOT_SUITABLE_GENERATOR(default, null):Int;
@@ -108,5 +110,3 @@ extern class Constants {
 	static var POINT_CONVERSION_UNCOMPRESSED(default, null):Int;
 	static var POINT_CONVERSION_HYBRID(default, null):Int;
 }
-
-

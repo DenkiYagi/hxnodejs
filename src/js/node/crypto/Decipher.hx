@@ -48,8 +48,8 @@ extern class Decipher extends js.node.stream.Transform<Decipher> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_decipher_setaad_buffer_options
 	**/
-	@:overload(function(buffer:Buffer, ?options: Transform<Decipher>):Decipher {})
-	function setAAD(buffer:ArrayBufferView, ?options: Transform<Decipher>):Decipher;
+	@:overload(function(buffer:Buffer, ?options:Transform<Decipher>):Decipher {})
+	function setAAD(buffer:ArrayBufferView, ?options:Transform<Decipher>):Decipher;
 
 	/**
 		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported),
@@ -87,4 +87,3 @@ extern class Decipher extends js.node.stream.Transform<Decipher> {
 	@:overload(function(data:ArrayBufferView, ?output_encoding:String):Buffer {})
 	function update(data:ArrayBufferView, ?output_encoding:String):String;
 }
-

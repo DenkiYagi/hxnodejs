@@ -29,7 +29,5 @@ package js.node.crypto;
 **/
 @:jsRequire("crypto", "DiffieHellmanGroup")
 extern class DiffieHellmanGroup {
-    function new(name:String);
+	function new(name:String);
 }
-
-
