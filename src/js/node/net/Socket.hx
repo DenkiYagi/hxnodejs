@@ -300,7 +300,7 @@ extern class Socket extends js.node.stream.Duplex<Socket> {
 	**/
 	@:overload(function(path:String, ?connectListener:Void->Void):Socket {})
 	@:overload(function(port:Int, ?host:String, ?connectListener:Void->Void):Socket {})
-	@:overload(function(options:SocketConnectOptionsTcp, connectListener:Void->Void):Socket {})
+	@:overload(function(options:SocketConnectOptionsTcp, ?connectListener:Void->Void):Socket {})
 	function connect(options:SocketConnectOptionsUnix, ?connectListener:Void->Void):Socket;
 
 	/**
