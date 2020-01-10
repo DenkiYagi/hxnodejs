@@ -54,16 +54,16 @@ extern class Verify extends Writable<Sign> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_verify_verify_object_signature_signatureencoding
 	**/
-	@:overload(function(object:VerifyOptions, signature:String, signature_format:String):Bool {})
+	@:overload(function(object:VerifyOptions, signature:String, signature_encoding:String):Bool {})
 	@:overload(function(object:VerifyOptions, signature:Buffer):Bool {})
 	@:overload(function(object:VerifyOptions, signature:ArrayBufferView):Bool {})
-	@:overload(function(object:String, signature:String, signature_format:String):Bool {})
+	@:overload(function(object:String, signature:String, signature_encoding:String):Bool {})
 	@:overload(function(object:String, signature:Buffer):Bool {})
 	@:overload(function(object:String, signature:ArrayBufferView):Bool {})
-	@:overload(function(object:Buffer, signature:String, signature_format:String):Bool {})
+	@:overload(function(object:Buffer, signature:String, signature_encoding:String):Bool {})
 	@:overload(function(object:Buffer, signature:Buffer):Bool {})
 	@:overload(function(object:Buffer, signature:ArrayBufferView):Bool {})
-	@:overload(function(object:KeyObject, signature:String, signature_format:String):Bool {})
+	@:overload(function(object:KeyObject, signature:String, signature_encoding:String):Bool {})
 	@:overload(function(object:KeyObject, signature:Buffer):Bool {})
 	function verify(object:KeyObject, signature:ArrayBufferView):Bool;
 }

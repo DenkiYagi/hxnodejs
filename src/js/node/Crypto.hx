@@ -480,11 +480,11 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_sign_algorithm_data_key
 	**/
-	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:{padding:Int, saltLength:Int}):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:KeyOptions):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:String):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:Buffer):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:KeyObject):Buffer {})
-	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:{padding:Int, saltLength:Int}):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:KeyOptions):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:String):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:Buffer):Buffer {})
 	static function sign(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:KeyObject):Buffer;
@@ -507,16 +507,16 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_verify_algorithm_data_key_signature
 	**/
-	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:{padding:Int, saltLength:Int}, signature:Buffer):Buffer {})
-	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:{padding:Int, saltLength:Int}, signature:ArrayBufferView):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:KeyOptions, signature:Buffer):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:KeyOptions, signature:ArrayBufferView):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:String, signature:Buffer):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:String, signature:ArrayBufferView):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:Buffer, signature:Buffer):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:Buffer, signature:ArrayBufferView):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:KeyObject, signature:Buffer):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:Buffer, key:KeyObject, signature:ArrayBufferView):Buffer {})
-	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:{padding:Int, saltLength:Int}, signature:Buffer):Buffer {})
-	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:{padding:Int, saltLength:Int}, signature:ArrayBufferView):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:KeyOptions, signature:Buffer):Buffer {})
+	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:KeyOptions, signature:ArrayBufferView):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:String, signature:Buffer):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:String, signature:ArrayBufferView):Buffer {})
 	@:overload(function(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:Buffer, signature:Buffer):Buffer {})
@@ -745,4 +745,12 @@ typedef ScryptOptions = {
 		Memory upper bound. It is an error when (approximately) `128 * N * r > maxmem`. Default: `32 * 1024 * 1024`.
 	**/
 	var maxmem:Int;
+}
+
+/**
+	An options type for `Crypto.sign`, `Crypto.verify` and `Sign.sign`.
+**/
+typedef KeyOptions = {
+	var padding:Int;
+	var saltLength:Int;
 }
