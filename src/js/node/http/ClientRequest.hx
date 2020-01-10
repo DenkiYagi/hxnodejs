@@ -35,12 +35,16 @@ import js.node.stream.Writable;
 	/**
 		Emitted when the request has been aborted by the client.
 		This event is only emitted on the first call to `abort()`.
+
+		@see https://nodejs.org/api/http.html#http_event_abort
 	**/
 	var Abort:ClientRequestEvent<Void->Void> = "abort";
 
 	/**
 		Emitted each time a server responds to a request with a `CONNECT` method.
 		If this event is not being listened for, clients receiving a `CONNECT` method will have their connections closed.
+
+		@see https://nodejs.org/api/http.html#http_event_connect
 	**/
 	#if haxe4
 	var Connect:ClientRequestEvent<(response:IncomingMessage, socket:Socket, head:Buffer) -> Void> = "connect";
@@ -49,9 +53,11 @@ import js.node.stream.Writable;
 	#end
 
 	/**
-		Emitted when the server sends a '100 Continue' HTTP response,
-		usually because the request contained 'Expect: 100-continue'.
+		Emitted when the server sends a '100 Continue' HTTP response, usually
+		because the request contained 'Expect: 100-continue'.
 		This is an instruction that the client should send the request body.
+
+		@see https://nodejs.org/api/http.html#http_event_continue
 	**/
 	var Continue:ClientRequestEvent<Void->Void> = "continue";
 
@@ -59,31 +65,41 @@ import js.node.stream.Writable;
 		Emitted when the server sends a 1xx intermediate response (excluding 101 Upgrade).
 		The listeners of this event will receive an object containing the HTTP version, status code, status message,
 		key-value headers object, and array with the raw header names followed by their respective values.
+
+		@see https://nodejs.org/api/http.html#http_event_information
 	**/
 	var Information:ClientRequestEvent<InformationEventData->Void> = "information";
 
 	/**
 		Emitted when a response is received to this request. This event is emitted only once.
+
+		@see https://nodejs.org/api/http.html#http_event_response
 	**/
 	var Response:ClientRequestEvent<IncomingMessage->Void> = "response";
 
 	/**
-		Emitted after a socket is assigned to this request.
+		This event is guaranteed to be passed an instance of the `net.Socket` class, a subclass of `stream.Duplex`,
+		unless the user specifies a socket type other than `net.Socket`.
+
+		@see https://nodejs.org/api/http.html#http_event_socket
 	**/
 	var Socket:ClientRequestEvent<Socket->Void> = "socket";
 
 	/**
 		Emitted when the underlying socket times out from inactivity.
-		This only notifies that the socket has been idle. The request must be aborted manually.
+		This only notifies that the socket has been idle.
+		The request must be aborted manually.
 
-		See also: [request.setTimeout()](https://nodejs.org/api/http.html#http_request_settimeout_timeout_callback).
+		@see https://nodejs.org/api/http.html#http_event_timeout
 	**/
 	var Timeout:ClientRequestEvent<Socket->Void> = "timeout";
 
 	/**
 		Emitted each time a server responds to a request with an upgrade.
-		If this event is not being listened for and the response status code is 101 Switching Protocols,
-		clients receiving an upgrade header will have their connections closed.
+		If this event is not being listened for and the response status code is 101 Switching Protocols, clients
+		receiving an upgrade header will have their connections closed.
+
+		@see https://nodejs.org/api/http.html#http_event_upgrade
 	**/
 	#if haxe4
 	var Upgrade:ClientRequestEvent<(response:IncomingMessage, socket:Socket, head:Buffer) -> Void> = "upgrade";
@@ -93,27 +109,12 @@ import js.node.stream.Writable;
 }
 
 /**
-	This object is created internally and returned from http.request().
+	This object is created internally and returned from `http.request()`.
 	It represents an in-progress request whose header has already been queued.
 	The header is still mutable using the `setHeader(name, value)`, `getHeader(name)`, `removeHeader(name)` API.
 	The actual header will be sent along with the first data chunk or when calling `request.end()`.
 
-	To get the response, add a listener for `'response'` to the request object.
-	`'response'` will be emitted from the request object when the response headers have been received.
-	The `'response'` event is executed with one argument which is an instance of `http.IncomingMessage`.
-
-	During the `'response'` event, one can add listeners to the response object; particularly to listen for the `'data'` event.
-
-	If no `'response'` handler is added, then the response will be entirely discarded. However,
-	if a `'response'` event handler is added, then the data from the response object *must* be consumed,
-	either by calling `response.read()` whenever there is a `'readable'` event, or by adding a `'data'` handler,
-	or by calling the `.resume()` method. Until the data is consumed, the `'end'` event will not fire.
-	Also, until the data is read it will consume memory that can eventually lead to a 'process out of memory' error.
-
-	Unlike the `request` object, if the response closes prematurely, the response object does not emit an `'error'` event
-	but instead emits the `'aborted'` event.
-
-	Node.js does not check whether Content-Length and the length of the body which has been transmitted are equal or not.
+	@see https://nodejs.org/api/http.html#http_class_http_clientrequest
 **/
 @:jsRequire("http", "ClientRequest")
 extern class ClientRequest extends Writable<ClientRequest> {

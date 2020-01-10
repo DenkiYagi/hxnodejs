@@ -35,37 +35,34 @@ import js.Error;
 #end
 
 /**
-	The HTTP interfaces in Node are designed to support many features of the protocol
-	which have been traditionally difficult to use. In particular, large, possibly chunk-encoded, messages.
-	The interface is careful to never buffer entire requests or responses--the user is able to stream data.
+	The HTTP interfaces in Node.js are designed to support many features of the protocol which have been traditionally
+	difficult to use.
+	In particular, large, possibly chunk-encoded, messages.
+	The interface is careful to never buffer entire requests or responses — the user is able to stream data.
 
-	HTTP message headers are represented by an object like this:
-		{ 'content-length': '123',
-		  'content-type': 'text/plain',
-		  'connection': 'keep-alive' }
-	Keys are lowercased. Values are not modified.
-
-	In order to support the full spectrum of possible HTTP applications, Node's HTTP API is very low-level.
-	It deals with stream handling and message parsing only. It parses a message into headers and body but
-	it does not parse the actual headers or the body.
+	@see https://nodejs.org/api/http.html#http_http
 **/
 @:jsRequire("http")
 extern class Http {
 	/**
 		A list of the HTTP methods that are supported by the parser.
+
+		@see https://nodejs.org/api/http.html#http_http_methods
 	**/
 	static var METHODS:Array<String>;
 
 	/**
 		A collection of all the standard HTTP response status codes, and the short description of each.
 		For example, `http.STATUS_CODES[404] === 'Not Found'`.
+
+		@see https://nodejs.org/api/http.html#http_http_status_codes
 	**/
 	static var STATUS_CODES(default, null):DynamicAccess<String>;
 
 	/**
-		Returns a new web server object.
+		Returns a new instance of `http.Server`.
 
-		The `requestListener` is a function which is automatically added to the `'request'` event.
+		@see https://nodejs.org/api/http.html#http_http_createserver_options_requestlistener
 	**/
 	#if haxe4
 	@:overload(function(options:HttpCreateServerOptions, ?requestListener:(request:IncomingMessage, response:ServerResponse) -> Void):Server {})
@@ -77,35 +74,39 @@ extern class Http {
 
 	/**
 		Since most requests are GET requests without bodies, Node.js provides this convenience method.
-		The only difference between this method and `request()` is that it sets the method to GET and calls `end()` automatically.
+		The only difference between this method and `http.request()` is that it sets the method to GET and calls
+		`req.end()` automatically.
 		The callback must take care to consume the response data for reasons stated in `http.ClientRequest` section.
+
+		@see https://nodejs.org/api/http.html#http_http_get_options_callback
+		@see https://nodejs.org/api/http.html#http_http_get_url_options_callback
 	**/
 	@:overload(function(url:URL, ?options:HttpRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
 	@:overload(function(url:String, ?options:HttpRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
 	static function get(options:HttpRequestOptions, ?callback:IncomingMessage->Void):ClientRequest;
 
 	/**
-		Global instance of Agent which is used as the default for all http client requests.
+		Global instance of `Agent` which is used as the default for all HTTP client requests.
+
+		@see https://nodejs.org/api/http.html#http_http_globalagent
 	**/
 	static var globalAgent:Agent;
 
-	static var maxHeaderSize:Int;
+	/**
+		Read-only property specifying the maximum allowed size of HTTP headers in bytes.
+		Defaults to 8KB.
+		Configurable using the `--max-http-header-size` CLI option.
+
+		@see https://nodejs.org/api/http.html#http_http_maxheadersize
+	**/
+	static var maxHeaderSize(default, null):Int;
 
 	/**
 		Node.js maintains several connections per server to make HTTP requests.
 		This function allows one to transparently issue requests.
 
-		`url` can be a string or a URL object.
-		If `url` is a string, it is automatically parsed with `new URL()`.
-		If it is a `URL` object, it will be automatically converted to an ordinary `options` object.
-
-		If both `url` and `options` are specified, the objects are merged, with the `options` properties taking precedence.
-
-		The optional `callback` parameter will be added as a one-time listener for the `'response'` event.
-
-		`request()` returns an instance of the `http.ClientRequest` class.
-		The `ClientRequest` instance is a writable stream.
-		If one needs to upload a file with a POST request, then write to the `ClientRequest` object.
+		@see https://nodejs.org/api/http.html#http_http_request_options_callback
+		@see https://nodejs.org/api/http.html#http_http_request_url_options_callback
 	**/
 	@:overload(function(url:URL, ?options:HttpRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
 	@:overload(function(url:String, ?options:HttpRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
@@ -114,14 +115,16 @@ extern class Http {
 
 typedef HttpCreateServerOptions = {
 	/**
-		Specifies the `IncomingMessage` class to be used. Useful for extending the original `IncomingMessage`.
+		Specifies the `IncomingMessage` class to be used.
+		Useful for extending the original `IncomingMessage`.
 
-		Default: `js.node.http.IncomingMessage`.
+		Default: `IncomingMessage`.
 	**/
 	@:optional var IncomingMessage:Class<Dynamic>;
 
 	/**
-		Specifies the `ServerResponse` class to be used. Useful for extending the original `ServerResponse`.
+		Specifies the `ServerResponse` class to be used.
+		Useful for extending the original `ServerResponse`.
 
 		Default: `ServerResponse`.
 	**/
@@ -134,12 +137,11 @@ typedef HttpCreateServerOptions = {
 typedef HttpRequestOptions = {
 	/**
 		Controls Agent behavior.
-
 		Possible values:
 
-		- `undefined` (default): use http.globalAgent for this host and port.
+		- `undefined` (default): use `http.globalAgent` for this host and port.
 		- `Agent` object: explicitly use the passed in `Agent`.
-		- `false` : causes a new `Agent` with default values to be used.
+		- `false`: causes a new `Agent` with default values to be used.
 	**/
 	@:optional var agent:EitherType<Agent, Bool>;
 
@@ -150,9 +152,10 @@ typedef HttpRequestOptions = {
 
 	/**
 		A function that produces a socket/stream to use for the request when the `agent` option is not used.
-		This can be used to avoid creating a custom `Agent` class just to override the default `createConnection` function.
-		See [agent.createConnection()](https://nodejs.org/api/http.html#http_agent_createconnection_options_callback) for more details.
-		Any `Duplex` stream is a valid return value.
+		This can be used to avoid creating a custom `Agent` class just to override the default `createConnection`
+		function.
+		See `agent.createConnection()` for more details.
+		Any Duplex stream is a valid return value.
 	**/
 	#if haxe4
 	@:optional var createConnection:(options:SocketConnectOptionsTcp, ?callabck:(err:Error, stream:IDuplex) -> Void) -> IDuplex;
@@ -163,13 +166,14 @@ typedef HttpRequestOptions = {
 	/**
 		Default port for the protocol.
 
-		Default: `agent.defaultPort` if an Agent is used, else `undefined`.
+		Default: `agent.defaultPort` if an `Agent` is used, else `undefined`.
 	**/
 	@:optional var defaultPort:Int;
 
 	/**
 		IP address family to use when resolving `host` or `hostname`.
-		Valid values are `4` or `6`. When unspecified, both IP v4 and v6 will be used.
+		Valid values are `4` or `6`.
+		When unspecified, both IP v4 and v6 will be used.
 	**/
 	@:optional var family:js.node.Dns.DnsAddressFamily;
 
@@ -197,6 +201,22 @@ typedef HttpRequestOptions = {
 	@:optional var localAddress:String;
 
 	/**
+		Custom lookup function.
+
+		Default: `dns.lookup()`.
+	**/
+	// TODO: Update when DNS is updated.
+	@:optional var lookup:Dynamic;
+
+	/**
+		Optionally overrides the value of `--max-http-header-size` for requests received from the server, i.e. the
+		maximum length of response headers in bytes.
+
+		Default: 8192 (8KB).
+	**/
+	@:optional var maxHeaderSize:Int;
+
+	/**
 		A string specifying the HTTP request method.
 
 		Default: `'GET'`.
@@ -204,7 +224,9 @@ typedef HttpRequestOptions = {
 	@:optional var method:Method;
 
 	/**
-		Request path. Should include query string if any. E.G. `'/index.html?page=12'`.
+		Request path.
+		Should include query string if any.
+		E.G. `'/index.html?page=12'`.
 		An exception is thrown when the request path contains illegal characters.
 		Currently, only spaces are rejected but that may change in the future.
 
@@ -227,13 +249,13 @@ typedef HttpRequestOptions = {
 	@:optional var protocol:String;
 
 	/**
-		Specifies whether or not to automatically add the Host header.
+		Specifies whether or not to automatically add the `Host` header.
 		Defaults to `true`.
 	**/
 	@:optional var setHost:Bool;
 
 	/**
-		Unix Domain Socket (cannot be used if one of host or port is specified, those specify a TCP Socket).
+		Unix Domain Socket (cannot be used if one of `host` or `port` is specified, those specify a TCP Socket).
 	**/
 	@:optional var socketPath:String;
 
