@@ -24,122 +24,121 @@ package js.node.http2;
 /**
 	@see https://nodejs.org/api/http2.html#http2_http2_constants
 **/
-@:jsRequire("http2", "constants")
-extern class Constants {
+extern class Http2Constants {
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x00
 		Name: No Error
 	**/
-	var NGHTTP2_NO_ERROR(default, null):Int;
+	var NGHTTP2_NO_ERROR(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x01
 		Name: Protocol Error
 	**/
-	var NGHTTP2_PROTOCOL_ERROR(default, null):Int;
+	var NGHTTP2_PROTOCOL_ERROR(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x02
 		Name: Internal Error
 	**/
-	var NGHTTP2_INTERNAL_ERROR(default, null):Int;
+	var NGHTTP2_INTERNAL_ERROR(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x03
 		Name: Flow Control Error
 	**/
-	var NGHTTP2_FLOW_CONTROL_ERROR(default, null):Int;
+	var NGHTTP2_FLOW_CONTROL_ERROR(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x04
 		Name: Settings Timeout
 	**/
-	var NGHTTP2_SETTINGS_TIMEOUT(default, null):Int;
+	var NGHTTP2_SETTINGS_TIMEOUT(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x05
 		Name: Stream Closed
 	**/
-	var NGHTTP2_STREAM_CLOSED(default, null):Int;
+	var NGHTTP2_STREAM_CLOSED(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x06
 		Name: Frame Size Error
 	**/
-	var NGHTTP2_FRAME_SIZE_ERROR(default, null):Int;
+	var NGHTTP2_FRAME_SIZE_ERROR(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x07
 		Name: Refused Stream
 	**/
-	var NGHTTP2_REFUSED_STREAM(default, null):Int;
+	var NGHTTP2_REFUSED_STREAM(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x08
 		Name: Cancel
 	**/
-	var NGHTTP2_CANCEL(default, null):Int;
+	var NGHTTP2_CANCEL(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x09
 		Name: Compression Error
 	**/
-	var NGHTTP2_COMPRESSION_ERROR(default, null):Int;
+	var NGHTTP2_COMPRESSION_ERROR(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x0a
 		Name: Connect Error
 	**/
-	var NGHTTP2_CONNECT_ERROR(default, null):Int;
+	var NGHTTP2_CONNECT_ERROR(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x0b
 		Name: Enhance Your Calm
 	**/
-	var NGHTTP2_ENHANCE_YOUR_CALM(default, null):Int;
+	var NGHTTP2_ENHANCE_YOUR_CALM(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x0c
 		Name: Inadequate Security
 	**/
-	var NGHTTP2_INADEQUATE_SECURITY(default, null):Int;
+	var NGHTTP2_INADEQUATE_SECURITY(default, never):Int;
 
 	/**
 		Error Code for `RST_STREAM` and `GOAWAY`
 		Value: 0x0d
 		Name: HTTP/1.1 Required
 	**/
-	var NGHTTP2_HTTP_1_1_REQUIRED(default, null):Int;
+	var NGHTTP2_HTTP_1_1_REQUIRED(default, never):Int;
 
-	var NGHTTP2_SESSION_SERVER(default, null):Int;
+	var NGHTTP2_SESSION_SERVER(default, never):Int;
 
 	/**
 		`Http2Session`'s type in `http2session.type`
 	**/
-	var NGHTTP2_SESSION_CLIENT(default, null):Int;
+	var NGHTTP2_SESSION_CLIENT(default, never):Int;
 
 	/**
 		No padding is applied.
 	**/
-	var PADDING_STRATEGY_NONE(default, null):Int;
+	var PADDING_STRATEGY_NONE(default, never):Int;
 
 	/**
 		The maximum amount of padding, determined by the internal implementation, is applied.
 	**/
-	var PADDING_STRATEGY_MAX(default, null):Int;
+	var PADDING_STRATEGY_MAX(default, never):Int;
 
 	/**
 		Attempts to apply enough padding to ensure that the total frame length,
@@ -149,5 +148,5 @@ extern class Constants {
 		If this maximum is less than the calculated amount needed to ensure alignment,
 		the maximum is used and the total frame length is not necessarily aligned at 8 bytes.
 	**/
-	var PADDING_STRATEGY_ALIGNED(default, null):Int;
+	var PADDING_STRATEGY_ALIGNED(default, never):Int;
 }

@@ -21,6 +21,7 @@ package js.node;
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+import js.node.http2.Http2Constants;
 import haxe.extern.EitherType;
 import haxe.io.ArrayBufferView;
 import js.node.http2.ClientHttp2Session;
@@ -75,6 +76,11 @@ extern class Http2 {
 	**/
 	@:overload(function(authority:String, ?options:ConnectOptions, ?listener:Http2Session->Socket->Void):ClientHttp2Session {})
 	static function connect(authority:Url, ?options:ConnectOptions, ?listener:Http2Session->Socket->Void):ClientHttp2Session;
+
+	/**
+		@see https://nodejs.org/api/http2.html#http2_http2_constants
+	**/
+	static var constants(default, never):Http2Constants;
 
 	/**
 		Returns an object containing the default settings for an Http2Session instance.
@@ -177,47 +183,408 @@ typedef Http2SettingsObject = {
 
 	@see https://nodejs.org/api/http2.html#http2_headers_object
 **/
-typedef HeadersObject = {
-	@:optional @:native(":status") var status:Int;
-	@:optional @:native(":method") var method:String;
-	@:optional @:native(":authority") var authority:String;
-	@:optional @:native(":scheme") var scheme:String;
-	@:optional @:native(":path") var path:String;
-	@:optional @:native(":protocol") var protocol:String;
-	@:optional var age:String;
-	@:optional var authorization:String;
-	@:optional @:native("access-control-allow-credentials") var access_control_allow_credentials:String;
-	@:optional @:native("access-control-max-age") var access_control_max_age:String;
-	@:optional @:native("access-control-requenst-method") var access_control_request_method:String;
-	@:optional @:native("content-encoding") var content_encoding:String;
-	@:optional @:native("content-language") var content_language:String;
-	@:optional @:native("content-length") var content_length:String;
-	@:optional @:native("content-location") var content_location:String;
-	@:optional @:native("content-md5") var content_md5:String;
-	@:optional @:native("content-range") var content_range:String;
-	@:optional @:native("content-type") var content_type:String;
-	@:optional var date:String;
-	@:optional var dnt:String;
-	@:optional var etag:String;
-	@:optional var expires:String;
-	@:optional var from:String;
-	@:optional @:native("if-match") var if_match:String;
-	@:optional @:native("if-modified-since") var if_modified_since:String;
-	@:optional @:native("if-none-match") var if_none_match:String;
-	@:optional @:native("if-range") var if_range:String;
-	@:optional @:native("if-unmodified-since") var if_unmodified_since:String;
-	@:optional @:native("last-modified") var last_modified:String;
-	@:optional @:native("location") var location:String;
-	@:optional @:native("max-forwards") var max_forwards:String;
-	@:optional @:native("proxy-authorization") var proxy_authorization:String;
-	@:optional var range:String;
-	@:optional var referer:String;
-	@:optional @:native("retry-after") var retry_after:String;
-	@:optional var tk:String;
-	@:optional @:native("upgrade-insecure-requests") var upgrade_insecure_requests:String;
-	@:optional @:native("user-agent") var user_agent:String;
-	@:optional @:native("x-content-type-options") var x_content_type_options:String;
-	@:optional @:native("set-cookie") var set_cookie:Array<String>;
+abstract HeadersObject(Dynamic) {
+	inline function new() {
+		this = {};
+	}
+
+	public var status(get, set):Int;
+
+	extern inline function get_status() {
+		return js.Syntax.code("{0}[':status']", this);
+	}
+
+	extern inline function set_status(value):Int {
+		return js.Syntax.code("{0}[':status'] = {1}", this);
+	}
+
+	public var method(get, set):String;
+
+	extern inline function get_method() {
+		return js.Syntax.code("{0}[':method']", this);
+	}
+
+	extern inline function set_method(value) {
+		return js.Syntax.code("{0}[':method'] = {1}", this, value);
+	}
+
+	public var authority(get, set):String;
+
+	extern inline function get_authority() {
+		return js.Syntax.code("{0}[':authority']", this);
+	}
+
+	extern inline function set_authority(value) {
+		return js.Syntax.code("{0}[':authority'] = {1}", this, value);
+	}
+
+	public var scheme(get, set):String;
+
+	extern inline function get_scheme() {
+		return js.Syntax.code("{0}[':scheme']", this);
+	}
+
+	extern inline function set_scheme(value) {
+		return js.Syntax.code("{0}[':scheme'] = {1}", this, value);
+	}
+
+	public var path(get, set):String;
+
+	extern inline function get_path() {
+		return js.Syntax.code("{0}[':path']", this);
+	}
+
+	extern inline function set_path(value) {
+		return js.Syntax.code("{0}[':path']={1}", this, value);
+	}
+
+	public var protocol(get, set):String;
+
+	extern inline function get_protocol() {
+		return js.Syntax.code("{0}[':protocol']", this);
+	}
+
+	extern inline function set_protocol(value) {
+		return js.Syntax.code("{0}[':protocol'] = {1}", this, value);
+	}
+
+	public var age(get, set):String;
+
+	extern inline function get_age() {
+		return js.Syntax.code("{0}['age']", this);
+	}
+
+	extern inline function set_age(value) {
+		return js.Syntax.code("{0}['age'] = {1}", this, value);
+	}
+
+	public var authorization(get, set):String;
+
+	extern inline function get_authorization() {
+		return js.Syntax.code("{0}['authorization']", this);
+	}
+
+	extern inline function set_authorization(value) {
+		return js.Syntax.code("{0}['authorization'] = {1}", this, value);
+	}
+
+	public var access_control_allow_credentials(get, set):String;
+
+	extern inline function get_access_control_allow_credentials() {
+		return js.Syntax.code("{0}['access-control-allow-credentials']", this);
+	}
+
+	extern inline function set_access_control_allow_credentials(value) {
+		return js.Syntax.code("{0}['access-control-allow-credentials'] = {1}", this, value);
+	}
+
+	public var access_control_max_age(get, set):String;
+
+	extern inline function get_access_control_max_age() {
+		return js.Syntax.code("{0}['access-control-max-age']", this);
+	}
+
+	extern inline function set_access_control_max_age(value) {
+		return js.Syntax.code("{0}['access-control-max-age'] = {1}", this, value);
+	}
+
+	public var access_control_request_method(get, set):String;
+
+	extern inline function get_access_control_request_method() {
+		return js.Syntax.code("{0}['access-control-request-method']", this);
+	}
+
+	extern inline function set_access_control_request_method(value) {
+		return js.Syntax.code("{0}['access-control-request-method'] = {1}", this, value);
+	}
+
+	public var content_encoding(get, set):String;
+
+	extern inline function get_content_encoding() {
+		return js.Syntax.code("{0}['content-encoding']", this);
+	}
+
+	extern inline function set_content_encoding(value) {
+		return js.Syntax.code("{0}['content-encoding'] = {1}", this, value);
+	}
+
+	public var content_language(get, set):String;
+
+	extern inline function get_content_language() {
+		return js.Syntax.code("{0}['content-language']", this);
+	}
+
+	extern inline function set_content_language(value) {
+		return js.Syntax.code("{0}['content-language'] = {1}", this, value);
+	}
+
+	public var content_length(get, set):String;
+
+	extern inline function get_content_length() {
+		return js.Syntax.code("{0}['content-length']", this);
+	}
+
+	extern inline function set_content_length(value) {
+		return js.Syntax.code("{0}['content-length'] = {1}", value);
+	}
+
+	public var content_location(get, set):String;
+
+	extern inline function get_content_location() {
+		return js.Syntax.code("{0}['content-location']", this);
+	}
+
+	extern inline function set_content_location(value) {
+		return js.Syntax.code("{0}['content-location']", this, value);
+	}
+
+	public var content_md5(get, set):String;
+
+	extern inline function get_content_md5() {
+		return js.Syntax.code("{0}['content-md5']", this);
+	}
+
+	extern inline function set_content_md5(value) {
+		return js.Syntax.code("{0}['content-md5'] = {1}", this, value);
+	}
+
+	public var content_range(get, set):String;
+
+	extern inline function get_content_range() {
+		return js.Syntax.code("{0}['content-range']", this);
+	}
+
+	extern inline function set_content_range(value) {
+		return js.Syntax.code("{0}['content-range'] = {1}", this, value);
+	}
+
+	public var content_type(get, set):String;
+
+	extern inline function get_content_type() {
+		return js.Syntax.code("{0}['content-type']", this);
+	}
+
+	extern inline function set_content_type(value) {
+		return js.Syntax.code("{0}['content-type'] = {1}", this, value);
+	}
+
+	public var date(get, set):String;
+
+	extern inline function get_date() {
+		return js.Syntax.code("{0}['date']", this);
+	}
+
+	extern inline function set_date(value) {
+		return js.Syntax.code("{0}['date'] = {1}", value);
+	}
+
+	public var dnt(get, set):String;
+
+	extern inline function get_dnt() {
+		return js.Syntax.code("{0}['dnt']", this);
+	}
+
+	extern inline function set_dnt(value) {
+		return js.Syntax.code("{0}['dnt'] = {1}", this, value);
+	}
+
+	public var etag(get, set):String;
+
+	extern inline function get_etag() {
+		return js.Syntax.code("{0}['etag']", this);
+	}
+
+	extern inline function set_etag(value) {
+		return js.Syntax.code("{0}['etag'] = {1}", this, value);
+	}
+
+	public var expires(get, set):String;
+
+	extern inline function get_expires() {
+		return js.Syntax.code("{0}['expired']", this);
+	}
+
+	extern inline function set_expires(value) {
+		return js.Syntax.code("{0}['expired'] = {1}", this, value);
+	}
+
+	public var from(get, set):String;
+
+	extern inline function get_from() {
+		return js.Syntax.code("{0}['from']", this);
+	}
+
+	extern inline function set_from(value) {
+		return js.Syntax.code("{0}['from'] = {1}", this, value);
+	}
+
+	public var if_match(get, set):String;
+
+	extern inline function get_if_match() {
+		return js.Syntax.code("{0}['if-match']", this);
+	}
+
+	extern inline function set_if_match(value) {
+		return js.Syntax.code("{0}['if-match'] = {1}", this, value);
+	}
+
+	public var if_modified_since(get, set):String;
+
+	extern inline function get_if_modified_since() {
+		return js.Syntax.code("{0}['if-modified-since']", this);
+	}
+
+	extern inline function set_if_modified_since(value) {
+		return js.Syntax.code("{0}['if-modified-since'] = {1}", this, value);
+	}
+
+	public var if_none_match(get, set):String;
+
+	extern inline function get_if_none_match() {
+		return js.Syntax.code("{0}['if-none-match']", this);
+	}
+
+	extern inline function set_if_none_match(value) {
+		return js.Syntax.code("{0}['if-none-match'] = {1}", this, value);
+	}
+
+	public var if_range(get, set):String;
+
+	extern inline function get_if_range() {
+		return js.Syntax.code("{0}['if-range']", this);
+	}
+
+	extern inline function set_if_range(value) {
+		return js.Syntax.code("{0}['if-range'] = {1}", this, value);
+	}
+
+	public var if_unmodified_since(get, set):String;
+
+	extern inline function get_if_unmodified_since() {
+		return js.Syntax.code("{0}['if-unmodified-since']", this);
+	}
+
+	extern inline function set_if_unmodified_since(value) {
+		return js.Syntax.code("{0}['if-unmodified-since'] = {1}", this, value);
+	}
+
+	public var last_modified(get, set):String;
+
+	extern inline function get_last_modified() {
+		return js.Syntax.code("{0}['last-modified']", this);
+	}
+
+	extern inline function set_last_modified(value) {
+		return js.Syntax.code("{0}['last-modified'] = {1}", this, value);
+	}
+
+	public var location(get, set):String;
+
+	extern inline function get_location() {
+		return js.Syntax.code("{0}['location']", this);
+	}
+
+	extern inline function set_location(value) {
+		return js.Syntax.code("{0}['location'] = {1}", this, value);
+	}
+
+	public var max_forwards(get, set):String;
+
+	extern inline function get_max_forwards() {
+		return js.Syntax.code("{0}['max-forwards']", this);
+	}
+
+	extern inline function set_max_forwards(value) {
+		return js.Syntax.code("{0}['max-forwards'] = {1}", this, value);
+	}
+
+	public var proxy_authorization(get, set):String;
+
+	extern inline function get_proxy_authorization() {
+		return js.Syntax.code("{0}['proxy-authorization']", this);
+	}
+
+	extern inline function set_proxy_authorization(value) {
+		return js.Syntax.code("{0}['proxy-authorization'] = {1}", this, value);
+	}
+
+	public var range(get, set):String;
+
+	extern inline function get_range() {
+		return js.Syntax.code("{0}['range']", this);
+	}
+
+	extern inline function set_range(value) {
+		return js.Syntax.code("{0}['range'] = {1}", this, value);
+	}
+
+	public var referer(get, set):String;
+
+	extern inline function get_referer() {
+		return js.Syntax.code("{0}['referer']", this);
+	}
+
+	extern inline function set_referer(value) {
+		return js.Syntax.code("{0}['referer'] = {1}", this, value);
+	}
+
+	public var retry_after(get, set):String;
+
+	extern inline function get_retry_after() {
+		return js.Syntax.code("{0}['retry-after']", this);
+	}
+
+	extern inline function set_retry_after(value) {
+		return js.Syntax.code("{0}['retry-after'] = {1}", this, value);
+	}
+
+	public var tk(get, set):String;
+
+	extern inline function get_tk() {
+		return js.Syntax.code("{0}['tk']", this);
+	}
+
+	extern inline function set_tk(value) {
+		return js.Syntax.code("{0}['tk'] = {1}", this, value);
+	}
+
+	public var upgrade_insecure_requests(get, set):String;
+
+	extern inline function get_upgrade_insecure_requests() {
+		return js.Syntax.code("{0}['upgrade-insecure-requests']", this);
+	}
+
+	extern inline function set_upgrade_insecure_requests(value) {
+		return js.Syntax.code("{0}['upgrade-insecure-requests'] = {1}", this, value);
+	}
+
+	public var user_agent(get, set):String;
+
+	extern inline function get_user_agent() {
+		return js.Syntax.code("{0}['user-agent']", this);
+	}
+
+	extern inline function set_user_agent(value) {
+		return js.Syntax.code("{0}['user-agent'] = {1}", this, value);
+	}
+
+	public var x_content_type_options(get, set):String;
+
+	extern inline function get_x_content_type_options() {
+		return js.Syntax.code("{0}['x-content-type-options']", this);
+	}
+
+	extern inline function set_x_content_type_options(value) {
+		return js.Syntax.code("{0}['x-content-type-options'] = {1}", this, value);
+	}
+
+	@:op([]) extern public inline function get(key:String) {
+		return js.Syntax.code("{0}[{1}]", this, key);
+	}
+
+	@:op([]) extern public inline function set(key:String, value:Dynamic) {
+		return js.Syntax.code("{0}[{1}] = {2}", this, key, value);
+	}
 }
 
 typedef CreateServerOptions = {
