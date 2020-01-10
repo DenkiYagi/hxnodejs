@@ -117,7 +117,7 @@ extern class Serializer {
 
 		@see https://nodejs.org/api/v8.html#v8_serializer_getdatacloneerror_message
 	**/
-	function _getDataCloneError():Void;
+	function _getDataCloneError(message:String):Void;
 
 	/**
 		This method is called when the serializer is going to serialize a SharedArrayBuffer object.

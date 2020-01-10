@@ -60,7 +60,7 @@ extern class Deserializer {
 
 		@see https://nodejs.org/api/v8.html#v8_deserializer_transferarraybuffer_id_arraybuffer
 	**/
-	function transferArrayBuffer():Void;
+	function transferArrayBuffer(id:Int, arrayBuffer:ArrayBufferView):Void;
 
 	/**
 		Reads the underlying wire format version.
@@ -86,7 +86,7 @@ extern class Deserializer {
 
 		@see https://nodejs.org/api/v8.html#v8_deserializer_readuint64
 	**/
-	function readUint64():Array<String>;
+	function readUint64():Array<Int>;
 
 	/**
 		Read a JS number value.
