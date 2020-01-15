@@ -119,98 +119,151 @@ import js.node.stream.Writable;
 @:jsRequire("http", "ClientRequest")
 extern class ClientRequest extends Writable<ClientRequest> {
 	/**
-		Marks the request as aborting. Calling this will cause remaining data in the response to be dropped and the socket to be destroyed.
+		Marks the request as aborting.
+		Calling this will cause remaining data in the response to be dropped and the socket to be destroyed.
+
+		@see https://nodejs.org/api/http.html#http_request_abort
 	**/
 	function abort():Void;
 
 	/**
-		The request.aborted property will be true if the request has been aborted.
+		The `request.aborted` property will be `true` if the request has been aborted.
+
+		@see https://nodejs.org/api/http.html#http_request_aborted
 	**/
 	var aborted(default, null):Bool;
 
 	/**
 		See `request.socket`.
+
+		@see https://nodejs.org/api/http.html#http_request_connection
 	**/
+	@:deprecated
 	var connection(default, null):Socket;
 
 	/**
-		The `response.finished` property will be true if `response.end()` has been called.
+		Finishes sending the request.
+		If any parts of the body are unsent, it will flush them to the stream.
+		If the request is chunked, this will send the terminating `'0\r\n\r\n'`.
+
+		@see https://nodejs.org/api/http.html#http_request_end_data_encoding_callback
 	**/
+	@:overload(function(?data:String, ?encoding:String, ?callback:Void->Void):ClientRequest {})
+	function end(?data:Buffer, ?encoding:String, ?callback:Void->Void):ClientRequest;
+
+	/**
+		The `request.finished` property will be `true` if `request.end()` has been called.
+		`request.end()` will automatically be called if the request was initiated via `http.get()`.
+
+		@see https://nodejs.org/api/http.html#http_request_finished
+	**/
+	@:deprecated
 	var finished(default, null):Bool;
 
 	/**
-		Flush the request headers.
+		Flushes the request headers.
 
-		For efficiency reasons, node.js normally buffers the request headers until you call `request.end()`
-		or write the first chunk of request data. It then tries hard to pack the request headers and data
-		into a single TCP packet.
-
-		That's usually what you want (it saves a TCP round-trip) but not when the first data isn't sent
-		until possibly much later. `flushHeaders` lets you bypass the optimization and kickstart the request.
+		@see https://nodejs.org/api/http.html#http_request_flushheaders
 	**/
 	function flushHeaders():Void;
 
 	/**
-		Reads out a header on the request. The name is case-insensitive.
+		Reads out a header on the request.
+		The name is case-insensitive.
 		The type of the return value depends on the arguments provided to `request.setHeader()`.
+
+		@see https://nodejs.org/api/http.html#http_request_getheader_name
 	**/
 	function getHeader(name:String):haxe.extern.EitherType<String, Array<String>>;
 
 	/**
-		Limits maximum response headers count. If set to 0, no limit will be applied.
+		Limits maximum response headers count.
+		If set to 0, no limit will be applied.
 
-		Default: `2000`
+		@see https://nodejs.org/api/http.html#http_request_maxheaderscount
 	**/
 	var maxHeadersCount:Null<Int>;
 
 	/**
 		The request path.
+
+		@see https://nodejs.org/api/http.html#http_request_path
 	**/
 	var path(default, null):String;
 
 	/**
 		Removes a header that's already defined into headers object.
+
+		@see https://nodejs.org/api/http.html#http_request_removeheader_name
 	**/
 	function removeHeader(name:String):Void;
+
+	/**
+		When sending request through a keep-alive enabled agent, the underlying socket might be reused.
+		But if server closes connection at unfortunate time, client may run into a 'ECONNRESET' error.
+
+		@see https://nodejs.org/api/http.html#http_request_reusedsocket
+	**/
+	var reusedSocket(default, null):Bool;
 
 	/**
 		Sets a single header value for headers object.
 		If this header already exists in the to-be-sent headers, its value will be replaced.
 		Use an array of strings here to send multiple headers with the same name.
-		Non-string values will be stored without modification. Therefore, `request.getHeader()` may return non-string values.
+		Non-string values will be stored without modification.
+		Therefore, `request.getHeader()` may return non-string values.
 		However, the non-string values will be converted to strings for network transmission.
+
+		@see https://nodejs.org/api/http.html#http_request_setheader_name_value
 	**/
 	@:overload(function(name:String, value:Array<String>):Void {})
 	function setHeader(name:String, value:String):Void;
 
 	/**
-		Once a socket is assigned to this request and is connected
-		`socket.setNoDelay` will be called.
+		Once a socket is assigned to this request and is connected `socket.setNoDelay()` will be called.
+
+		@see https://nodejs.org/api/http.html#http_request_setnodelay_nodelay
 	**/
 	function setNoDelay(?noDelay:Bool):Void;
 
 	/**
-		Once a socket is assigned to this request and is connected
-		`socket.setKeepAlive`() will be called.
+		Once a socket is assigned to this request and is connected `socket.setKeepAlive()` will be called.
+
+		@see https://nodejs.org/api/http.html#http_request_setsocketkeepalive_enable_initialdelay
 	**/
 	@:overload(function(?initialDelay:Int):Void {})
 	function setSocketKeepAlive(enable:Bool, ?initialDelay:Int):Void;
 
 	/**
 		Once a socket is assigned to this request and is connected `socket.setTimeout()` will be called.
+
+		@see https://nodejs.org/api/http.html#http_request_settimeout_timeout_callback
 	**/
 	function setTimeout(timeout:Int, ?callback:Socket->Void):ClientRequest;
 
 	/**
-		Reference to the underlying socket. Usually users will not want to access this property.
+		Reference to the underlying socket.
+		Usually users will not want to access this property.
 		In particular, the socket will not emit `'readable'` events because of how the protocol parser attaches to the socket.
-		The `socket` may also be accessed via `request.connection`.
-	 */
+		The socket may also be accessed via `request.connection`.
+
+		@see https://nodejs.org/api/http.html#http_request_socket
+	**/
 	var socket(default, null):Socket;
 
 	// This field is defined in super class.
 	// var writableEnded(default, null):Bool;
 	// var writableFinished(default, null):Bool;
+
+	/**
+		Sends a chunk of the body.
+		By calling this method many times, a request body can be sent to a server — in that case it is suggested to use
+		the `['Transfer-Encoding', 'chunked']` header line when creating the request.
+
+		@see https://nodejs.org/api/http.html#http_request_write_chunk_encoding_callback
+	**/
+	@:overload(function(chunk:String, ?encoding:String, ?callback:Void->Void):Bool {})
+	function write(chunk:Buffer, ?encoding:String, ?callback:Void->Void):Bool;
 }
 
 typedef InformationEventData = {
