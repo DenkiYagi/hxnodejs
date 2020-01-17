@@ -126,19 +126,19 @@ typedef Http2SettingsObject = {
 		The minimum allowed value is 0. The maximum allowed value is 2^32-1.
 		Default: `4,096` octets.
 	**/
-	var headerTableSize:Int;
+	@:optional var headerTableSize:Int;
 
 	/**
 		Specifies `true` if HTTP/2 Push Streams are to be permitted on the Http2Session instances.
 	**/
-	var enablePush:Bool;
+	@:optional var enablePush:Bool;
 
 	/**
 		Specifies the senders initial window size for stream-level flow control. The minimum allowed value is 0.
 		The maximum allowed value is 2^32-1.
 		Default: `65,535` bytes.
 	**/
-	var initialWindowSize:Int;
+	@:optional var initialWindowSize:Int;
 
 	/**
 		Specifies the size of the largest frame payload.
@@ -146,7 +146,7 @@ typedef Http2SettingsObject = {
 		The maximum allowed value is 2^24-1.
 		Default: `16,384` bytes.
 	**/
-	var maxFrameSize:Int;
+	@:optional var maxFrameSize:Int;
 
 	/**
 		Specifies the maximum number of concurrent streams permitted on an `Http2Session`.
@@ -156,7 +156,7 @@ typedef Http2SettingsObject = {
 		The maximum allowed value is 2^32-1.
 		Default: `4294967295`.
 	**/
-	var maxConcurrentStreams:Int;
+	@:optional var maxConcurrentStreams:Int;
 
 	/**
 		Specifies the maximum size (uncompressed octets) of header list that will be accepted.
@@ -164,7 +164,7 @@ typedef Http2SettingsObject = {
 		The maximum allowed value is 2^32-1.
 		Default: `65535`.
 	**/
-	var maxHeaderListSize:Int;
+	@:optional var maxHeaderListSize:Int;
 
 	/**
 		Specifies `true` if the "Extended Connect Protocol" defined by RFC 8441 is to be enabled.
@@ -172,7 +172,7 @@ typedef Http2SettingsObject = {
 		Once the `enableConnectProtocol` setting has been enabled for a given `Http2Session`,
 		it cannot be disabled.
 	**/
-	var enableConnectProtocol:Bool;
+	@:optional var enableConnectProtocol:Bool;
 }
 
 /**
