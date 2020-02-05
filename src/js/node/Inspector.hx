@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -21,13 +21,6 @@
  */
 
 package js.node;
-
-
-#if haxe4
-import js.lib.Error;
-#else
-import js.Error;
-#end
 
 /**
 	The inspector module provides an API for interacting with the V8 inspector.
