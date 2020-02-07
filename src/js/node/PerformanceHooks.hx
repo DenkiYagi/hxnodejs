@@ -22,6 +22,7 @@
 
 package js.node;
 
+import js.node.performance_hooks.Histogram;
 import js.node.performance_hooks.Performance;
 
 /**
@@ -33,5 +34,13 @@ import js.node.performance_hooks.Performance;
 **/
 @:jsRequire("perf_hooks")
 extern class PerformanceHooks {
-    static public var performance: Performance;
+	static public var performance:Performance;
+
+	/**
+		Creates a `Histogram` object that samples and reports the event loop delay over time.
+		The delays will be reported in nanoseconds.
+
+		@see https://nodejs.org/api/perf_hooks.html#perf_hooks_perf_hooks_monitoreventloopdelay_options
+	**/
+	public function monitorEventLoopDelay(?options:{resolution:Int}):Histogram;
 }

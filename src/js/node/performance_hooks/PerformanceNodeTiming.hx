@@ -36,5 +36,42 @@ extern class PerformanceNodeTiming extends PerformanceEntry {
 	**/
 	public var bootstrapComplete(default, never):Int;
 
-	// TODO
+	/**
+		The high resolution millisecond timestamp at which the Node.js environment was initialized.
+
+		@see https://nodejs.org/api/perf_hooks.html#perf_hooks_performancenodetiming_environment
+	**/
+	public var environment(default, never):Int;
+
+	/**
+		The high resolution millisecond timestamp at which the Node.js event loop exited.
+		If the event loop has not yet exited, the property has the value of -1.
+		It can only have a value of not -1 in a handler of the `'exit'` event.
+
+		@see https://nodejs.org/api/perf_hooks.html#perf_hooks_performancenodetiming_loopexit
+	**/
+	public var loopExit(default, never):Int;
+
+	/**
+		The high resolution millisecond timestamp at which the Node.js event loop started.
+		If the event loop has not yet started (e.g., in the first tick of the main script),
+		the property has the value of -1.
+
+		@see https://nodejs.org/api/perf_hooks.html#perf_hooks_performancenodetiming_loopstart
+	**/
+	public var loopStart(default, never):Int;
+
+	/**
+		The high resolution millisecond timestamp at which the Node.js process was initialized.
+
+		@see https://nodejs.org/api/perf_hooks.html#perf_hooks_performancenodetiming_nodestart
+	**/
+	public var nodeStart(default, never):Int;
+
+	/**
+		The high resolution millisecond timestamp at which the V8 platform was initialized.
+
+		@see https://nodejs.org/api/perf_hooks.html#perf_hooks_performancenodetiming_v8start
+	**/
+	public var v8Start(default, never):Int;
 }
