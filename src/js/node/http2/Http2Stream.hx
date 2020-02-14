@@ -24,6 +24,7 @@ package js.node.http2;
 import js.node.stream.Duplex;
 import js.node.events.EventEmitter;
 import js.node.Http2.HeadersObject;
+import js.node.stream.Readable.IReadable;
 #if haxe4
 import js.lib.Error;
 #else
@@ -94,6 +95,51 @@ import js.Error;
 		@see https://nodejs.org/api/http2.html#http2_event_wanttrailers
 	**/
 	var WantTrailers:Http2StreamEvent<Void->Void> = "wantTrailers";
+
+	/**
+		Inherited from `stream.Duplee`.
+	**/
+	var Drain:Http2StreamEvent<Void->Void> = "drain";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Finish:Http2StreamEvent<Void->Void> = "finish";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Pipe:Http2StreamEvent<IReadable->Void> = "pipe";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Unpipe:Http2StreamEvent<IReadable->Void> = "unpipe";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Data:Http2StreamEvent<Dynamic->Void> = "data";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var End:Http2StreamEvent<Void->Void> = "end";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Pause:Http2StreamEvent<Void->Void> = "pause";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Readable:Http2StreamEvent<Void->Void> = "readable";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Resume:Http2StreamEvent<Void->Void> = "resume";
 }
 
 /**

@@ -52,6 +52,36 @@ import js.Error;
 		@see https://nodejs.org/api/http2.html#http2_event_close_2
 	**/
 	var Close:Http2ServerRequestEvent<Void->Void> = "close";
+
+	/**
+		Inherited from `stream.Readable`.
+	**/
+	var Data:Http2ServerRequestEvent<Dynamic->Void> = "data";
+
+	/**
+		Inherited from `stream.Readable`.
+	**/
+	var End:Http2ServerRequestEvent<Void->Void> = "end";
+
+	/**
+		Inherited from `stream.Readable`.
+	**/
+	var Error:Http2ServerRequestEvent<Error->Void> = "error";
+
+	/**
+		Inherited from `stream.Readable`.
+	**/
+	var Pause:Http2ServerRequestEvent<Void->Void> = "pause";
+
+	/**
+		Inherited from `stream.Readable`.
+	**/
+	var Readable:Http2ServerRequestEvent<Void->Void> = "readable";
+
+	/**
+		Inherited from `stream.Readable`.
+	**/
+	var Resume:Http2ServerRequestEvent<Void->Void> = "resume";
 }
 
 /**

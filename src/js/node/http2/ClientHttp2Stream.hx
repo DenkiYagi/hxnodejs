@@ -23,6 +23,7 @@ package js.node.http2;
  */
 import js.node.Http2.HeadersObject;
 import js.node.events.EventEmitter.Event;
+import js.node.stream.Readable.IReadable;
 
 /**
 	Enumeration of events for `ClientHttp2Stream` objects.
@@ -63,6 +64,86 @@ import js.node.events.EventEmitter.Event;
 		@see https://nodejs.org/api/http2.html#http2_event_response
 	**/
 	var Response:ClientHttp2StreamEvent<HeadersObject->Int->Void> = "response";
+
+	/**
+		Inherited from `Http2Stream`.
+	**/
+	var Aborted:ClientHttp2StreamEvent<Void->Void> = "aborted";
+
+	/**
+		Inherited from `Http2Stream`.
+	**/
+	var Close:ClientHttp2StreamEvent<Void->Void> = "close";
+
+	/**
+		Inherited from `Http2Stream`.
+	**/
+	var Error:ClientHttp2StreamEvent<Error->Void> = "error";
+
+	/**
+		Inherited from `Http2Stream`.
+	**/
+	var FrameError:ClientHttp2StreamEvent<Int->Int->Int->Void> = "frameError";
+
+	/**
+		Inherited from `Http2Stream`.
+	**/
+	var Timeout:ClientHttp2StreamEvent<Void->Void> = "timeout";
+
+	/**
+		Inherited from `Http2Stream`.
+	**/
+	var Tailer:ClientHttp2StreamEvent<HeadersObject->Int->Void> = "trailers";
+
+	/**
+		Inherited from `Http2Stream`.
+	**/
+	var WantTrailers:ClientHttp2StreamEvent<Void->Void> = "wantTrailers";
+
+	/**
+		Inherited from `stream.Duplee`.
+	**/
+	var Drain:ClientHttp2StreamEvent<Void->Void> = "drain";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Finish:ClientHttp2StreamEvent<Void->Void> = "finish";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Pipe:ClientHttp2StreamEvent<IReadable->Void> = "pipe";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Unpipe:ClientHttp2StreamEvent<IReadable->Void> = "unpipe";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Data:ClientHttp2StreamEvent<Dynamic->Void> = "data";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var End:ClientHttp2StreamEvent<Void->Void> = "end";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Pause:ClientHttp2StreamEvent<Void->Void> = "pause";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Readable:ClientHttp2StreamEvent<Void->Void> = "readable";
+
+	/**
+		Inherited from `stream.Duplex`.
+	**/
+	var Resume:ClientHttp2StreamEvent<Void->Void> = "resume";
 }
 
 /**
