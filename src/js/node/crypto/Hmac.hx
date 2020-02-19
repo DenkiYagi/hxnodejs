@@ -22,7 +22,67 @@
 
 package js.node.crypto;
 
+import haxe.extern.EitherType;
+import js.lib.ArrayBufferView;
 import js.node.Buffer;
+import js.node.stream.Transform;
+import js.node.events.EventEmitter.Event;
+import js.node.stream.Readable.IReadable;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
+
+/**
+	Enumeration for `Hmac` class events.
+**/
+@:enum abstract HmacEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Readable:HmacEvent<Void->Void> = "readable";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Data:HmacEvent<EitherType<Buffer, String>->Void> = "data";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var End:HmacEvent<Void->Void> = "end";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Close:HmacEvent<Void->Void> = "close";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Error:HmacEvent<Error->Void> = "error";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Drain:HmacEvent<Void->Void> = "drain";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Finish:HmacEvent<Void->Void> = "finish";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Pipe:HmacEvent<IReadable->Void> = "pipe";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Unpipe:HmacEvent<IReadable->Void> = "unpipe";
+}
 
 /**
 	The `Hmac` class is a utility for creating cryptographic HMAC digests. It can be used in one of two ways:

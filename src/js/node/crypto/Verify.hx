@@ -22,10 +22,47 @@
 
 package js.node.crypto;
 
-import js.node.crypto.Constants;
 import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.stream.Writable;
+import js.node.stream.Readable.IReadable;
+import js.node.events.EventEmitter.Event;
+import js.node.Stream;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
+
+/**
+	Enumeration for `Verify` class events.
+**/
+@:enum abstract VerifyEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+	/**
+		inherited from `stream.Writable`.
+	**/
+	var Drain:VerifyEvent<Void->Void> = "drain";
+
+	/**
+		inherited from `stream.Writable`.
+	**/
+	var Finish:VerifyEvent<Void->Void> = "finish";
+
+	/**
+		inherited from `stream.Writable`.
+	**/
+	var Pipe:VerifyEvent<IReadable->Void> = "pipe";
+
+	/**
+		inherited from `stream.Writable`.
+	**/
+	var Unpipe:VerifyEvent<IReadable->Void> = "unpipe";
+
+	/**
+		inherited from `stream.Writable`.
+	**/
+	var Error:VerifyEvent<Error->Void> = "error";
+}
 
 /**
 	The `Verify` class is a utility for verifying signatures. It can be used in one of two ways:

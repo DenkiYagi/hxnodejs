@@ -22,9 +22,67 @@
 
 package js.node.crypto;
 
+import haxe.extern.EitherType;
 import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.stream.Transform;
+import js.node.events.EventEmitter.Event;
+import js.node.stream.Readable.IReadable;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
+
+/**
+	Enumeration for `Cipher` class events.
+**/
+@:enum abstract CipherEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Readable:CipherEvent<Void->Void> = "readable";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Data:CipherEvent<EitherType<Buffer, String>->Void> = "data";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var End:CipherEvent<Void->Void> = "end";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Close:CipherEvent<Void->Void> = "close";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Error:CipherEvent<Error->Void> = "error";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Drain:CipherEvent<Void->Void> = "drain";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Finish:CipherEvent<Void->Void> = "finish";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Pipe:CipherEvent<IReadable->Void> = "pipe";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Unpipe:CipherEvent<IReadable->Void> = "unpipe";
+}
 
 /**
 	Instances of the Cipher class are used to encrypt data.

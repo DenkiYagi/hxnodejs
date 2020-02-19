@@ -26,6 +26,44 @@ import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.stream.Writable;
 import js.node.Crypto.KeyOptions;
+import js.node.events.EventEmitter.Event;
+import js.node.stream.Readable.IReadable;
+import js.node.Stream;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
+
+/**
+	Enumeration for `Sign` class events.
+**/
+@:enum abstract SignEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+	/**
+		inherited from `stream.Writable`.
+	**/
+	var Drain:SignEvent<Void->Void> = "drain";
+
+	/**
+		inherited from `stream.Writable`.
+	**/
+	var Finish:SignEvent<Void->Void> = "finish";
+
+	/**
+		inherited from `stream.Writable`.
+	**/
+	var Pipe:SignEvent<IReadable->Void> = "pipe";
+
+	/**
+		inherited from `stream.Writable`.
+	**/
+	var Unpipe:SignEvent<IReadable->Void> = "unpipe";
+
+	/**
+		inherited from `stream.Writable`.
+	**/
+	var Error:SignEvent<Error->Void> = "error";
+}
 
 /**
 	The `Sign` class is a utility for generating signatures. It can be used in one of two ways:

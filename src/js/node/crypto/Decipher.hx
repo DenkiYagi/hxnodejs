@@ -22,10 +22,67 @@
 
 package js.node.crypto;
 
+import haxe.extern.EitherType;
 import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.stream.Transform;
-import js.node.stream.Transform.TSelf;
+import js.node.events.EventEmitter.Event;
+import js.node.stream.Readable.IReadable;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
+
+/**
+	Enumeration for `Decipher` class events.
+**/
+@:enum abstract DecipherEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Readable:DecipherEvent<Void->Void> = "readable";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Data:DecipherEvent<EitherType<Buffer, String>->Void> = "data";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var End:DecipherEvent<Void->Void> = "end";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Close:DecipherEvent<Void->Void> = "close";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Error:DecipherEvent<Error->Void> = "error";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Drain:DecipherEvent<Void->Void> = "drain";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Finish:DecipherEvent<Void->Void> = "finish";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Pipe:DecipherEvent<IReadable->Void> = "pipe";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Unpipe:DecipherEvent<IReadable->Void> = "unpipe";
+}
 
 /**
 	Instances of the `Decipher` class are used to decrypt data.

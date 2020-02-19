@@ -22,8 +22,67 @@
 
 package js.node.crypto;
 
+import haxe.extern.EitherType;
 import js.lib.ArrayBufferView;
 import js.node.Buffer;
+import js.node.stream.Transform;
+import js.node.events.EventEmitter.Event;
+import js.node.stream.Readable.IReadable;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
+
+/**
+	Enumeration for `Hash` class events.
+**/
+@:enum abstract HashEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Readable:HashEvent<Void->Void> = "readable";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Data:HashEvent<EitherType<Buffer, String>->Void> = "data";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var End:HashEvent<Void->Void> = "end";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Close:HashEvent<Void->Void> = "close";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Error:HashEvent<Error->Void> = "error";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Drain:HashEvent<Void->Void> = "drain";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Finish:HashEvent<Void->Void> = "finish";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Pipe:HashEvent<IReadable->Void> = "pipe";
+
+	/**
+		inherited from `stream.Transform`
+	**/
+	var Unpipe:HashEvent<IReadable->Void> = "unpipe";
+}
 
 /**
 	The `Hash` class is a utility for creating hash digests of data. It can be used in one of two ways:
