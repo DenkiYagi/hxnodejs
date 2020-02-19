@@ -22,7 +22,15 @@
 
 package js.node.tty;
 
-import js.node.events.EventEmitter;
+import haxe.extern.EitherType;
+import js.node.events.EventEmitter.Event;
+import js.node.stream.Readable.IReadable;
+import js.node.Dns;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
 
 /**
 	Enumeration of events emitted by `WriteStream` objects in addition to its parents.
@@ -32,6 +40,76 @@ import js.node.events.EventEmitter;
 		Emitted by refreshSize() when either of the columns or rows properties has changed.
 	**/
 	var Resize:WriteStreamEvent<Void->Void> = "resize";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Lookup:WriteStreamEvent<Null<Error>->String->DnsAddressFamily->Void> = "lookup";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Connect:WriteStreamEvent<Void->Void> = "connect";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Data:WriteStreamEvent<EitherType<Buffer, String>->Void> = "data";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var End:WriteStreamEvent<Void->Void> = "end";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Timeout:WriteStreamEvent<Void->Void> = "timeout";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Drain:WriteStreamEvent<Void->Void> = "drain";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Error:WriteStreamEvent<Error->Void> = "error";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Close:WriteStreamEvent<Bool->Void> = "close";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Finish:WriteStreamEvent<Void->Void> = "finish";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Pipe:WriteStreamEvent<IReadable->Void> = "pipe";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Unpipe:WriteStreamEvent<IReadable->Void> = "unpipe";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Pause:WriteStreamEvent<Void->Void> = "pause";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Readable:WriteStreamEvent<Void->Void> = "readable";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Resume:WriteStreamEvent<Void->Void> = "resume";
 }
 
 /**

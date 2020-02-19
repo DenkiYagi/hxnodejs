@@ -22,6 +22,91 @@
 
 package js.node.tty;
 
+import haxe.extern.EitherType;
+import js.node.events.EventEmitter.Event;
+import js.node.stream.Readable.IReadable;
+import js.node.Dns;
+#if haxe4
+import js.lib.Error;
+#else
+import js.Error;
+#end
+
+/**
+	Enumeration of events emitted by `ReadStream` objects in addition to its parent class events.
+**/
+@:enum abstract ReadStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Lookup:ReadStreamEvent<Null<Error>->String->DnsAddressFamily->Void> = "lookup";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Connect:ReadStreamEvent<Void->Void> = "connect";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Data:ReadStreamEvent<EitherType<Buffer, String>->Void> = "data";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var End:ReadStreamEvent<Void->Void> = "end";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Timeout:ReadStreamEvent<Void->Void> = "timeout";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Drain:ReadStreamEvent<Void->Void> = "drain";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Error:ReadStreamEvent<Error->Void> = "error";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Close:ReadStreamEvent<Bool->Void> = "close";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Finish:ReadStreamEvent<Void->Void> = "finish";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Pipe:ReadStreamEvent<IReadable->Void> = "pipe";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Unpipe:ReadStreamEvent<IReadable->Void> = "unpipe";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Pause:ReadStreamEvent<Void->Void> = "pause";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Readable:ReadStreamEvent<Void->Void> = "readable";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Resume:ReadStreamEvent<Void->Void> = "resume";
+}
+
 /**
 	A net.Socket subclass that represents the readable portion of a tty.
 	In normal circumstances, process.stdin will be the only tty.ReadStream instance

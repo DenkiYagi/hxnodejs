@@ -23,6 +23,7 @@
 package js.node.net;
 
 import haxe.extern.EitherType;
+import js.node.stream.Readable.IReadable;
 #if haxe4
 import js.lib.Error;
 #else
@@ -92,6 +93,38 @@ import js.node.events.EventEmitter.Event;
 			had_error - true if the socket had a transmission error
 	**/
 	var Close:SocketEvent<Bool->Void> = "close";
+
+	/**
+		inherited from `stream.Duplex`.
+	**/
+	var Finish:SocketEvent<Void->Void> = "finish";
+
+	/**
+		inherited from `stream.Duplex`.
+	**/
+	var Pipe:SocketEvent<IReadable->Void> = "pipe";
+
+	/**
+		inherited from `stream.Duplex`.
+	**/
+	var Unpipe:SocketEvent<IReadable->Void> = "unpipe";
+
+	// var Error:DuplexEvent<Error->Void> = "error";
+
+	/**
+		inherited from `stream.Duplex`.
+	**/
+	var Pause:SocketEvent<Void->Void> = "pause";
+
+	/**
+		inherited from `stream.Duplex`.
+	**/
+	var Readable:SocketEvent<Void->Void> = "readable";
+
+	/**
+		inherited from `stream.Duplex`.
+	**/
+	var Resume:SocketEvent<Void->Void> = "resume";
 }
 
 typedef SocketOptionsBase = {

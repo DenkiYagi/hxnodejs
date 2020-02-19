@@ -22,11 +22,14 @@
 
 package js.node.tls;
 
+import haxe.extern.EitherType;
 import haxe.Constraints.Function;
 import js.node.Buffer;
 import js.node.events.EventEmitter.Event;
+import js.node.stream.Readable.IReadable;
 import js.node.Tls.TlsServerOptionsBase;
 import js.node.Tls.TlsClientOptionsBase;
+import js.node.Dns;
 #if haxe4
 import js.lib.Error;
 #else
@@ -58,6 +61,76 @@ import js.Error;
 		that contains information about server's certificate revocation status.
 	**/
 	var OCSPResponse:TLSSocketEvent<Buffer->Void> = "OCSPResponse";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Lookup:TLSSocketEvent<Null<Error>->String->DnsAddressFamily->Void> = "lookup";
+
+	/**
+		inherited from `met.Socket`.
+	**/
+	var Connect:TLSSocketEvent<Void->Void> = "connect";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Data:TLSSocketEvent<EitherType<Buffer, String>->Void> = "data";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var End:TLSSocketEvent<Void->Void> = "end";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Timeout:TLSSocketEvent<Void->Void> = "timeout";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Drain:TLSSocketEvent<Void->Void> = "drain";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Error:TLSSocketEvent<Error->Void> = "error";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Close:TLSSocketEvent<Bool->Void> = "close";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Finish:TLSSocketEvent<Void->Void> = "finish";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Pipe:TLSSocketEvent<IReadable->Void> = "pipe";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Unpipe:TLSSocketEvent<IReadable->Void> = "unpipe";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Pause:TLSSocketEvent<Void->Void> = "pause";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Readable:TLSSocketEvent<Void->Void> = "readable";
+
+	/**
+		inherited from `net.Socket`.
+	**/
+	var Resume:TLSSocketEvent<Void->Void> = "resume";
 }
 
 typedef TLSSocketOptions = {
