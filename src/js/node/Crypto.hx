@@ -23,7 +23,6 @@
 package js.node;
 
 import haxe.extern.EitherType;
-import haxe.ds.Option;
 #if haxe4
 import js.lib.Error;
 #else
@@ -32,35 +31,8 @@ import js.Error;
 import js.node.Buffer;
 import js.lib.ArrayBufferView;
 import js.node.crypto.*;
-import js.node.crypto.DiffieHellman.IDiffieHellman;
-import js.node.tls.SecureContext;
 import js.node.stream.Transform;
 import js.node.stream.Writable;
-
-/**
-	Enumerations of crypto algorighms to be used.
-**/
-@:enum abstract CryptoAlgorithm(String) from String to String {
-	var SHA1 = "sha1";
-	var MD5 = "md5";
-	var SHA256 = "sha256";
-	var SHA512 = "sha512";
-	var SHAKE256 = "shake256";
-}
-
-/**
-	Enumeration of supported group names for `Crypto.getDiffieHellman`.
-**/
-@:enum abstract DiffieHellmanGroupName(String) from String to String {
-	var Modp1 = "modp1";
-	var Modp2 = "modp2";
-	var Modp5 = "modp5";
-	var Modp14 = "modp14";
-	var Modp15 = "modp15";
-	var Modp16 = "modp16";
-	var Modp17 = "modp17";
-	var Modp18 = "modp18";
-}
 
 /**
 	The crypto module provides cryptographic functionality that includes
@@ -72,74 +44,53 @@ import js.node.stream.Writable;
 extern class Crypto {
 	/**
 		The default encoding to use for functions that can take either strings or buffers.
-		The default value is 'buffer', which makes methods default to Buffer objects.
-
-		@see https://nodejs.org/api/crypto.html#crypto_crypto_default_encoding
+		The default value is 'buffer', which makes it default to using `Buffer` objects.
+		This is here to make the crypto module more easily compatible with legacy programs
+		that expected 'binary' to be the default encoding.
+		Note that new programs will probably expect buffers, so only use this as a temporary measure.
 	**/
 	@:deprecated
 	static var DEFAULT_ENCODING:String;
 
 	/**
-		Property for checking and controlling whether a FIPS compliant crypto provider is
-		currently in use. Setting to true requires a FIPS build of Node.js.
-
-		@see https://nodejs.org/api/crypto.html#crypto_crypto_fips
+		Property for checking and controlling whether a FIPS compliant crypto provider is currently in use.
+		Setting to true requires a FIPS build of Node.js.
 	**/
 	@:deprecated
 	static var fips:Bool;
 
 	/**
-		Creates and returns a cipher object, with the given `algorithm` and `password`.
-
-		@see https://nodejs.org/api/crypto.html#crypto_crypto_createcipher_algorithm_password_options
+		Creates and returns a cipher object, with the given algorithm and password.
+		`algorithm` is dependent on OpenSSL, examples are 'aes192', etc.
+		On recent releases, openssl list-cipher-algorithms will display the available cipher algorithms.
+		`password` is used to derive key and IV, which must be a 'binary' encoded string or a buffer.
+		It is a stream that is both readable and writable. The written data is used to compute the hash.
+		Once the writable side of the stream is ended, use the `read` method to get the computed hash digest.
+		The legacy `update` and `digest` methods are also supported.
 	**/
 	@:deprecated
-	@:overload(function(algorithm:CryptoAlgorithm, password:String, ?options:Transform<Cipher>):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, password:ArrayBufferView, ?options:Transform<Cipher>):Cipher {})
-	static function createCipher(algorithm:CryptoAlgorithm, password:Buffer, ?options:Transform<Cipher>):Cipher;
+	static function createCipher(algorithm:String, password:EitherType<String, Buffer>):Cipher;
 
 	/**
 		Creates and returns a `Cipher` object, with the given `algorithm`, `key` and initialization vector (`iv`).
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createcipheriv_algorithm_key_iv_options
 	**/
-	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:String, ?options:Transform<Cipher>):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:Buffer, ?options:Transform<Cipher>):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:ArrayBufferView, ?options:Transform<Cipher>):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:String, ?options:Transform<Cipher>):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:Buffer, ?options:Transform<Cipher>):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:ArrayBufferView, ?options:Transform<Cipher>):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:String, ?options:Transform<Cipher>):Cipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:Buffer, ?options:Transform<Cipher>):Cipher {})
-	static function createCipheriv(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:ArrayBufferView, ?options:Transform<Cipher>):Cipher;
+	static function createCipheriv(algorithm:String, key:CryptoKey, iv:Null<CryptoInitializationVector>, ?options:CipherOptions):Cipher;
 
 	/**
-		Creates and returns a `Decipher` object that uses the given `algorithm` and `password` (key).
-
-		@see https://nodejs.org/api/crypto.html#crypto_crypto_createdecipher_algorithm_password_options
+		Creates and returns a decipher object, with the given algorithm and key.
+		This is the mirror of the `createCipher` above.
 	**/
 	@:deprecated
-	@:overload(function(algorithm:CryptoAlgorithm, password:String):Decipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, password:Buffer):Decipher {})
-	static function createDecipher(algorithm:CryptoAlgorithm, password:ArrayBufferView):Decipher;
+	static function createDecipher(algorithm:String, password:EitherType<String, Buffer>):Decipher;
 
 	/**
 		Creates and returns a `Decipher` object that uses the given `algorithm`, `key` and initialization vector (`iv`).
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createdecipheriv_algorithm_key_iv_options
 	**/
-	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:Null<String>):Decipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:Null<Buffer>):Decipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:String, iv:Null<ArrayBufferView>):Decipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:Null<String>):Decipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:Null<Buffer>):Decipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, iv:Null<ArrayBufferView>):Decipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:Null<String>):Decipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:Null<Buffer>):Decipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, iv:Null<ArrayBufferView>):Decipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:KeyObject, iv:Null<String>):Decipher {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:KeyObject, iv:Null<Buffer>):Decipher {})
-	static function createDecipheriv(algorithm:CryptoAlgorithm, key:KeyObject, iv:Null<ArrayBufferView>):Decipher;
+	static function createDecipheriv(algorithm:String, key:CryptoKey, iv:Null<CryptoInitializationVector>, ?options:CipherOptions):Decipher;
 
 	/**
 		If `prim` is provoded as string or a `Buffer`, creates a `DiffieHellman` key exchange object
@@ -150,22 +101,9 @@ extern class Crypto {
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_creatediffiehellman_prime_primeencoding_generator_generatorencoding
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_creatediffiehellman_primelength_generator
 	**/
-	@:overload(function(prime_length:Int, ?generator:Int):DiffieHellman {})
-	@:overload(function(prime_length:Int, ?generator:String):DiffieHellman {})
-	@:overload(function(prime_length:Int, ?generator:Buffer):DiffieHellman {})
-	@:overload(function(prime_length:Int, ?generator:ArrayBufferView):DiffieHellman {})
-	@:overload(function(prime:String, ?prime_encoding:String, ?generator:Int, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:String, ?prime_encoding:String, ?generator:String, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:String, ?prime_encoding:String, ?generator:Buffer, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:String, ?prime_encoding:String, ?generator:ArrayBufferView, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:Buffer, ?prime_encoding:String, ?generator:Int, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:Buffer, ?prime_encoding:String, ?generator:String, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:Buffer, ?prime_encoding:String, ?generator:Buffer, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:Buffer, ?prime_encoding:String, ?generator:ArrayBufferView, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:ArrayBufferView, ?prime_encoding:String, ?generator:Int, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:ArrayBufferView, ?prime_encoding:String, ?generator:String, ?generator_encoding:String):DiffieHellman {})
-	@:overload(function(prime:ArrayBufferView, ?prime_encoding:String, ?generator:Buffer, ?generator_encoding:String):DiffieHellman {})
-	static function createDiffieHellman(prime:ArrayBufferView, ?prime_encoding:String, ?generator:ArrayBufferView, ?generator_encoding:String):DiffieHellman;
+	@:overload(function(primeLength:Int, ?generator:Int):DiffieHellman {})
+	static function createDiffieHellman(prime:EitherType<String, EitherType<Buffer, ArrayBufferView>>, ?primeEncoding:String,
+		?generator:EitherType<Int, EitherType<String, EitherType<Buffer, ArrayBufferView>>>, ?generatorEncoding:String):DiffieHellman;
 
 	/**
 		An alias for `Crypto.getDiffieHellman()`
@@ -181,7 +119,7 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createecdh_curvename
 	**/
-	static function createECDH(curve_name:String):ECDH;
+	static function createECDH(curveName:String):ECDH;
 
 	/**
 		Creates and returns a `Hash` object that can be used to generate hash digests using the given `algorithm`.
@@ -190,7 +128,7 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm_options
 	**/
-	static function createHash(algorithm:CryptoAlgorithm, ?options:Transform<Hash>):Hash;
+	static function createHash(algorithm:String, ?options:Transform<Hash>):Hash;
 
 	/**
 		Creates and returns an `Hmac` object that uses the given `algorithm` and `key`.
@@ -198,10 +136,7 @@ extern class Crypto {
 
 		@see https://nodejs.org/api/crypto.html#crypto_crypto_createhmac_algorithm_key_options
 	**/
-	@:overload(function(algorithm:CryptoAlgorithm, key:String, ?options:Transform<Hmac>):DiffieHellman {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:Buffer, ?options:Transform<Hmac>):DiffieHellman {})
-	@:overload(function(algorithm:CryptoAlgorithm, key:ArrayBufferView, ?options:Transform<Hmac>):DiffieHellman {})
-	static function createHmac(algorithm:CryptoAlgorithm, key:KeyObject, ?options:Transform<Hmac>):Hmac;
+	static function createHmac(algorithm:String, key:CryptoKey, ?options:Transform<Hmac>):Hmac;
 
 	/**
 		Creates and returns a new key object containing a private key.
@@ -525,6 +460,13 @@ extern class Crypto {
 	static function verify(algorithm:Null<CryptoAlgorithm>, data:ArrayBufferView, key:KeyObject, signature:ArrayBufferView):Bool;
 }
 
+typedef CryptoKey = EitherType<String, EitherType<Buffer, EitherType<ArrayBufferView, KeyObject>>>;
+typedef CryptoInitializationVector = EitherType<String, EitherType<Buffer, ArrayBufferView>>;
+
+typedef CipherOptions = TransformNewoptions & {
+	@:optional var authTagLength:Int;
+}
+
 /**
 	An options type for `privateEncrypt`, `privateDecrypt`, `publicEncrypt`, `publicDecrypt` methods of `Crypto`.
 **/
@@ -753,4 +695,31 @@ typedef ScryptOptions = {
 typedef KeyOptions = {
 	var padding:Int;
 	var saltLength:Int;
+}
+
+/**
+	Enumerations of crypto algorighms to be used.
+**/
+@:deprecated
+@:enum abstract CryptoAlgorithm(String) from String to String {
+	var SHA1 = "sha1";
+	var MD5 = "md5";
+	var SHA256 = "sha256";
+	var SHA512 = "sha512";
+	var SHAKE256 = "shake256";
+}
+
+/**
+	Enumeration of supported group names for `Crypto.getDiffieHellman`.
+**/
+@:deprecated
+@:enum abstract DiffieHellmanGroupName(String) from String to String {
+	var Modp1 = "modp1";
+	var Modp2 = "modp2";
+	var Modp5 = "modp5";
+	var Modp14 = "modp14";
+	var Modp15 = "modp15";
+	var Modp16 = "modp16";
+	var Modp17 = "modp17";
+	var Modp18 = "modp18";
 }
