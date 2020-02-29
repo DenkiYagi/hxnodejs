@@ -20,35 +20,20 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package js.node.util;
+package js.node;
 
-import haxe.extern.Rest;
-import haxe.Constraints.Function;
-#if haxe4
-import js.lib.Promise;
-#else
-import js.Promise;
-#end
+/**
+	Key/value access helper.
+**/
+abstract KeyValue<K, V>(Array<Any>) {
+	public var key(get, never):K;
+	public var value(get, never):V;
 
-@:jsRequire("util", "promisify")
-extern class Promisify {
-	/**
-		Takes a function following the common error-first callback style, i.e. taking an `(err, value) => ...` callback
-		as the last argument, and returns a version that returns promises.
+	inline function get_key():K {
+		return this[0];
+	}
 
-		@see https://nodejs.org/api/util.html#util_util_promisify_original
-	**/
-	@:selfCall
-	static function promisify(original:Function):Rest<Dynamic>->Promise<Dynamic>;
-
-	/**
-		That can be used to declare custom promisified variants of functions, see Custom promisified functions.
-
-		@see https://nodejs.org/api/util.html#util_util_promisify_custom
-	**/
-	#if haxe4
-	static final custom:js.lib.Symbol;
-	#else
-	static var custom(default, never):Dynamic;
-	#end
+	inline function get_value():V {
+		return this[1];
+	}
 }

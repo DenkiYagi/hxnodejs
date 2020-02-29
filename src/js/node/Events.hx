@@ -20,9 +20,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package js.node.util;
+package js.node;
 
-import haxe.extern.Rest;
+import js.node.events.EventEmitter;
 import haxe.Constraints.Function;
 #if haxe4
 import js.lib.Promise;
@@ -30,25 +30,22 @@ import js.lib.Promise;
 import js.Promise;
 #end
 
-@:jsRequire("util", "promisify")
-extern class Promisify {
+/**
+	Much of the Node.js core API is built around an idiomatic asynchronous event-driven architecture
+	in which certain kinds of objects (called "emitters") emit named events that cause `Function` objects
+	("listeners") to be called.
+
+	@see https://nodejs.org/api/events.html#events_events
+ */
+@:jsRequire("events")
+extern class Events {
 	/**
-		Takes a function following the common error-first callback style, i.e. taking an `(err, value) => ...` callback
-		as the last argument, and returns a version that returns promises.
+		Creates a `Promise` that is resolved when the `EventEmitter` emits the given
+		event or that is rejected when the `EventEmitter` emits `'error'`.
+		The `Promise` will resolve with an array of all the arguments emitted to the
+		given event.
 
-		@see https://nodejs.org/api/util.html#util_util_promisify_original
+		@see https://nodejs.org/api/events.html#events_events_once_emitter_name
 	**/
-	@:selfCall
-	static function promisify(original:Function):Rest<Dynamic>->Promise<Dynamic>;
-
-	/**
-		That can be used to declare custom promisified variants of functions, see Custom promisified functions.
-
-		@see https://nodejs.org/api/util.html#util_util_promisify_custom
-	**/
-	#if haxe4
-	static final custom:js.lib.Symbol;
-	#else
-	static var custom(default, never):Dynamic;
-	#end
+	static function once<T:Function>(emitter:IEventEmitter, name:Event<T>):Promise<Array<Dynamic>>;
 }
