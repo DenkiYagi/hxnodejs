@@ -22,8 +22,10 @@
 
 package js.node.crypto;
 
+import js.node.Crypto;
 import js.node.Buffer;
 import js.lib.ArrayBufferView;
+import haxe.extern.EitherType;
 
 /**
 	SPKAC is a Certificate Signing Request mechanism originally implemented by Netscape
@@ -33,31 +35,23 @@ import js.lib.ArrayBufferView;
 **/
 @:jsRequire("crypto", "Certificate")
 extern class Certificate {
-	function new();
-
 	/**
 		Returns the challenge component of the `spkac` data structure, which includes a public key and a challenge.
 
 		@see https://nodejs.org/api/crypto.html#crypto_certificate_exportchallenge_spkac
-	**/
-	@:overload(function(spkac:String):Buffer {})
-	@:overload(function(spkac:Buffer):Buffer {})
-	function exportChallenge(spkac:ArrayBufferView):Buffer;
+	**/ static function exportChallenge(spkac:BinaryLike):Buffer;
 
 	/**
 		Returns the public key component of the `spkac` data structure, which includes a public key and a challenge.
 
 		@see https://nodejs.org/api/crypto.html#crypto_certificate_exportpublickey_spkac_encoding
 	**/
-	@:overload(function(spkac:String, ?encoding:String):Buffer {})
-	@:overload(function(spkac:Buffer, ?encoding:String):Buffer {})
-	function exportPublicKey(spkac:ArrayBufferView, ?encoding:String):Buffer;
+	static function exportPublicKey(spkac:BinaryLike, ?encoding:String):Buffer;
 
 	/**
 		Returns `true` if the given `spkac` data structure is valid, `false` otherwise.
 
 		@see https://nodejs.org/api/crypto.html#crypto_certificate_verifyspkac_spkac
 	**/
-	@:overload(function(spkac:Buffer):Bool {})
-	function verifySpkac(spkac:ArrayBufferView):Bool;
+	static function verifySpkac(spkac:EitherType<Buffer, ArrayBufferView>):Bool;
 }

@@ -37,59 +37,14 @@ import js.Error;
 /**
 	Enumeration for `Decipher` class events.
 **/
-@:enum abstract DecipherEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Readable:DecipherEvent<Void->Void> = "readable";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Data:DecipherEvent<EitherType<Buffer, String>->Void> = "data";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var End:DecipherEvent<Void->Void> = "end";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Close:DecipherEvent<Void->Void> = "close";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Error:DecipherEvent<Error->Void> = "error";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Drain:DecipherEvent<Void->Void> = "drain";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Finish:DecipherEvent<Void->Void> = "finish";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Pipe:DecipherEvent<IReadable->Void> = "pipe";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Unpipe:DecipherEvent<IReadable->Void> = "unpipe";
-}
+typedef DecipherEvent<T:haxe.Constraints.Function> = TransformEvent<T>;
 
 /**
 	Instances of the `Decipher` class are used to decrypt data.
 
 	@see https://nodejs.org/api/crypto.html#crypto_class_decipher
 **/
-extern class Decipher extends js.node.stream.Transform<Decipher> {
+extern class Decipher extends Transform<Decipher> {
 	/**
 		Once the `Decipher.final()` method has been called, the `Decipher` object can no longer be used to decrypt data.
 		Attempts to call `Decipher.final()` more than once will result in an error being thrown.

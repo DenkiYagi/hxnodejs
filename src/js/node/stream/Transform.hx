@@ -28,6 +28,8 @@ import js.lib.Error;
 import js.Error;
 #end
 
+typedef TransformEvent<T:haxe.Constraints.Function> = js.node.stream.Duplex.DuplexEvent<T>;
+
 /**
 	A `Transform` stream is a `Duplex` stream where the output is computed in some way from the input.
 	Examples include `zlib` streams or `crypto` streams that compress, encrypt, or decrypt data.

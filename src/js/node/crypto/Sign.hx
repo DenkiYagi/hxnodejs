@@ -25,7 +25,7 @@ package js.node.crypto;
 import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.stream.Writable;
-import js.node.Crypto.KeyOptions;
+import js.node.Crypto.SigningOptions;
 import js.node.events.EventEmitter.Event;
 import js.node.stream.Readable.IReadable;
 import js.node.Stream;
@@ -83,8 +83,8 @@ extern class Sign extends Writable<Sign> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_sign_sign_privatekey_outputencoding
 	**/
-	@:overload(function(private_key:KeyOptions, output_encoding:String):String {})
-	@:overload(function(private_key:KeyOptions):Buffer {})
+	@:overload(function(private_key:SigningOptions, output_encoding:String):String {})
+	@:overload(function(private_key:SigningOptions):Buffer {})
 	@:overload(function(private_key:String, output_encoding:String):String {})
 	@:overload(function(private_key:String):Buffer {})
 	@:overload(function(private_key:Buffer, output_encoding:String):String {})

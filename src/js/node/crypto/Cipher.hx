@@ -37,52 +37,7 @@ import js.Error;
 /**
 	Enumeration for `Cipher` class events.
 **/
-@:enum abstract CipherEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Readable:CipherEvent<Void->Void> = "readable";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Data:CipherEvent<EitherType<Buffer, String>->Void> = "data";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var End:CipherEvent<Void->Void> = "end";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Close:CipherEvent<Void->Void> = "close";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Error:CipherEvent<Error->Void> = "error";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Drain:CipherEvent<Void->Void> = "drain";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Finish:CipherEvent<Void->Void> = "finish";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Pipe:CipherEvent<IReadable->Void> = "pipe";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Unpipe:CipherEvent<IReadable->Void> = "unpipe";
-}
+typedef CipherEvent<T:haxe.Constraints.Function> = TransformEvent<T>;
 
 /**
 	Instances of the Cipher class are used to encrypt data.
@@ -96,8 +51,7 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_final_outputencoding
 	**/
-	@:native("final") @:overload(function(output_encoding:String):Buffer {})
-	function finalContents(output_encoding:String):String;
+	function finalContents(outputEncoding:String):EitherType<Buffer, String>;
 
 	/**
 		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported),
@@ -105,7 +59,7 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_setaad_buffer_options
 	**/
-	function setAAD(buffer:Buffer, ?options:Transform<Cipher>):Cipher;
+	function setAAD(buffer:Buffer, ?options:CipherSetAADOptions):Cipher;
 
 	/**
 		The `Cipher.getAuthTag()` method should only be called after encryption has been completed using the `Cipher.final()` method.
@@ -120,8 +74,7 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_setautopadding_autopadding
 	**/
-	@:overload(function():Void {})
-	function setAutoPadding(auto_padding:Bool):Cipher;
+	function setAutoPadding(?autoPadding:Bool):Cipher;
 
 	/**
 		Updates the cipher with `data`.
@@ -131,10 +84,10 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_setautopadding_autopadding
 	**/
-	@:overload(function(data:String, input_encoding:String, ?output_encoding:String):Buffer {})
-	@:overload(function(data:String, input_encoding:String, ?output_encoding:String):String {})
-	@:overload(function(data:Buffer, ?output_encoding:String):Buffer {})
-	@:overload(function(data:Buffer, ?output_encoding:String):String {})
-	@:overload(function(data:ArrayBufferView, ?output_encoding:String):Buffer {})
-	function update(data:ArrayBufferView, ?output_encoding:String):String;
+	function update(data:EitherType<Buffer, ArrayBufferView>, ?input_encoding:String, ?output_encoding:String):EitherType<String, Buffer>;
+}
+
+typedef CipherSetAADOptions = {
+	> TransformNewOptions,
+	@:optional var plaintextLength:Int;
 }
