@@ -22,12 +22,12 @@
 
 package js.node.crypto;
 
-import js.lib.ArrayBufferView;
+import haxe.extern.EitherType;
+import js.node.Crypto.KeyLike;
+import js.node.Crypto.BinaryLike;
 import js.node.Buffer;
 import js.node.stream.Writable;
 import js.node.Crypto.SigningOptions;
-import js.node.events.EventEmitter.Event;
-import js.node.stream.Readable.IReadable;
 import js.node.Stream;
 #if haxe4
 import js.lib.Error;
@@ -38,32 +38,7 @@ import js.Error;
 /**
 	Enumeration for `Sign` class events.
 **/
-@:enum abstract SignEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
-	/**
-		inherited from `stream.Writable`.
-	**/
-	var Drain:SignEvent<Void->Void> = "drain";
-
-	/**
-		inherited from `stream.Writable`.
-	**/
-	var Finish:SignEvent<Void->Void> = "finish";
-
-	/**
-		inherited from `stream.Writable`.
-	**/
-	var Pipe:SignEvent<IReadable->Void> = "pipe";
-
-	/**
-		inherited from `stream.Writable`.
-	**/
-	var Unpipe:SignEvent<IReadable->Void> = "unpipe";
-
-	/**
-		inherited from `stream.Writable`.
-	**/
-	var Error:SignEvent<Error->Void> = "error";
-}
+typedef SignEvent<T:haxe.Constraints.Function> = WritableEvent<T>;
 
 /**
 	The `Sign` class is a utility for generating signatures. It can be used in one of two ways:
@@ -83,23 +58,15 @@ extern class Sign extends Writable<Sign> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_sign_sign_privatekey_outputencoding
 	**/
-	@:overload(function(private_key:SigningOptions, output_encoding:String):String {})
-	@:overload(function(private_key:SigningOptions):Buffer {})
-	@:overload(function(private_key:String, output_encoding:String):String {})
-	@:overload(function(private_key:String):Buffer {})
-	@:overload(function(private_key:Buffer, output_encoding:String):String {})
-	@:overload(function(private_key:Buffer):Buffer {})
-	@:overload(function(private_key:KeyObject, output_encoding:String):String {})
-	function sign(private_key:KeyObject):Buffer;
+	@:overload(function(privateKey:EitherType<SigningOptions, KeyLike>):Buffer {})
+	function sign(privateKey:EitherType<SigningOptions, KeyLike>, outputEncoding:String):String;
 
 	/**
-		Updates the `Sign` content with the given `data`, the encoding of which is given in `input_encoding`.
-		If `input_encoding` is not provided, and the `data` is a string, an encoding of `'utf8'` is enforced.
-		If data is a `Buffer` or `Arraybufferview`, then `input_encoding` is ignored.
+		Updates the `Sign` content with the given `data`, the encoding of which is given in `inputEncoding`.
+		If `inputEncoding` is not provided, and the `data` is a string, an encoding of `'utf8'` is enforced.
+		If data is a `Buffer` or `Arraybufferview`, then `inputEncoding` is ignored.
 
 		@see https://nodejs.org/api/crypto.html#crypto_sign_update_data_inputencoding
 	**/
-	@:overload(function(data:Buffer):Void {})
-	@:overload(function(data:ArrayBufferView):Void {})
-	function update(data:String, ?input_encoding:String):Void;
+	function update(data:BinaryLike, ?inputEncoding:String):Void;
 }

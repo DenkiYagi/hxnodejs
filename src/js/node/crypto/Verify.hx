@@ -22,47 +22,16 @@
 
 package js.node.crypto;
 
-import js.lib.ArrayBufferView;
-import js.node.Buffer;
+import haxe.extern.EitherType;
+import js.node.Crypto.BinaryLike;
+import js.node.Crypto.KeyLike;
+import js.node.Crypto.BufferLike;
 import js.node.stream.Writable;
-import js.node.stream.Readable.IReadable;
-import js.node.events.EventEmitter.Event;
-import js.node.Stream;
-#if haxe4
-import js.lib.Error;
-#else
-import js.Error;
-#end
 
 /**
 	Enumeration for `Verify` class events.
 **/
-@:enum abstract VerifyEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
-	/**
-		inherited from `stream.Writable`.
-	**/
-	var Drain:VerifyEvent<Void->Void> = "drain";
-
-	/**
-		inherited from `stream.Writable`.
-	**/
-	var Finish:VerifyEvent<Void->Void> = "finish";
-
-	/**
-		inherited from `stream.Writable`.
-	**/
-	var Pipe:VerifyEvent<IReadable->Void> = "pipe";
-
-	/**
-		inherited from `stream.Writable`.
-	**/
-	var Unpipe:VerifyEvent<IReadable->Void> = "unpipe";
-
-	/**
-		inherited from `stream.Writable`.
-	**/
-	var Error:VerifyEvent<Error->Void> = "error";
-}
+typedef VerifyEvent<T:haxe.Constraints.Function> = WritableEvent<T>;
 
 /**
 	The `Verify` class is a utility for verifying signatures. It can be used in one of two ways:
@@ -76,33 +45,21 @@ import js.Error;
 **/
 extern class Verify extends Writable<Sign> {
 	/**
-		Updates the `Verify` content with the given data, the encoding of which is given in input_encoding.
-		If `input_encoding` is not provided, and the `data` is a string, an encoding of `'utf8'` is enforced.
-		If data is a `Buffer` or `Arraybufferview`, then `input_encoding` is ignored.
+		Updates the `Verify` content with the given data, the encoding of which is given in inputEncoding.
+		If `inputEncoding` is not provided, and the `data` is a string, an encoding of `'utf8'` is enforced.
+		If data is a `Buffer` or `Arraybufferview`, then `inputEncoding` is ignored.
 
 		@see https://nodejs.org/api/crypto.html#crypto_verify_update_data_inputencoding
 	**/
-	@:overload(function(data:Buffer):Void {})
-	@:overload(function(data:ArrayBufferView):Void {})
-	function update(data:String, ?input_encoding:String):Void;
+	@:overload(function(data:BufferLike):Void {})
+	function update(data:String, ?inputEncoding:String):Void;
 
 	/**
 		Verifies the provided data using the given `object` and `signature`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_verify_verify_object_signature_signatureencoding
 	**/
-	@:overload(function(object:VerifyOptions, signature:String, signature_encoding:String):Bool {})
-	@:overload(function(object:VerifyOptions, signature:Buffer):Bool {})
-	@:overload(function(object:VerifyOptions, signature:ArrayBufferView):Bool {})
-	@:overload(function(object:String, signature:String, signature_encoding:String):Bool {})
-	@:overload(function(object:String, signature:Buffer):Bool {})
-	@:overload(function(object:String, signature:ArrayBufferView):Bool {})
-	@:overload(function(object:Buffer, signature:String, signature_encoding:String):Bool {})
-	@:overload(function(object:Buffer, signature:Buffer):Bool {})
-	@:overload(function(object:Buffer, signature:ArrayBufferView):Bool {})
-	@:overload(function(object:KeyObject, signature:String, signature_encoding:String):Bool {})
-	@:overload(function(object:KeyObject, signature:Buffer):Bool {})
-	function verify(object:KeyObject, signature:ArrayBufferView):Bool;
+	function verify(object:EitherType<VerifyOptions, KeyLike>, signature:BinaryLike, ?signatureEncoding:String):Bool;
 }
 
 /**

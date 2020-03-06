@@ -24,8 +24,6 @@ package js.node.crypto;
 
 import js.node.Crypto;
 import js.node.Buffer;
-import js.lib.ArrayBufferView;
-import haxe.extern.EitherType;
 
 /**
 	SPKAC is a Certificate Signing Request mechanism originally implemented by Netscape
@@ -53,5 +51,5 @@ extern class Certificate {
 
 		@see https://nodejs.org/api/crypto.html#crypto_certificate_verifyspkac_spkac
 	**/
-	static function verifySpkac(spkac:EitherType<Buffer, ArrayBufferView>):Bool;
+	static function verifySpkac(spkac:BufferLike):Bool;
 }

@@ -22,17 +22,12 @@
 
 package js.node.crypto;
 
+import js.node.Crypto.BufferLike;
+import js.node.Crypto.BinaryLike;
+import js.node.Crypto.SetAADOptions;
 import haxe.extern.EitherType;
-import js.lib.ArrayBufferView;
 import js.node.Buffer;
 import js.node.stream.Transform;
-import js.node.events.EventEmitter.Event;
-import js.node.stream.Readable.IReadable;
-#if haxe4
-import js.lib.Error;
-#else
-import js.Error;
-#end
 
 /**
 	Enumeration for `Cipher` class events.
@@ -40,7 +35,7 @@ import js.Error;
 typedef CipherEvent<T:haxe.Constraints.Function> = TransformEvent<T>;
 
 /**
-	Instances of the Cipher class are used to encrypt data.
+	Instances of the `Cipher` class are used to encrypt data.
 
 	@see https://nodejs.org/api/crypto.html#crypto_class_cipher
 **/
@@ -51,7 +46,7 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_final_outputencoding
 	**/
-	function finalContents(outputEncoding:String):EitherType<Buffer, String>;
+	@:native("final") function finalContents(?outputEncoding:String):EitherType<Buffer, String>;
 
 	/**
 		When using an authenticated encryption mode (`GCM`, `CCM` and `OCB` are currently supported),
@@ -59,7 +54,7 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_setaad_buffer_options
 	**/
-	function setAAD(buffer:Buffer, ?options:CipherSetAADOptions):Cipher;
+	function setAAD(buffer:BufferLike, ?options:SetAADOptions):Cipher;
 
 	/**
 		The `Cipher.getAuthTag()` method should only be called after encryption has been completed using the `Cipher.final()` method.
@@ -78,16 +73,11 @@ extern class Cipher extends js.node.stream.Transform<Cipher> {
 
 	/**
 		Updates the cipher with `data`.
-		If the `input_encoding` argument is given, the `data` argument is a string using the specified encoding.
-		If the `input_encoding` argument is not given, data must be a `Buffer` or `ArrayBufferView`.
-		If data is a `Buffer` or `ArrayBufferView`, then `input_encoding` is ignored.
+		If the `inputEncoding` argument is given, the `data` argument is a string using the specified encoding.
+		If the `inputEncoding` argument is not given, data must be a `Buffer` or `ArrayBuf`weiVref.
+		If data is a `Buffer` or `ArrayBufferView`, then `inputEncoding` is ignored.
 
 		@see https://nodejs.org/api/crypto.html#crypto_cipher_setautopadding_autopadding
 	**/
-	function update(data:EitherType<Buffer, ArrayBufferView>, ?input_encoding:String, ?output_encoding:String):EitherType<String, Buffer>;
-}
-
-typedef CipherSetAADOptions = {
-	> TransformNewOptions,
-	@:optional var plaintextLength:Int;
+	function update(data:BinaryLike, ?inputEncoding:String, ?outputEncoding:String):EitherType<String, Buffer>;
 }

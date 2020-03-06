@@ -22,7 +22,9 @@
 
 package js.node.crypto;
 
-import js.lib.ArrayBufferView;
+import haxe.extern.EitherType;
+import js.node.Crypto.BinaryLike;
+import js.node.Crypto.BufferLike;
 import js.node.Buffer;
 
 @:enum abstract ECDHFormat(String) from String to String {
@@ -40,32 +42,22 @@ extern class ECDH {
 	/**
 		Converts the EC Diffie-Hellman public key specified by `key` and `curve` to the format specified by `format`.
 		The `format` argument specifies point encoding and can be `'compressed'`, `'uncompressed'` or `'hybrid'`.
-		The supplied key is interpreted using the specified `input_encoding`,
-		and the returned key is encoded using the specified `output_encoding`.
+		The supplied key is interpreted using the specified `inputEncoding`,
+		and the returned key is encoded using the specified `outputEncoding`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_class_method_ecdh_convertkey_key_curve_inputencoding_outputencoding_format
 	**/
-	@:overload(function(key:String, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):String {})
-	@:overload(function(key:String, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):Buffer {})
-	@:overload(function(key:Buffer, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):String {})
-	@:overload(function(key:Buffer, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):Buffer {})
-	@:overload(function(key:ArrayBufferView, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):String {})
-	function convertKey(key:ArrayBufferView, curve:String, ?input_encoding:String, ?output_encoding:String, ?format:ECDHFormat):Buffer;
+	function convertKey(key:BinaryLike, curve:String, ?inputEncoding:String, ?outputEncoding:String, ?format:ECDHFormat):EitherType<Buffer, String>;
 
 	/**
-		Computes the shared secret using `other_public_key` as the other party's public key and returns the computed shared secret.
-		The supplied key is interpreted using specified `input_encoding`,
-		and the returned secret is encoded using the specified `output_encoding`.
-		If the `input_encoding` is not provided, `other_public_key` is expected to be a `Buffer` or `ArrayBufferView`.
+		Computes the shared secret using `otherPublicKey` as the other party's public key and returns the computed shared secret.
+		The supplied key is interpreted using specified `inputEncoding`,
+		and the returned secret is encoded using the specified `outputEncoding`.
+		If the `inputEncoding` is not provided, `otherPublicKey` is expected to be a `Buffer` or `ArrayBufferView`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_ecdh_computesecret_otherpublickey_inputencoding_outputencoding
 	**/
-	@:overload(function(other_public_key:String, input_encoding:String, ?output_encoding:String):Buffer {})
-	@:overload(function(other_public_key:String, input_encoding:String, ?output_encoding:String):String {})
-	@:overload(function(other_public_key:Buffer, ?output_encoding:String):Buffer {})
-	@:overload(function(other_public_key:Buffer, ?output_encoding:String):String {})
-	@:overload(function(other_public_key:ArrayBufferView, ?output_encoding:String):Buffer {})
-	function computeSecret(other_public_key:ArrayBufferView, ?output_encoding:String):String;
+	function computeSecret(otherPublicKey:BinaryLike, ?inputEncoding:String, ?outputEncoding:String):EitherType<Buffer, String>;
 
 	/**
 		Generates private and public EC Diffie-Hellman key values, and returns the public key in the specified `format` and `encoding`.
@@ -94,21 +86,23 @@ extern class ECDH {
 	function getPublicKey(?encoding:String, ?format:ECDHFormat):Buffer;
 
 	/**
-		Sets the EC Diffie-Hellman private key. If `encoding` is provided, `private_key` is expected to be a string; otherwise `private_key` is expected to be a `Buffer` or `Arraybufferview`.
+		Sets the EC Diffie-Hellman private key.
+		If `encoding` is provided, `privateKey` is expected to be a string;
+		otherwise `privateKey` is expected to be a `BufferLike`.
 
 		@see https://nodejs.org/api/crypto.html#crypto_ecdh_setprivatekey_privatekey_encoding
 	**/
-	@:overload(function(private_key:Buffer):Void {})
-	@:overload(function(private_key:ArrayBufferView):Void {})
-	function setPrivateKey(private_key:String, encoding:String):Void;
+	@:overload(function(privateKey:String, encoding:String):Void {})
+	function setPrivateKey(privateKey:BufferLike, encoding:String):Void;
 
 	/**
-		Sets the EC Diffie-Hellman public key. If `encoding` is provided `public_key` is expected to be a string; otherwise a `Buffer` or `Arraybufferview` is expected.
+		Sets the EC Diffie-Hellman public key.
+		If `encoding` is provided `publicKey` is expected to be a string;
+		otherwise a `BufferLike` is expected.
 
 		@see https://nodejs.org/api/crypto.html#crypto_ecdh_setpublickey_publickey_encoding
 	**/
 	@:deprecated
-	@:overload(function(private_key:Buffer):Void {})
-	@:overload(function(private_key:ArrayBufferView):Void {})
-	function setPublicKey(public_key:String, encoding:String):Void;
+	@:overload(function(privateKey:String, encoding:String):Void {})
+	function setPublicKey(publicKey:BufferLike):Void;
 }

@@ -22,67 +22,14 @@
 
 package js.node.crypto;
 
-import haxe.extern.EitherType;
-import js.lib.ArrayBufferView;
+import js.node.Crypto.BinaryLike;
 import js.node.Buffer;
 import js.node.stream.Transform;
-import js.node.events.EventEmitter.Event;
-import js.node.stream.Readable.IReadable;
-#if haxe4
-import js.lib.Error;
-#else
-import js.Error;
-#end
 
 /**
 	Enumeration for `Hash` class events.
 **/
-@:enum abstract HashEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Readable:HashEvent<Void->Void> = "readable";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Data:HashEvent<EitherType<Buffer, String>->Void> = "data";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var End:HashEvent<Void->Void> = "end";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Close:HashEvent<Void->Void> = "close";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Error:HashEvent<Error->Void> = "error";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Drain:HashEvent<Void->Void> = "drain";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Finish:HashEvent<Void->Void> = "finish";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Pipe:HashEvent<IReadable->Void> = "pipe";
-
-	/**
-		inherited from `stream.Transform`
-	**/
-	var Unpipe:HashEvent<IReadable->Void> = "unpipe";
-}
+typedef HashEvent<T:haxe.Constraints.Function> = TransformEvent<T>;
 
 /**
 	The `Hash` class is a utility for creating hash digests of data. It can be used in one of two ways:
@@ -96,6 +43,13 @@ import js.Error;
 **/
 extern class Hash extends js.node.stream.Transform<Hash> {
 	/**
+		Creates a new `Hash` object that contains a deep copy of the internal state of the current `Hash` object.
+
+		@see https://nodejs.org/api/crypto.html#crypto_hash_copy_options
+	**/
+	function copy(options:TransformNewOptions):Hash;
+
+	/**
 		Calculates the digest of all of the data passed to be hashed (using the `Hash.update()` method).
 		If `encoding` is provided a string will be returned; otherwise a `Buffer` is returned.
 
@@ -105,12 +59,10 @@ extern class Hash extends js.node.stream.Transform<Hash> {
 	function digest(encoding:String):String;
 
 	/**
-		Updates the hash content with the given data, the `encoding` of which is given in `input_encoding`. If `encoding` is not provided, and the data is a string, an encoding of `'utf8'` is enforced.
-		If data is a `Buffer` or `Arraybufferview`, then `input_encoding` is ignored.
+		Updates the hash content with the given data, the `encoding` of which is given in `inputEncoding`. If `encoding` is not provided, and the data is a string, an encoding of `'utf8'` is enforced.
+		If data is a `BufferLike`, then `inputEncoding` is ignored.
 
 		@see https://nodejs.org/api/crypto.html#crypto_hash_update_data_inputencoding
 	**/
-	@:overload(function(data:Buffer):Hash {})
-	@:overload(function(data:ArrayBufferView):Hash {})
-	function update(data:String, ?input_encoding:String):Hash;
+	function update(data:BinaryLike, ?inputEncoding:String):Hash;
 }

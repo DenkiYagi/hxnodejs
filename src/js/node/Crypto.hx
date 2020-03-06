@@ -372,9 +372,15 @@ extern class Crypto {
 		signature:EitherType<Buffer, ArrayBufferView>):Bool;
 }
 
-typedef BinaryLike = EitherType<String, EitherType<Buffer, ArrayBufferView>>;
+typedef BufferLike = EitherType<Buffer, ArrayBufferView>;
+typedef BinaryLike = EitherType<String, BufferLike>;
 typedef KeyLike = EitherType<String, EitherType<Buffer, KeyObject>>;
 typedef CryptoKey = EitherType<String, EitherType<Buffer, EitherType<ArrayBufferView, KeyObject>>>;
+
+typedef SetAADOptions = {
+	> TransformNewOptions,
+	@:optional var plaintextLength:Int;
+}
 
 typedef CipherOptions = {
 	> TransformNewOptions,
