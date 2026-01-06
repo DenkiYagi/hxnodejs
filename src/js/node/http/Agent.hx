@@ -55,7 +55,11 @@ import js.Error;
 	An agent may also be used for an individual request. By providing `{agent: false}` as an option to the `http.get()` or `http.request()` functions,
 	a one-time use `Agent` with default options will be used for the client connection.
 **/
+#if jsImport
+@:js.import("http", "Agent")
+#else
 @:jsRequire("http", "Agent")
+#end
 extern class Agent {
 	/**
 		`options` in socket.connect() are also supported.

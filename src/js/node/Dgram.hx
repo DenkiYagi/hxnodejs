@@ -28,7 +28,11 @@ import js.node.dgram.Socket;
 /**
 	Datagram sockets
 **/
+#if jsImport
+@:js.import(@star "dgram")
+#else
 @:jsRequire("dgram")
+#end
 extern class Dgram {
 	/**
 		Creates a datagram `Socket` of the specified types.

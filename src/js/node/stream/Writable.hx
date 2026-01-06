@@ -105,7 +105,11 @@ import js.html.Uint8Array;
 		- child process stdin
 		- process.stdout, process.stderr
 **/
+#if jsImport
+@:js.import("stream", "Writable")
+#else
 @:jsRequire("stream", "Writable")
+#end
 extern class Writable<TSelf:Writable<TSelf>> extends Stream<TSelf> implements IWritable {
 	/**
 		The `writable.cork()` method forces all written data to be buffered in memory.

@@ -32,7 +32,11 @@ import haxe.extern.EitherType;
 
 	@see https://nodejs.org/api/console.html#console_class_console
 **/
+#if jsImport
+@:js.import("console", "Console")
+#else
 @:jsRequire("console", "Console")
+#end
 extern class Console {
 	/**
 		Creates a new `Console` with one or two writable stream instances. `stdout` is a writable stream to print log or info output.

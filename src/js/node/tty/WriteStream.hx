@@ -39,7 +39,11 @@ import js.node.events.EventEmitter;
 	In normal circumstances, process.stdout will be the only tty.WriteStream instance
 	ever created (and only when isatty(1) is true).
 **/
+#if jsImport
+@:js.import("tty", "WriteStream")
+#else
 @:jsRequire("tty", "WriteStream")
+#end
 extern class WriteStream extends js.node.net.Socket {
 	/**
 		The number of columns the TTY currently has.

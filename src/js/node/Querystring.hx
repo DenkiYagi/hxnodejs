@@ -30,7 +30,11 @@ import haxe.DynamicAccess;
 
 	@see https://nodejs.org/api/querystring.html#querystring_query_string
 **/
+#if jsImport
+@:js.import(@star "querystring")
+#else
 @:jsRequire("querystring")
+#end
 extern class Querystring {
 	/**
 		The `querystring.decode()` function is an alias for `querystring.parse()`.

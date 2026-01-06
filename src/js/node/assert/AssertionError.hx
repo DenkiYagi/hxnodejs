@@ -38,7 +38,11 @@ typedef AssertionErrorOptions = {
 	@:optional var stackStartFunction:Dynamic;
 }
 
+#if jsImport
+@:js.import("assert", "AssertionError")
+#else
 @:jsRequire("assert", "AssertionError")
+#end
 extern class AssertionError extends Error {
 	var actual:Dynamic;
 	var expected:Dynamic;

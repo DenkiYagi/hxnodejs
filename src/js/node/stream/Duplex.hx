@@ -149,7 +149,11 @@ import js.Error;
 
 	@see https://nodejs.org/api/stream.html#stream_class_stream_duplex
 **/
+#if jsImport
+@:js.import("stream", "Duplex")
+#else
 @:jsRequire("stream", "Duplex")
+#end
 extern class Duplex<TSelf:Duplex<TSelf>> extends Readable<TSelf> implements IDuplex {
 	// --------- Writable interface implementation ----------------------------
 

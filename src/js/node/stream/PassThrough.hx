@@ -30,7 +30,11 @@ package js.node.stream;
 
 	@see https://nodejs.org/api/stream.html#stream_class_stream_passthrough
 **/
+#if jsImport
+@:js.import("stream", "PassThrough")
+#else
 @:jsRequire("stream", "PassThrough")
+#end
 extern class PassThrough extends Transform<PassThrough> {
 	function new();
 }

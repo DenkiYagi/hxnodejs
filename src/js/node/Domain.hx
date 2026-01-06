@@ -34,7 +34,11 @@ import js.node.domain.Domain as DomainObject;
 	or causing the program to exit immediately with an error code.
 **/
 @:deprecated
+#if jsImport
+@:js.import(@star "domain")
+#else
 @:jsRequire("domain")
+#end
 extern class Domain {
 	/**
 		Returns a new Domain object.

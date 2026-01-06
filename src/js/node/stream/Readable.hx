@@ -106,7 +106,11 @@ import js.Error;
 /**
 	@see https://nodejs.org/api/stream.html#stream_class_stream_readable
 **/
+#if jsImport
+@:js.import("stream", "Readable")
+#else
 @:jsRequire("stream", "Readable")
+#end
 extern class Readable<TSelf:Readable<TSelf>> extends Stream<TSelf> implements IReadable {
 	/**
 		Destroy the stream. Optionally emit an `'error'` event, and emit a `'close'` event unless `emitClose` is set in `false`.

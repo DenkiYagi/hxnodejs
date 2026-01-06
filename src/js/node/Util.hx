@@ -40,7 +40,11 @@ import js.Promise;
 
 	@see https://nodejs.org/api/util.html#util_util
 **/
+#if jsImport
+@:js.import(@star "util")
+#else
 @:jsRequire("util")
+#end
 extern class Util {
 	/**
 		Takes an `async` function (or a function that returns a `Promise`) and returns a function following the

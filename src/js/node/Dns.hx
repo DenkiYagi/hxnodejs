@@ -132,7 +132,11 @@ extern class DnsError extends Error {
 /**
 	Each DNS query can return one of the following error codes
 **/
+#if jsImport
+@:js.import(@star "dns")
+#else
 @:jsRequire("dns")
+#end
 @:enum extern abstract DnsErrorCode(String) {
 	/**
 		DNS server returned answer with no data.
@@ -275,7 +279,11 @@ typedef DnsLookupCallbackAllEntry = {address:String, family:DnsAddressFamily};
 	they do not use the configuration from /etc/hosts. These functions should be used by developers who do not want
 	to use the underlying operating system's facilities for name resolution, and instead want to always perform DNS queries.
 **/
+#if jsImport
+@:js.import(@star "dns")
+#else
 @:jsRequire("dns")
+#end
 extern class Dns {
 	/**
 		Resolves a `hostname` (e.g. 'google.com') into the first found A (IPv4) or AAAA (IPv6) record.

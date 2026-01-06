@@ -53,7 +53,11 @@ import js.Error;
 
 	It implements the `Readable Stream` interface, as well as the following additional events, methods, and properties.
 **/
+#if jsImport
+@:js.import("http", "IncomingMessage")
+#else
 @:jsRequire("http", "IncomingMessage")
+#end
 extern class IncomingMessage extends Readable<IncomingMessage> {
 	/**
 		The `aborted` property will be `true` if the request has been aborted.

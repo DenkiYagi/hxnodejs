@@ -49,7 +49,11 @@ import js.Error;
 	It deals with stream handling and message parsing only. It parses a message into headers and body but
 	it does not parse the actual headers or the body.
 **/
+#if jsImport
+@:js.import(@star "http")
+#else
 @:jsRequire("http")
+#end
 extern class Http {
 	/**
 		A list of the HTTP methods that are supported by the parser.

@@ -37,7 +37,11 @@ import js.Promise;
 
 	@see https://nodejs.org/api/events.html#events_events
  */
+#if jsImport
+@:js.import(@star "events")
+#else
 @:jsRequire("events")
+#end
 extern class Events {
 	/**
 		Creates a `Promise` that is resolved when the `EventEmitter` emits the given

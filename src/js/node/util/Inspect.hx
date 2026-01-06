@@ -25,7 +25,11 @@ package js.node.util;
 import haxe.DynamicAccess;
 import js.node.Util.InspectOptions;
 
+#if jsImport
+@:js.import("util", "inspect")
+#else
 @:jsRequire("util", "inspect")
+#end
 extern class Inspect {
 	/**
 		The `util.inspect()` method returns a string representation of `object` that is intended for debugging.

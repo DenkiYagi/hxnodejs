@@ -34,7 +34,11 @@ import js.html.ArrayBufferView;
 
 	@see https://nodejs.org/api/string_decoder.html#string_decoder_string_decoder
 **/
+#if jsImport
+@:js.import("string_decoder", "StringDecoder")
+#else
 @:jsRequire("string_decoder", "StringDecoder")
+#end
 extern class StringDecoder {
 	/**
 		Creates a new `StringDecoder` instance.

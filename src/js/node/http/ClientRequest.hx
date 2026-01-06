@@ -115,7 +115,11 @@ import js.node.stream.Writable;
 
 	Node.js does not check whether Content-Length and the length of the body which has been transmitted are equal or not.
 **/
+#if jsImport
+@:js.import("http", "ClientRequest")
+#else
 @:jsRequire("http", "ClientRequest")
+#end
 extern class ClientRequest extends Writable<ClientRequest> {
 	/**
 		Marks the request as aborting. Calling this will cause remaining data in the response to be dropped and the socket to be destroyed.

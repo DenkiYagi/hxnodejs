@@ -49,7 +49,11 @@ import js.node.net.Socket;
 	This object is created internally by an HTTP server — not by the user.
 	It is passed as the second parameter to the 'request' event.
 **/
+#if jsImport
+@:js.import("http", "ServerResponse")
+#else
 @:jsRequire("http", "ServerResponse")
+#end
 extern class ServerResponse extends Writable<ServerResponse> {
 	/**
 		This method adds HTTP trailing headers (a header but at the end of the message) to the response.

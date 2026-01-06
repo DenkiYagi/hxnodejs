@@ -25,5 +25,9 @@ package js.node.zlib;
 /**
 	Decompress a gzip stream.
 **/
+#if jsImport
+@:js.import("zlib", "Gunzip")
+#else
 @:jsRequire("zlib", "Gunzip")
+#end
 extern class Gunzip extends Zlib {}

@@ -28,7 +28,11 @@ import js.node.Buffer;
 	SPKAC is a Certificate Signing Request mechanism originally implemented by Netscape
 	and now specified formally as part of HTML5's keygen element.
 **/
+#if jsImport
+@:js.import("crypto", "Certificate")
+#else
 @:jsRequire("crypto", "Certificate")
+#end
 extern class Certificate {
 	function new();
 
