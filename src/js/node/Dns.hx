@@ -136,128 +136,130 @@ extern class DnsError extends Error {
 @:js.import(@star "dns")
 #else
 @:jsRequire("dns")
-extern enum abstract DnsErrorCode(String) {
 #end
+extern class DnsErrorCodes {
 	/**
 		DNS server returned answer with no data.
 	**/
-	var NODATA;
+	static final NODATA:DnsErrorCode;
 
 	/**
 		DNS server claims query was misformatted.
 	**/
-	var FORMERR;
+	static final FORMERR:DnsErrorCode;
 
 	/**
 		DNS server returned general failure.
 	**/
-	var SERVFAIL;
+	static final SERVFAIL:DnsErrorCode;
 
 	/**
 		Domain name not found.
 	**/
-	var NOTFOUND;
+	static final NOTFOUND:DnsErrorCode;
 
 	/**
 		DNS server does not implement requested operation.
 	**/
-	var NOTIMP;
+	static final NOTIMP:DnsErrorCode;
 
 	/**
 		DNS server refused query.
 	**/
-	var REFUSED;
+	static final REFUSED:DnsErrorCode;
 
 	/**
 		Misformatted DNS query.
 	**/
-	var BADQUERY;
+	static final BADQUERY:DnsErrorCode;
 
 	/**
 		Misformatted domain name.
 	**/
-	var BADNAME;
+	static final BADNAME:DnsErrorCode;
 
 	/**
 		Unsupported address family.
 	**/
-	var BADFAMILY;
+	static final BADFAMILY:DnsErrorCode;
 
 	/**
 		Misformatted DNS reply.
 	**/
-	var BADRESP;
+	static final BADRESP:DnsErrorCode;
 
 	/**
 		Could not contact DNS servers.
 	**/
-	var CONNREFUSED;
+	static final CONNREFUSED:DnsErrorCode;
 
 	/**
 		Timeout while contacting DNS servers.
 	**/
-	var TIMEOUT;
+	static final TIMEOUT:DnsErrorCode;
 
 	/**
 		End of file.
 	**/
-	var EOF;
+	static final EOF:DnsErrorCode;
 
 	/**
 		Error reading file.
 	**/
-	var FILE;
+	static final FILE:DnsErrorCode;
 
 	/**
 		Out of memory.
 	**/
-	var NOMEM;
+	static final NOMEM:DnsErrorCode;
 
 	/**
 		Channel is being destroyed.
 	**/
-	var DESTRUCTION;
+	static final DESTRUCTION:DnsErrorCode;
 
 	/**
 		Misformatted string.
 	**/
-	var BADSTR;
+	static final BADSTR:DnsErrorCode;
 
 	/**
 		Illegal flags specified.
 	**/
-	var BADFLAGS;
+	static final BADFLAGS:DnsErrorCode;
 
 	/**
 		Given hostname is not numeric.
 	**/
-	var NONAME;
+	static final NONAME:DnsErrorCode;
 
 	/**
 		Illegal hints flags specified.
 	**/
-	var BADHINTS;
+	static final BADHINTS:DnsErrorCode;
 
 	/**
 		c-ares library initialization not yet performed.
 	**/
-	var NOTINITIALIZED;
+	static final NOTINITIALIZED:DnsErrorCode;
 
 	/**
 		Error loading iphlpapi.dll.
 	**/
-	var LOADIPHLPAPI;
+	static final LOADIPHLPAPI:DnsErrorCode;
 
 	/**
 		Could not find GetNetworkParams function.
 	**/
-	var ADDRGETNETWORKPARAMS;
+	static final ADDRGETNETWORKPARAMS:DnsErrorCode;
 
 	/**
 		DNS query cancelled.
 	**/
-	var CANCELLED;
+	static final CANCELLED:DnsErrorCode;
 }
+
+abstract DnsErrorCode(String) to String {}
 
 typedef DnsLookupCallbackSingle = #if (haxe_ver >= 4) (err:DnsError, address:String,
 		family:DnsAddressFamily) -> Void; #else DnsError->String->DnsAddressFamily->Void #end
