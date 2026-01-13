@@ -478,7 +478,11 @@ typedef FsConstants = {
 	When using the synchronous form any exceptions are immediately thrown.
 	You can use try/catch to handle exceptions or allow them to bubble up.
 **/
+#if jsImport
+@:js.import(@star "fs")
+#else
 @:jsRequire("fs")
+#end
 extern class Fs {
 	/**
 		An object containing commonly used constants for file system operations.

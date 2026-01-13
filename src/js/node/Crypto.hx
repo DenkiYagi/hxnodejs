@@ -63,7 +63,11 @@ import js.node.tls.SecureContext;
 
 	It also offers a set of wrappers for OpenSSL's hash, hmac, cipher, decipher, sign and verify methods.
 **/
+#if jsImport
+@:js.import(@star "crypto")
+#else
 @:jsRequire("crypto")
+#end
 extern class Crypto {
 	/**
 		Load and set engine for some/all OpenSSL functions (selected by `flags`).

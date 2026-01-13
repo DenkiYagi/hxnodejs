@@ -25,5 +25,9 @@ package js.node.zlib;
 /**
 	Compress data using deflate, and do not append a zlib header.
 **/
+#if jsImport
+@:js.import("zlib", "DeflateRaw")
+#else
 @:jsRequire("zlib", "DeflateRaw")
+#end
 extern class DeflateRaw extends Zlib {}

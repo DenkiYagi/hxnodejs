@@ -34,7 +34,11 @@ import js.Error;
 
 	@see https://nodejs.org/api/stream.html#stream_implementing_a_transform_stream
 **/
+#if jsImport
+@:js.import("stream", "Transform")
+#else
 @:jsRequire("stream", "Transform")
+#end
 extern class Transform<TSelf:Transform<TSelf>> extends Duplex<TSelf> implements ITransform {
 	function new(?options:TransformNewoptions);
 

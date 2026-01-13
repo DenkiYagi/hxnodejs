@@ -36,7 +36,11 @@ typedef VmRunOptions = {
 	Using this class JavaScript code can be compiled and
 	run immediately or compiled, saved, and run later.
 **/
+#if jsImport
+@:js.import(@star "vm")
+#else
 @:jsRequire("vm")
+#end
 extern class Vm {
 	/**
 		Compiles `code`, runs it and returns the result.

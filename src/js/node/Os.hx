@@ -29,7 +29,11 @@ import haxe.extern.EitherType;
 
 	@see https://nodejs.org/api/os.html#os_os
 **/
+#if jsImport
+@:js.import(@star "os")
+#else
 @:jsRequire("os")
+#end
 extern class Os {
 	/**
 		A string constant defining the operating system-specific end-of-line marker:

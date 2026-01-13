@@ -27,7 +27,11 @@ package js.node;
 
 	@see https://nodejs.org/api/path.html#path_path
 **/
+#if jsImport
+@:js.import(@star "path")
+#else
 @:jsRequire("path")
+#end
 extern class Path {
 	/**
 		The `path.basename()` methods returns the last portion of a `path`, similar to the Unix `basename` command. Trailing directory separators are ignored, see path.sep.

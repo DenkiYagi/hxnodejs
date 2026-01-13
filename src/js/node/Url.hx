@@ -27,7 +27,11 @@ import js.node.url.URL;
 /**
 	The `url` module provides utilities for URL resolution and parsing.
 **/
+#if jsImport
+@:js.import(@star "url")
+#else
 @:jsRequire("url")
+#end
 extern class Url {
 	/**
 		Returns the Punycode ASCII serialization of the `domain`. If `domain` is an invalid domain, the empty string is returned.

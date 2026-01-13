@@ -137,7 +137,11 @@ import js.Error;
 /**
 	This class inherits `from net.Server`.
 **/
+#if jsImport
+@:js.import("http", "Server")
+#else
 @:jsRequire("http", "Server")
+#end
 extern class Server extends js.node.net.Server {
 	/**
 		Limit the amount of time the parser will wait to receive the complete HTTP headers.

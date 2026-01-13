@@ -30,6 +30,16 @@ package js.node;
 	instance and process.stdout will be a tty.WriteStream instance. The preferred way to check if node is being
 	run in a TTY context is to check process.stdout.isTTY.
 **/
+#if jsImport
+@:js.import(@star "tty")
+extern class Tty {
+	/**
+		Returns true or false depending on if the `fd` is associated with a terminal.
+	**/
+	static function isatty(fd:Int):Bool;
+
+	@:deprecated("Use tty.ReadStream#setRawMode() instead.")
+#else
 @:jsRequire("tty")
 extern class Tty {
 	/**
@@ -38,5 +48,6 @@ extern class Tty {
 	static function isatty(fd:Int):Bool;
 
 	@:deprecated("Use tty.ReadStream#setRawMode() instead.")
-	static function setRawMode(mode:Bool):Void;
+#end
+static function setRawMode(mode:Bool):Void;
 }

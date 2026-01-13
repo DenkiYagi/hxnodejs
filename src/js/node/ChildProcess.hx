@@ -324,7 +324,11 @@ typedef ChildProcessSpawnSyncResult = {
 	var error:Error;
 }
 
+#if jsImport
+@:js.import(@star "child_process")
+#else
 @:jsRequire("child_process")
+#end
 extern class ChildProcess {
 	/**
 		Launches a new process with the given `command`, with command line arguments in `args`.

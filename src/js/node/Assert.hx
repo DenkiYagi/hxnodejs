@@ -32,7 +32,11 @@ import js.RegExp;
 /**
 	This module is used for writing unit tests for your applications
 **/
+#if jsImport
+@:js.import(@star "assert")
+#else
 @:jsRequire("assert")
+#end
 extern class Assert {
 	/**
 		Throws an `AssertionError`. If `message` is falsy, the error message is set as the values of `actual` and `expected` separated by the provided `operator`.

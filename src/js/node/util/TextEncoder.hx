@@ -33,7 +33,11 @@ import js.html.Uint8Array;
 
 	@see https://nodejs.org/api/util.html#util_class_util_textencoder
 **/
+#if jsImport
+@:js.import("util", "TextEncoder")
+#else
 @:jsRequire("util", "TextEncoder")
+#end
 extern class TextEncoder {
 	function new();
 

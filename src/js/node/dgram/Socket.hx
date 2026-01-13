@@ -104,7 +104,11 @@ typedef SocketBindOptions = {
 	Encapsulates the datagram functionality.
 	It should be created via `Dgram.createSocket`.
 **/
+#if jsImport
+@:js.import("dgram", "Socket")
+#else
 @:jsRequire("dgram", "Socket")
+#end
 extern class Socket extends EventEmitter<Socket> {
 	@:overload(function(type:SocketType, ?callback:MessageListener):Void {})
 	private function new(options:SocketOptions, ?callback:MessageListener);

@@ -33,7 +33,11 @@ import js.node.readline.*;
 
 	@see https://nodejs.org/api/readline.html#readline_readline
 **/
+#if jsImport
+@:js.import(@star "readline")
+#else
 @:jsRequire("readline")
+#end
 extern class Readline {
 	/**
 		The `readline.clearLine()` method Clears current line of given `TTY` stream
