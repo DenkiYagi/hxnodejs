@@ -31,7 +31,11 @@ import js.node.url.URL;
 
 	@see https://nodejs.org/api/modules.html#modules_the_module_object
 **/
+#if jsImport
+@:js.import(@star "module")
+#else
 @:jsRequire("module")
+#end
 extern class Module {
 	/**
 		The module objects required for the first time by this one.
