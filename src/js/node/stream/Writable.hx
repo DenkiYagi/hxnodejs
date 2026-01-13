@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,12 +23,12 @@
 package js.node.stream;
 
 import haxe.extern.EitherType;
-import js.node.events.EventEmitter.Event;
 import js.node.Stream;
+import js.node.events.EventEmitter.Event;
 import js.node.stream.Readable.IReadable;
 #if haxe4
-import js.lib.Object;
 import js.lib.Error;
+import js.lib.Object;
 import js.lib.Uint8Array;
 #else
 import js.Error;
@@ -40,7 +40,7 @@ import js.html.Uint8Array;
 
 	@see https://nodejs.org/api/stream.html#stream_writable_streams
 **/
-@:enum abstract WritableEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract WritableEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The `'close'` event is emitted when the stream and any of its underlying resources
 		(a file descriptor, for example) have been closed.
@@ -227,7 +227,7 @@ extern class Writable<TSelf:Writable<TSelf>> extends Stream<TSelf> implements IW
 
 		@see https://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback_1
 	**/
-	private function _write(chunk:Dynamic, encoding:String, callback:?Error->Void):Void;
+	private function _write(chunk:Dynamic, encoding:String, callback:Null<Error>->Void):Void;
 
 	/**
 		This function **MUST NOT** be called by application code directly.
@@ -235,7 +235,7 @@ extern class Writable<TSelf:Writable<TSelf>> extends Stream<TSelf> implements IW
 
 		@see https://nodejs.org/api/stream.html#stream_writable_writev_chunks_callback
 	**/
-	private function _writev(chunks:Array<Chunk>, callback:?Error->Void):Void;
+	private function _writev(chunks:Array<Chunk>, callback:Null<Error>->Void):Void;
 
 	/**
 		The `_destroy()` method is called by `writable.destroy()`.
@@ -243,7 +243,7 @@ extern class Writable<TSelf:Writable<TSelf>> extends Stream<TSelf> implements IW
 
 		@see https://nodejs.org/api/stream.html#stream_writable_destroy_err_callback
 	**/
-	private function _destroy(err:Null<Error>, callback:?Error->Void):Void;
+	private function _destroy(err:Null<Error>, callback:Null<Error>->Void):Void;
 
 	/**
 		The `_final()` method **must not** be called directly.
@@ -251,7 +251,7 @@ extern class Writable<TSelf:Writable<TSelf>> extends Stream<TSelf> implements IW
 
 		@see https://nodejs.org/api/stream.html#stream_writable_final_callback
 	**/
-	private function _final(callback:?Error->Void):Void;
+	private function _final(callback:Null<Error>->Void):Void;
 
 	// --------- TTY module API  ----------------------------------------------
 
@@ -303,27 +303,27 @@ typedef WritableNewOptions = {
 		`write` <Function> Implementation for the stream._write() method.
 	**/
 	#if haxe4
-	@:optional var write:(chunk:Dynamic, encoding:String, callback:?Error->Void) -> Void;
+	@:optional var write:(chunk:Dynamic, encoding:String, callback:Null<Error>->Void) -> Void;
 	#else
-	@:optional var write:Dynamic->String->?Error->Void->Void;
+	@:optional var write:Dynamic->String->Null<Error>->Void->Void;
 	#end
 
 	/**
 		`writev` <Function> Implementation for the stream._writev() method.
 	**/
 	#if haxe4
-	@:optional var writev:(chunks:Array<Chunk>, callback:?Error->Void) -> Void;
+	@:optional var writev:(chunks:Array<Chunk>, callback:Null<Error>->Void) -> Void;
 	#else
-	@:optional var writev:Array<Chunk>->(?Error->Void)->Void;
+	@:optional var writev:Array<Chunk>->(Null<Error>->Void)->Void;
 	#end
 
 	/**
 		`destroy` <Function> Implementation for the stream._destroy() method.
 	**/
 	#if haxe4
-	@:optional var destroy:(error:Null<Error>, callback:?Error->Void) -> Void;
+	@:optional var destroy:(error:Null<Error>, callback:Null<Error>->Void) -> Void;
 	#else
-	@:optional var destroy:Null<Error>->(?Error->Void)->Void;
+	@:optional var destroy:Null<Error>->(Null<Error>->Void)->Void;
 	#end
 
 	/**

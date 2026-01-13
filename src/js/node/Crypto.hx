@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,20 +23,20 @@
 package js.node;
 
 import haxe.extern.EitherType;
+import js.node.Buffer;
+import js.node.crypto.*;
+import js.node.crypto.DiffieHellman.IDiffieHellman;
+import js.node.tls.SecureContext;
 #if haxe4
 import js.lib.Error;
 #else
 import js.Error;
 #end
-import js.node.Buffer;
-import js.node.crypto.*;
-import js.node.crypto.DiffieHellman.IDiffieHellman;
-import js.node.tls.SecureContext;
 
 /**
 	Enumerations of crypto algorighms to be used.
 **/
-@:enum abstract CryptoAlgorithm(String) from String to String {
+enum abstract CryptoAlgorithm(String) from String to String {
 	var SHA1 = "sha1";
 	var MD5 = "md5";
 	var SHA256 = "sha256";
@@ -46,7 +46,7 @@ import js.node.tls.SecureContext;
 /**
 	Enumeration of supported group names for `Crypto.getDiffieHellman`.
 **/
-@:enum abstract DiffieHellmanGroupName(String) from String to String {
+enum abstract DiffieHellmanGroupName(String) from String to String {
 	var Modp1 = "modp1";
 	var Modp2 = "modp2";
 	var Modp5 = "modp5";

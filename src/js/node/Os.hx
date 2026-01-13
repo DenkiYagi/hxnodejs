@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -138,21 +138,21 @@ extern class Os {
 
 		@see https://nodejs.org/api/os.html#os_os_tmpdir
 	**/
-	function tmpdir():String;
+	static function tmpdir():String;
 
 	/**
 		The `os.totalmem()` method returns the total amount of system memory in bytes as an integer.
 
 		@see https://nodejs.org/api/os.html#os_os_totalmem
 	**/
-	function totalmem():Int;
+	static function totalmem():Int;
 
 	/**
 		The `os.type()` method returns a string identifying the operating system name as returned by uname(3). For example, `'Linux'` on Linux, `'Darwin'` on macOS, and `'Windows_NT'` on Windows.
 
 		@see https://nodejs.org/api/os.html#os_os_type
 	**/
-	function type():String;
+	static function type():String;
 
 	/**
 		The `os.uptime()` method returns the system uptime in number of seconds.
@@ -302,7 +302,7 @@ typedef NetworkInterfaceAddressInfo = {
 	var cidr:Null<String>;
 }
 
-@:enum abstract Endianness(String) to String {
+enum abstract Endianness(String) to String {
 	var BigEndian = "BE";
 	var LittleEndian = "LE";
 }

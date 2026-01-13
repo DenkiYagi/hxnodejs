@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,7 +27,7 @@ import js.node.events.EventEmitter;
 /**
 	Enumeration of events emitted by `WriteStream` objects in addition to its parents.
 **/
-@:enum abstract WriteStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract WriteStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted by refreshSize() when either of the columns or rows properties has changed.
 	**/

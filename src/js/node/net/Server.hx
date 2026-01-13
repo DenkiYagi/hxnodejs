@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,18 +23,18 @@
 package js.node.net;
 
 import haxe.extern.EitherType;
+import js.node.events.EventEmitter;
+import js.node.net.Socket.SocketAdress;
 #if haxe4
 import js.lib.Error;
 #else
 import js.Error;
 #end
-import js.node.events.EventEmitter;
-import js.node.net.Socket.SocketAdress;
 
 /**
 	Enumeration of events emitted by the `Server` objects
 **/
-@:enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when the server has been bound after calling `Server.listen`.
 	**/
@@ -123,8 +123,10 @@ extern class Server extends EventEmitter<Server> {
 		This function is asynchronous, the server is finally closed when all connections are ended
 		and the server emits a 'close' event.
 
-		Optionally, you can pass a `callback` to listen for the 'close' event.
+		The optional callback will be called once the 'close' event occurs. Unlike that event,
+		it will be called with an Error as its only argument if the server was not open when it was closed.
 	**/
+	@:overload(function(callback:Error->Void):Void {})
 	function close(?callback:Void->Void):Void;
 
 	/**

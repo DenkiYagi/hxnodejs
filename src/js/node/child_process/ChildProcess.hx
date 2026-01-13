@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,8 +22,8 @@
 
 package js.node.child_process;
 
-import js.node.events.EventEmitter;
 import js.node.Stream;
+import js.node.events.EventEmitter;
 import js.node.stream.Readable;
 import js.node.stream.Writable;
 #if haxe4
@@ -35,7 +35,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by `ChildProcess` objects.
 **/
-@:enum abstract ChildProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ChildProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when:
 			1. The process could not be spawned, or

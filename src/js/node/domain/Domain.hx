@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,14 +23,14 @@
 package js.node.domain;
 
 import haxe.Constraints.Function;
-import js.node.events.EventEmitter;
 import js.node.Timers.Timeout;
+import js.node.events.EventEmitter;
 
 /**
 	Enumeration of events emitted by `Domain` objects.
 **/
 @:deprecated
-@:enum abstract DomainEvent<T:Function>(Event<T>) to Event<T> {
+enum abstract DomainEvent<T:Function>(Event<T>) to Event<T> {
 	var Error:DomainEvent<DomainError->Void> = "error";
 	var Dispose:DomainEvent<Void->Void> = "dispose";
 }

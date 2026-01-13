@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,7 +31,7 @@ import js.node.stream.Writable;
 /**
 	Enumeration of events emitted by `ClientRequest`
 **/
-@:enum abstract ClientRequestEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ClientRequestEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when the request has been aborted by the client.
 		This event is only emitted on the first call to `abort()`.

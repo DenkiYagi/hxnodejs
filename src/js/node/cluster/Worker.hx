@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,17 +22,16 @@
 
 package js.node.cluster;
 
-import js.node.child_process.ChildProcess;
 import js.node.Cluster.ListeningEventAddress;
+import js.node.child_process.ChildProcess;
 import js.node.events.EventEmitter;
-import js.node.events.EventEmitter.Event;
 #if haxe4
 import js.lib.Error;
 #else
 import js.Error;
 #end
 
-@:enum abstract WorkerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract WorkerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	var Message:WorkerEvent<Dynamic->Dynamic->Void> = "message";
 	var Online:WorkerEvent<Void->Void> = "online";
 	var Listening:WorkerEvent<ListeningEventAddress->Void> = "listening";

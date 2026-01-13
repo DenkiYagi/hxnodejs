@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,9 +23,9 @@
 package js.node;
 
 import haxe.extern.EitherType;
+import js.node.readline.*;
 import js.node.stream.Readable.IReadable;
 import js.node.stream.Writable.IWritable;
-import js.node.readline.*;
 
 /**
 	The readline module provides an interface for reading data from a `Readable` stream (such as `process.stdin`) one
@@ -174,7 +174,7 @@ typedef ReadlineCompleterCallback = String->Array<EitherType<Array<String>, Stri
 
 	@see https://nodejs.org/api/readline.html#readline_readline_clearline_stream_dir_callback
 **/
-@:enum abstract ClearLineDirection(Int) from Int to Int {
+enum abstract ClearLineDirection(Int) from Int to Int {
 	/**
 		to the left from cursor.
 	**/

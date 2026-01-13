@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -26,7 +26,7 @@ package js.node.http;
 	Enumeration of possible HTTP methods as described in
 	http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html
 **/
-@:enum abstract Method(String) from String to String {
+enum abstract Method(String) from String to String {
 	var Acl = "ACL";
 	var Bind = "BIND";
 	var Checkout = "CHECKOUT";

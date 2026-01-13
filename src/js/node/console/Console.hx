@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,9 +22,9 @@
 
 package js.node.console;
 
-import js.node.stream.Writable;
-import haxe.extern.Rest;
 import haxe.extern.EitherType;
+import haxe.extern.Rest;
+import js.node.stream.Writable;
 
 /**
 	The `Console` class can be used to create a simple logger with configurable output streams

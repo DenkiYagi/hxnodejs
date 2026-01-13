@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,8 +22,8 @@
 
 package js.node;
 
-import js.node.events.EventEmitter;
 import haxe.Constraints.Function;
+import js.node.events.EventEmitter;
 #if haxe4
 import js.lib.Promise;
 #else

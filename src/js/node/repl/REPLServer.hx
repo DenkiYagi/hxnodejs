@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,11 +23,9 @@
 package js.node.repl;
 
 import haxe.DynamicAccess;
-import haxe.extern.EitherType;
 import js.node.events.EventEmitter;
 #if haxe4
 import js.lib.Error;
-import js.lib.Function;
 #else
 import js.Error;
 #end
@@ -35,7 +33,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by the `REPLServer` objects.
 **/
-@:enum abstract REPLServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract REPLServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The `'exit'` event is emitted when the REPL is exited either by receiving the `.exit` command as input,
 		the user pressing `<ctrl>-C` twice to signal `SIGINT`, or by pressing `<ctrl>-D` to signal 'end' on the input stream.

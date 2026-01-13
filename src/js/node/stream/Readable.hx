@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,9 +22,9 @@
 
 package js.node.stream;
 
-import js.node.events.EventEmitter.Event;
 import js.node.Iterator;
 import js.node.Stream;
+import js.node.events.EventEmitter.Event;
 import js.node.stream.Writable.IWritable;
 #if haxe4
 import js.lib.Error;
@@ -37,7 +37,7 @@ import js.Error;
 
 	@see https://nodejs.org/api/stream.html#stream_readable_streams
 **/
-@:enum abstract ReadableEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ReadableEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The `'close'` event is emitted when the stream and any of its underlying
 		resources (a file descriptor, for example) have been closed.
@@ -267,7 +267,7 @@ extern class Readable<TSelf:Readable<TSelf>> extends Stream<TSelf> implements IR
 
 		@see https://nodejs.org/api/stream.html#stream_readable_destroy_err_callback
 	**/
-	private function _destroy(err:Null<Error>, callback:?Error->Void):Void;
+	private function _destroy(err:Null<Error>, callback:Null<Error>->Void):Void;
 
 	/**
 		The `readable.push()` method is intended be called only by `Readable` implementers,
@@ -335,9 +335,9 @@ typedef ReadableNewOptions = {
 		Implementation for the `stream._destroy()` method.
 	**/
 	#if haxe4
-	@:optional var destroy:(err:Null<Error>, callback:?Error->Void) -> Void;
+	@:optional var destroy:(err:Null<Error>, callback:Null<Error>->Void) -> Void;
 	#else
-	@:optional var destroy:Null<Error>->(?Error->Void)->Void;
+	@:optional var destroy:Null<Error>->(Null<Error>->Void)->Void;
 	#end
 
 	/**

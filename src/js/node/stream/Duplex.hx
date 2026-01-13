@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -37,7 +37,7 @@ import js.Error;
 
 	@see https://nodejs.org/api/stream.html#stream_writable_streams
 **/
-@:enum abstract DuplexEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract DuplexEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	// Writable stream events -------------------------------------------------
 	// var Close:DuplexEvent<Void->Void> = "close";
 
@@ -255,7 +255,7 @@ extern class Duplex<TSelf:Duplex<TSelf>> extends Readable<TSelf> implements IDup
 
 		@see https://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback_1
 	**/
-	private function _write(chunk:Dynamic, encoding:String, callback:?Error->Void):Void;
+	private function _write(chunk:Dynamic, encoding:String, callback:Null<Error>->Void):Void;
 
 	/**
 		This function MUST NOT be called by application code directly.
@@ -263,7 +263,7 @@ extern class Duplex<TSelf:Duplex<TSelf>> extends Readable<TSelf> implements IDup
 
 		@see https://nodejs.org/api/stream.html#stream_writable_writev_chunks_callback
 	**/
-	private function _writev(chunks:Array<Writable.Chunk>, callback:?Error->Void):Void;
+	private function _writev(chunks:Array<Writable.Chunk>, callback:Null<Error>->Void):Void;
 
 	// This field is defined in super class.
 	// private function _destroy(err:Null<Error>, ?callback:Null<Error>->Void):Void;
@@ -274,7 +274,7 @@ extern class Duplex<TSelf:Duplex<TSelf>> extends Readable<TSelf> implements IDup
 
 		@see https://nodejs.org/api/stream.html#stream_writable_final_callback
 	**/
-	private function _final(callback:?Error->Void):Void;
+	private function _final(callback:Null<Error>->Void):Void;
 
 	// --------- Overlapped interface -----------------------------------------
 
@@ -303,7 +303,7 @@ extern class Duplex<TSelf:Duplex<TSelf>> extends Readable<TSelf> implements IDup
 		@see https://nodejs.org/api/stream.html#stream_writable_destroy_err_callback
 		@see https://nodejs.org/api/stream.html#stream_readable_destroy_err_callback
 	**/
-	private override function _destroy(err:Null<Error>, callback:?Error->Void):Void;
+	private override function _destroy(err:Null<Error>, callback:Null<Error>->Void):Void;
 
 	// This field is defined in super class.
 	// var isTTY(default, null):Bool;
