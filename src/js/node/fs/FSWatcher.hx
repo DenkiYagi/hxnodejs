@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,8 +22,8 @@
 
 package js.node.fs;
 
-import js.node.events.EventEmitter;
 import js.node.Fs.FsPath;
+import js.node.events.EventEmitter;
 #if haxe4
 import js.lib.Error;
 #else
@@ -33,7 +33,7 @@ import js.Error;
 /**
 	Enumeration of possible types of changes for 'change' event.
 **/
-@:enum abstract FSWatcherChangeType(String) from String to String {
+enum abstract FSWatcherChangeType(String) from String to String {
 	var Change = "change";
 	var Rename = "rename";
 }
@@ -41,7 +41,7 @@ import js.Error;
 /**
 	Enumeration of the events emitted by `FSWatcher`.
 **/
-@:enum abstract FSWatcherEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract FSWatcherEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when something changes in a watched directory or file. See more details in `Fs.watch`.
 

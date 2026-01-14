@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,8 +23,8 @@
 package js.node;
 
 import haxe.Constraints.Function;
-import haxe.extern.Rest;
 import haxe.extern.EitherType;
+import haxe.extern.Rest;
 import js.node.stream.Readable;
 import js.node.stream.Writable;
 #if haxe4

@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,10 +22,10 @@
 
 package js.node.fs;
 
-import js.node.events.EventEmitter.Event;
 import js.node.Fs.FsPath;
+import js.node.events.EventEmitter.Event;
 
-@:enum abstract WriteStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract WriteStreamEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when the `WriteStream`'s file is opened.
 

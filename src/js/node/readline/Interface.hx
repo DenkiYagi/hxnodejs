@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,7 +28,7 @@ import js.node.events.EventEmitter;
 /**
 	Enumeration of events emitted by the `Interface` objects.
 **/
-@:enum abstract InterfaceEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract InterfaceEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The `'close'` event is emitted when one of the following occur:
 

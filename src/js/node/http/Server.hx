@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -35,7 +35,7 @@ import js.Error;
 	Enumeration of events emitted by `http.Server` class in addition to
 	its parent `net.Server` class.
 **/
-@:enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted each time a request with an HTTP Expect: `100-continue` is received.
 		If this event is not listened for, the server will automatically respond with a `100 Continue` as appropriate.

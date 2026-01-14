@@ -1,11 +1,11 @@
 import haxe.io.Bytes;
-import haxe.io.Output;
-import haxe.io.Error;
 import haxe.io.Eof;
+import haxe.io.Error;
+import haxe.io.Output;
+import js.Node.process;
 import js.node.Buffer;
 import js.node.ChildProcess;
 import js.node.Fs;
-import js.Node.process;
 
 @:dce
 @:coreApi
@@ -27,8 +27,11 @@ class Sys {
 		return process.env[s];
 	}
 
-	public static inline function putEnv(s:String, v:String):Void {
-		process.env[s] = v;
+	public static inline function putEnv(s:String, v:Null<String>):Void {
+		if (v == null)
+			process.env.remove(s);
+		else
+			process.env[s] = v;
 	}
 
 	public static function environment():Map<String, String> {
@@ -43,7 +46,7 @@ class Sys {
 	}
 
 	public inline static function getCwd():String {
-		return process.cwd();
+		return haxe.io.Path.addTrailingSlash(process.cwd());
 	}
 
 	public static inline function setCwd(s:String):Void {

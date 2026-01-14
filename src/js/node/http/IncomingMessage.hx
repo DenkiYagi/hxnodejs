@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,8 +24,8 @@ package js.node.http;
 
 import haxe.DynamicAccess;
 import js.node.events.EventEmitter.Event;
-import js.node.stream.Readable;
 import js.node.net.Socket;
+import js.node.stream.Readable;
 #if haxe4
 import js.lib.Error;
 #else
@@ -35,7 +35,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by the `IncomingMessage` objects in addition to its parent class events.
 **/
-@:enum abstract IncomingMessageeEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract IncomingMessageeEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when the request has been aborted.
 	**/

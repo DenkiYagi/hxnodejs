@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -32,7 +32,7 @@ import js.Error;
 /**
 	Enumeration of possible Int `options` values for `Dns.lookup`.
 **/
-@:enum abstract DnsAddressFamily(Int) from Int to Int {
+enum abstract DnsAddressFamily(Int) from Int to Int {
 	var IPv4 = 4;
 	var IPv6 = 6;
 }
@@ -63,7 +63,7 @@ typedef DnsLookupOptions = {
 /**
 	Enumeration of possible `rrtype` value for `Dns.resolve`.
 **/
-@:enum abstract DnsRrtype(String) from String to String {
+enum abstract DnsRrtype(String) from String to String {
 	/**
 		IPV4 addresses, default
 	**/
@@ -137,132 +137,136 @@ extern class DnsError extends Error {
 #else
 @:jsRequire("dns")
 #end
-@:enum extern abstract DnsErrorCode(String) {
+extern class DnsErrorCodes {
 	/**
 		DNS server returned answer with no data.
 	**/
-	var NODATA;
+	static final NODATA:DnsErrorCode;
 
 	/**
 		DNS server claims query was misformatted.
 	**/
-	var FORMERR;
+	static final FORMERR:DnsErrorCode;
 
 	/**
 		DNS server returned general failure.
 	**/
-	var SERVFAIL;
+	static final SERVFAIL:DnsErrorCode;
 
 	/**
 		Domain name not found.
 	**/
-	var NOTFOUND;
+	static final NOTFOUND:DnsErrorCode;
 
 	/**
 		DNS server does not implement requested operation.
 	**/
-	var NOTIMP;
+	static final NOTIMP:DnsErrorCode;
 
 	/**
 		DNS server refused query.
 	**/
-	var REFUSED;
+	static final REFUSED:DnsErrorCode;
 
 	/**
 		Misformatted DNS query.
 	**/
-	var BADQUERY;
+	static final BADQUERY:DnsErrorCode;
 
 	/**
 		Misformatted domain name.
 	**/
-	var BADNAME;
+	static final BADNAME:DnsErrorCode;
 
 	/**
 		Unsupported address family.
 	**/
-	var BADFAMILY;
+	static final BADFAMILY:DnsErrorCode;
 
 	/**
 		Misformatted DNS reply.
 	**/
-	var BADRESP;
+	static final BADRESP:DnsErrorCode;
 
 	/**
 		Could not contact DNS servers.
 	**/
-	var CONNREFUSED;
+	static final CONNREFUSED:DnsErrorCode;
 
 	/**
 		Timeout while contacting DNS servers.
 	**/
-	var TIMEOUT;
+	static final TIMEOUT:DnsErrorCode;
 
 	/**
 		End of file.
 	**/
-	var EOF;
+	static final EOF:DnsErrorCode;
 
 	/**
 		Error reading file.
 	**/
-	var FILE;
+	static final FILE:DnsErrorCode;
 
 	/**
 		Out of memory.
 	**/
-	var NOMEM;
+	static final NOMEM:DnsErrorCode;
 
 	/**
 		Channel is being destroyed.
 	**/
-	var DESTRUCTION;
+	static final DESTRUCTION:DnsErrorCode;
 
 	/**
 		Misformatted string.
 	**/
-	var BADSTR;
+	static final BADSTR:DnsErrorCode;
 
 	/**
 		Illegal flags specified.
 	**/
-	var BADFLAGS;
+	static final BADFLAGS:DnsErrorCode;
 
 	/**
 		Given hostname is not numeric.
 	**/
-	var NONAME;
+	static final NONAME:DnsErrorCode;
 
 	/**
 		Illegal hints flags specified.
 	**/
-	var BADHINTS;
+	static final BADHINTS:DnsErrorCode;
 
 	/**
 		c-ares library initialization not yet performed.
 	**/
-	var NOTINITIALIZED;
+	static final NOTINITIALIZED:DnsErrorCode;
 
 	/**
 		Error loading iphlpapi.dll.
 	**/
-	var LOADIPHLPAPI;
+	static final LOADIPHLPAPI:DnsErrorCode;
 
 	/**
 		Could not find GetNetworkParams function.
 	**/
-	var ADDRGETNETWORKPARAMS;
+	static final ADDRGETNETWORKPARAMS:DnsErrorCode;
 
 	/**
 		DNS query cancelled.
 	**/
-	var CANCELLED;
+	static final CANCELLED:DnsErrorCode;
 }
 
-typedef DnsLookupCallbackSingle = #if (haxe_ver >= 4) (err : DnsError, address : String, family : DnsAddressFamily) -> Void; #else DnsError->String->
-	DnsAddressFamily->Void #end
-typedef DnsLookupCallbackAll = #if (haxe_ver >= 4) (err : DnsError, addresses : Array<DnsLookupCallbackAllEntry>) -> Void; #else DnsError->
-	Array<DnsLookupCallbackAllEntry>->Void; #end
+abstract DnsErrorCode(String) to String {}
+
+typedef DnsLookupCallbackSingle = #if (haxe_ver >= 4) (err:DnsError, address:String,
+		family:DnsAddressFamily) -> Void; #else DnsError->String->DnsAddressFamily->Void #end
+
+typedef DnsLookupCallbackAll = #if (haxe_ver >= 4) (err:DnsError,
+		addresses:Array<DnsLookupCallbackAllEntry>) -> Void; #else DnsError->Array<DnsLookupCallbackAllEntry>->Void; #end
+
 typedef DnsLookupCallbackAllEntry = {address:String, family:DnsAddressFamily};
 
 /**

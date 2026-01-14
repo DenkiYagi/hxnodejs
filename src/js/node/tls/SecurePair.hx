@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -27,7 +27,7 @@ import js.node.events.EventEmitter;
 /**
 	Events emitted by `SecurePair`.
 **/
-@:enum abstract SecurePairEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract SecurePairEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		The event is emitted from the `SecurePair` once the pair has successfully established a secure connection.
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -25,7 +25,7 @@ package js.node.crypto;
 import haxe.extern.EitherType;
 import js.node.Buffer;
 
-@:enum abstract ECDHFormat(String) from String to String {
+enum abstract ECDHFormat(String) from String to String {
 	var Compressed = "compressed";
 	var Uncompressed = "uncompressed";
 	var Hybrid = "hybrid";

@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,16 +22,16 @@
 
 package js.node.buffer;
 
-import haxe.io.UInt8Array;
 import haxe.io.Bytes;
+import haxe.io.UInt8Array;
 #if haxe4
-import js.lib.Object;
-import js.lib.ArrayBufferView;
 import js.lib.ArrayBuffer;
+import js.lib.ArrayBufferView;
+import js.lib.Object;
 import js.lib.Uint8Array;
 #else
-import js.html.ArrayBufferView;
 import js.html.ArrayBuffer;
+import js.html.ArrayBufferView;
 import js.html.Uint8Array;
 #end
 

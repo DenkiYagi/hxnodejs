@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -40,7 +40,7 @@ import js.Error;
 @:jsRequire("stream", "Transform")
 #end
 extern class Transform<TSelf:Transform<TSelf>> extends Duplex<TSelf> implements ITransform {
-	function new(?options:TransformNewoptions);
+	function new(?options:TransformNewOptions);
 
 	/**
 		This function **MUST NOT** be called by application code directly.
@@ -48,7 +48,7 @@ extern class Transform<TSelf:Transform<TSelf>> extends Duplex<TSelf> implements 
 
 		@see https://nodejs.org/api/stream.html#stream_transform_flush_callback
 	**/
-	private function _flush(callback:?Error->Void):Void;
+	private function _flush(callback:Null<Error>->Void):Void;
 
 	/**
 		This function **MUST NOT** be called by application code directly.
@@ -57,25 +57,25 @@ extern class Transform<TSelf:Transform<TSelf>> extends Duplex<TSelf> implements 
 		@see https://nodejs.org/api/stream.html#stream_transform_transform_chunk_encoding_callback
 	**/
 	#if haxe4
-	private function _transform(chunk:Dynamic, encoding:String, callback:(?error:Error, ?data:Dynamic) -> Void):Void;
+	private function _transform(chunk:Dynamic, encoding:String, callback:(error:Null<Error>, data:Dynamic) -> Void):Void;
 	#else
-	private function _transform(chunk:Dynamic, encoding:String, callback:?Error->?Dynamic->Void):Void;
+	private function _transform(chunk:Dynamic, encoding:String, callback:Null<Error>->Dynamic->Void):Void;
 	#end
 }
 
 /**
 	@see https://nodejs.org/api/stream.html#stream_new_stream_transform_options
 **/
-typedef TransformNewoptions = {
+typedef TransformNewOptions = {
 	> Duplex.DuplexNewOptions,
 
 	/**
 		Implementation for the `stream._transform()` method.
 	**/
 	#if haxe4
-	@:optional var transform:(chunk:Dynamic, encoding:String, callback:(?error:Error, ?data:Dynamic) -> Void) -> Void;
+	@:optional var transform:(chunk:Dynamic, encoding:String, callback:(error:Null<Error>, data:Dynamic) -> Void) -> Void;
 	#else
-	@:optional var transform:Dynamic->String->(?Error->?Dynamic->Void)->Void;
+	@:optional var transform:Dynamic->String->(Null<Error>->Dynamic->Void)->Void;
 	#end
 
 	/**

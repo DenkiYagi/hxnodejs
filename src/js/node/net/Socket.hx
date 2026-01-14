@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,18 +23,18 @@
 package js.node.net;
 
 import haxe.extern.EitherType;
+import js.node.Dns;
+import js.node.events.EventEmitter.Event;
 #if haxe4
 import js.lib.Error;
 #else
 import js.Error;
 #end
-import js.node.Dns;
-import js.node.events.EventEmitter.Event;
 
 /**
 	Enumeration of events for `Socket` objects.
 **/
-@:enum abstract SocketEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract SocketEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted after resolving the hostname but before connecting.
 		Not applicable to UNIX sockets.
@@ -198,7 +198,7 @@ typedef SocketAdress = {
 /**
 	Enumeration of possible socket family values.
 **/
-@:enum abstract SocketAdressFamily(String) to String {
+enum abstract SocketAdressFamily(String) to String {
 	var IPv4 = "IPv4";
 	var IPv6 = "IPv6";
 }

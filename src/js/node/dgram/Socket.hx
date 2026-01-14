@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -33,7 +33,7 @@ import js.Error;
 /**
 	Enumeration of events for the `Socket` object.
 **/
-@:enum abstract SocketEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract SocketEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when a new datagram is available on a socket.
 		Listener arguments:
@@ -60,12 +60,24 @@ import js.Error;
 	var Error:SocketEvent<Error->Void> = "error";
 }
 
-typedef MessageListener = Buffer->SocketAdress->Void;
+/**
+	Remote address information for the `SocketEvent.Message` event.
+**/
+typedef MessageRemoteInfo = {
+	> SocketAdress,
+
+	/**
+		The message size.
+	**/
+	var size:Int;
+}
+
+typedef MessageListener = Buffer->MessageRemoteInfo->Void;
 
 /**
 	Enumeration of possible datagram socket types
 **/
-@:enum abstract SocketType(String) from String to String {
+enum abstract SocketType(String) from String to String {
 	var Udp4 = "udp4";
 	var Udp6 = "udp6";
 }

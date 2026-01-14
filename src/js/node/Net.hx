@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,8 +23,8 @@
 package js.node;
 
 import haxe.extern.EitherType;
-import js.node.net.Socket;
 import js.node.net.Server;
+import js.node.net.Socket;
 
 typedef NetCreateServerOptions = {
 	> SocketOptionsBase,
@@ -60,7 +60,7 @@ typedef NetConnectOptionsUnix = {
 /**
 	Enumeration of possible values for `Net.isIP` return.
 **/
-@:enum abstract NetIsIPResult(Int) to Int {
+enum abstract NetIsIPResult(Int) to Int {
 	var Invalid = 0;
 	var IPv4 = 4;
 	var IPv6 = 6;

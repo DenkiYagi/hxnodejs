@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,16 +24,16 @@ package js.node;
 
 import haxe.DynamicAccess;
 import haxe.extern.EitherType;
+import js.node.Buffer;
+import js.node.fs.FSWatcher;
+import js.node.fs.ReadStream;
+import js.node.fs.Stats;
+import js.node.fs.WriteStream;
 #if haxe4
 import js.lib.Error;
 #else
 import js.Error;
 #end
-import js.node.Buffer;
-import js.node.fs.Stats;
-import js.node.fs.FSWatcher;
-import js.node.fs.ReadStream;
-import js.node.fs.WriteStream;
 
 /**
 	Most FS functions now support passing `String` and `Buffer`.
@@ -168,7 +168,7 @@ typedef FsCreateWriteStreamOptions = {
 /**
 	Enumeration of possible symlink types
 **/
-@:enum abstract SymlinkType(String) from String to String {
+enum abstract SymlinkType(String) from String to String {
 	var Dir = "dir";
 	var File = "file";
 	var Junction = "junction";
@@ -184,7 +184,7 @@ typedef FsCreateWriteStreamOptions = {
 	On Linux, positional writes don't work when the file is opened in append mode.
 	The kernel ignores the position argument and always appends the data to the end of the file.
 **/
-@:enum abstract FsOpenFlag(String) from String to String {
+enum abstract FsOpenFlag(String) from String to String {
 	/**
 		Open file for reading.
 		An exception occurs if the file does not exist.
@@ -466,6 +466,32 @@ typedef FsConstants = {
 }
 
 /**
+	Options for `Fs.rmdir` and `Fs.rmdirSync`.
+**/
+typedef FsRmdirOptions = {
+	/**
+		If an `EBUSY`, `EMFILE`, `ENFILE`, `ENOTEMPTY`, or `EPERM` error is encountered,
+		Node.js will retry the operation with a linear backoff wait of `retryDelay` ms longer on each try.
+		This option represents the number of retries.
+		This option is ignored if the `recursive` option is not `true`.
+	**/
+	@:optional var maxRetries:Int;
+
+	/**
+		If `true`, perform a recursive directory removal.
+		In recursive mode, errors are not reported if `path` does not exist,
+		and operations are retried on failure.
+	**/
+	@:optional var recursive:Bool;
+
+	/**
+		The amount of time in milliseconds to wait between retries.
+		This option is ignored if the `recursive` option is not `true`.
+	**/
+	@:optional var retryDelay:Int;
+}
+
+/**
 	File I/O is provided by simple wrappers around standard POSIX functions.
 	All the methods have asynchronous and synchronous forms.
 
@@ -687,12 +713,13 @@ extern class Fs {
 	/**
 		Asynchronous rmdir(2).
 	**/
-	static function rmdir(path:FsPath, callback:Error->Void):Void;
+	@:overload(function(path:FsPath, callback:Error->Void):Void {})
+	static function rmdir(path:FsPath, options:FsRmdirOptions, callback:Error->Void):Void;
 
 	/**
 		Synchronous rmdir(2).
 	**/
-	static function rmdirSync(path:FsPath):Void;
+	static function rmdirSync(path:FsPath, ?options:FsRmdirOptions):Void;
 
 	/**
 		Asynchronous mkdir(2).

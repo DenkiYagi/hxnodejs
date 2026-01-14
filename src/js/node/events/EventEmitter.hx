@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -25,14 +25,14 @@ package js.node.events;
 import haxe.Constraints.Function;
 import haxe.extern.Rest;
 #if haxe4
-import js.lib.Symbol;
 import haxe.extern.EitherType;
+import js.lib.Symbol;
 #end
 
 /**
 	Enumeration of events emitted by all `EventEmitter` instances.
 **/
-@:enum abstract EventEmitterEvent<T:Function>(Event<T>) to Event<T> {
+enum abstract EventEmitterEvent<T:Function>(Event<T>) to Event<T> {
 	/**
 		The `EventEmitter` instance will emit its own `'newListener'` event before
 		a listener is added to its internal array of listeners.

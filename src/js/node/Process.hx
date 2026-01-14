@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -25,10 +25,10 @@ package js.node;
 import haxe.DynamicAccess;
 import haxe.extern.EitherType;
 import haxe.extern.Rest;
+import js.node.child_process.ChildProcess.ChildProcessSendOptions;
 import js.node.events.EventEmitter;
 import js.node.stream.Readable;
 import js.node.stream.Writable;
-import js.node.child_process.ChildProcess.ChildProcessSendOptions;
 #if haxe4
 import js.lib.Error;
 #else
@@ -38,7 +38,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by the Process class.
 **/
-@:enum abstract ProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ProcessEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Emitted when the process is about to exit.
 		There is no way to prevent the exiting of the event loop at this point,
@@ -263,6 +263,21 @@ extern class Process extends EventEmitter<Process> {
 	var platform:String;
 
 	/**
+		The PID of the parent process
+	**/
+	var ppid:Int;
+
+	/**
+		The metadata of the current release
+	**/
+	var release:Release;
+
+	/**
+		Used for diagnostic reports
+	**/
+	var report:Report;
+
+	/**
 		Returns an object describing the memory usage of the Node process measured in bytes.
 	**/
 	function memoryUsage():MemoryUsage;
@@ -348,4 +363,12 @@ typedef MemoryUsage = {
 	rss:Float,
 	heapTotal:Float,
 	heapUsed:Float
+}
+
+typedef Release = {
+	name:String,
+	?sourceUrl:String,
+	?headersUrl:String,
+	?libUrl:String,
+	?lts:String
 }

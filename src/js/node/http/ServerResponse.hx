@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,13 +24,13 @@ package js.node.http;
 
 import haxe.DynamicAccess;
 import js.node.events.EventEmitter.Event;
-import js.node.stream.Writable;
 import js.node.net.Socket;
+import js.node.stream.Writable;
 
 /**
 	Enumeration of events emitted by the `ServerResponse` objects in addition to its parent class events.
 **/
-@:enum abstract ServerResponseEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ServerResponseEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		Indicates that the underlying connection was terminated.
 	**/

@@ -5,6 +5,10 @@ import js.node.Fs;
 @:dce
 // @:coreApi
 class File {
+	public static inline function append(path:String, binary:Bool = true):FileOutput {
+		return new FileOutput(Fs.openSync(path, AppendCreate));
+	}
+
 	public static inline function write(path:String, binary:Bool = true):FileOutput {
 		return new FileOutput(Fs.openSync(path, WriteCreate));
 	}
@@ -27,6 +31,10 @@ class File {
 
 	public static inline function saveBytes(path:String, bytes:haxe.io.Bytes):Void {
 		Fs.writeFileSync(path, js.node.Buffer.hxFromBytes(bytes));
+	}
+
+	public static inline function update(path:String, binary:Bool = true):FileOutput {
+		return new FileOutput(Fs.openSync(path, ReadWrite));
 	}
 
 	static inline var copyBufLen = 64 * 1024;

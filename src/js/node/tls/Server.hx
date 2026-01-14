@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,9 +23,9 @@
 package js.node.tls;
 
 import js.node.Buffer;
-import js.node.tls.TLSSocket;
-import js.node.tls.SecureContext.SecureContextOptions;
 import js.node.events.EventEmitter.Event;
+import js.node.tls.SecureContext.SecureContextOptions;
+import js.node.tls.TLSSocket;
 #if haxe4
 import js.lib.Error;
 #else
@@ -35,7 +35,7 @@ import js.Error;
 /**
 	Enumeration of events emitted by `Server` in addition to its parent classes.
 **/
-@:enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
+enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	/**
 		This event is emitted after a new connection has been successfully handshaked.
 	**/

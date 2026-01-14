@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2014-2019 Haxe Foundation
+ * Copyright (C)2014-2020 Haxe Foundation
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -22,8 +22,8 @@
 
 package js.node;
 
-import js.node.http.IncomingMessage;
 import js.node.http.ClientRequest;
+import js.node.http.IncomingMessage;
 import js.node.http.ServerResponse;
 import js.node.https.*;
 import js.node.url.URL;
@@ -56,8 +56,10 @@ extern class Https {
 		If `options` is a string, it is automatically parsed with `new URL()`.
 		If it is a `URL` object, it will be automatically converted to an ordinary `options` object.
 	**/
-	@:overload(function(url:URL, ?options:HttpsRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
-	@:overload(function(url:String, ?options:HttpsRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
+	@:overload(function(url:URL, ?callback:IncomingMessage->Void):ClientRequest {})
+	@:overload(function(url:URL, options:HttpsRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
+	@:overload(function(url:String, ?callback:IncomingMessage->Void):ClientRequest {})
+	@:overload(function(url:String, options:HttpsRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
 	static function get(options:HttpsRequestOptions, ?callback:IncomingMessage->Void):ClientRequest;
 
 	/**
@@ -76,8 +78,10 @@ extern class Https {
 		If `options` is a string, it is automatically parsed with `new URL()`.
 		If it is a `URL` object, it will be automatically converted to an ordinary `options` object.
 	**/
-	@:overload(function(options:URL, ?options:HttpsRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
-	@:overload(function(options:String, ?options:HttpsRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
+	@:overload(function(url:URL, ?callback:IncomingMessage->Void):ClientRequest {})
+	@:overload(function(url:URL, options:HttpsRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
+	@:overload(function(url:String, ?callback:IncomingMessage->Void):ClientRequest {})
+	@:overload(function(url:String, options:HttpsRequestOptions, ?callback:IncomingMessage->Void):ClientRequest {})
 	static function request(options:HttpsRequestOptions, ?callback:IncomingMessage->Void):ClientRequest;
 }
 
