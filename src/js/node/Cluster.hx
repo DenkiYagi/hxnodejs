@@ -113,10 +113,12 @@ enum abstract ListeningEventAddressType(haxe.extern.EitherType<Int, String>) to 
 }
 
 @:jsRequire("cluster")
-extern enum abstract ClusterSchedulingPolicy(Int) {
-	var SCHED_NONE;
-	var SCHED_RR;
+extern class ClusterSchedulingPolicies {
+	static final SCHED_NONE:ClusterSchedulingPolicy;
+	static final SCHED_RR:ClusterSchedulingPolicy;
 }
+
+abstract ClusterSchedulingPolicy(Int) to Int {}
 
 /**
 	A single instance of Node runs in a single thread.
