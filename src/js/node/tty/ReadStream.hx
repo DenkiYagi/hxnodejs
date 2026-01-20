@@ -27,7 +27,11 @@ package js.node.tty;
 	In normal circumstances, process.stdin will be the only tty.ReadStream instance
 	in any node program (only when isatty(0) is true).
 **/
+#if jsImport
+@:js.import("tty", "ReadStream")
+#else
 @:jsRequire("tty", "ReadStream")
+#end
 extern class ReadStream extends js.node.net.Socket {
 	/**
 		A boolean that is initialized to false.

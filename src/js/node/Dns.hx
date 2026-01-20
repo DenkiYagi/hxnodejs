@@ -132,7 +132,11 @@ extern class DnsError extends Error {
 /**
 	Each DNS query can return one of the following error codes
 **/
+#if jsImport
+@:js.import(@star "dns")
+#else
 @:jsRequire("dns")
+#end
 extern class DnsErrorCodes {
 	/**
 		DNS server returned answer with no data.

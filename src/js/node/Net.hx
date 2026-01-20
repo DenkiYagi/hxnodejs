@@ -70,7 +70,11 @@ enum abstract NetIsIPResult(Int) to Int {
 	The net module provides you with an asynchronous network wrapper.
 	It contains methods for creating both servers and clients (called streams).
 **/
+#if jsImport
+@:js.import(@star "net")
+#else
 @:jsRequire("net")
+#end
 extern class Net {
 	/**
 		Creates a new TCP server.

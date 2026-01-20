@@ -25,5 +25,9 @@ package js.node.zlib;
 /**
 	Compress data using deflate.
 **/
+#if jsImport
+@:js.import("zlib", "Deflate")
+#else
 @:jsRequire("zlib", "Deflate")
+#end
 extern class Deflate extends Zlib {}

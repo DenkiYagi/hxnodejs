@@ -27,7 +27,11 @@ package js.node.util;
 
 	@see https://nodejs.org/api/util.html#util_util_types
 **/
+#if jsImport
+@:js.import("util", "types")
+#else
 @:jsRequire("util", "types")
+#end
 extern class Types {
 	/**
 		Returns `true` if the value is a built-in `ArrayBuffer` or `SharedArrayBuffer` instance.

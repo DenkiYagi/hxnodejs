@@ -39,7 +39,11 @@ import js.Error;
 
 	@see https://nodejs.org/api/repl.html#repl_repl
 **/
+#if jsImport
+@:js.import(@star "repl")
+#else
 @:jsRequire("repl")
+#end
 extern class Repl {
 	/**
 		The `repl.start()` method creates and starts a `repl.REPLServer` instance.

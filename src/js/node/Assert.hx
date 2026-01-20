@@ -38,7 +38,11 @@ import js.RegExp;
 
 	@see https://nodejs.org/api/assert.html#assert_assert
 **/
+#if jsImport
+@:js.import(@star "assert")
+#else
 @:jsRequire("assert")
+#end
 extern class Assert {
 	/**
 		In strict mode, assert functions use the comparison in the corresponding strict functions.

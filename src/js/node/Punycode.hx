@@ -23,7 +23,11 @@
 package js.node;
 
 @:deprecated("In a future major version of Node.js punycode module will be removed")
+#if jsImport
+@:js.import(@star "punycode")
+#else
 @:jsRequire("punycode")
+#end
 extern class Punycode {
 	/**
 		Converts a Punycode string of ASCII code points to a string of Unicode code points.

@@ -98,7 +98,11 @@ enum abstract ServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 	This class is a subclass of `net.Server` and has the same methods on it.
 	Instead of accepting just raw TCP connections, this accepts encrypted connections using TLS or SSL.
 **/
+#if jsImport
+@:js.import("tls", "Server")
+#else
 @:jsRequire("tls", "Server")
+#end
 extern class Server extends js.node.net.Server {
 	/**
 		Returns `Buffer` instance holding the keys currently used for encryption/decryption of the TLS Session Tickets.

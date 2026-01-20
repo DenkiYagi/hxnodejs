@@ -37,7 +37,12 @@ import js.Promise;
 /**
 	Base class for all streams.
 **/
-@:jsRequire("stream") // the module itself is also a class
+#if jsImport
+@:js.import(@star "stream")
+#else
+@:jsRequire("stream")
+#end
+// the module itself is also a class
 extern class Stream<TSelf:Stream<TSelf>> extends EventEmitter<TSelf> implements IStream {
 	private function new();
 

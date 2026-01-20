@@ -33,7 +33,11 @@ import js.Error;
 
 	@see https://nodejs.org/api/assert.html#assert_class_assert_assertionerror
 **/
+#if jsImport
+@:js.import("assert", "AssertionError")
+#else
 @:jsRequire("assert", "AssertionError")
+#end
 extern class AssertionError extends Error {
 	/**
 		A subclass of Error that indicates the failure of an assertion.

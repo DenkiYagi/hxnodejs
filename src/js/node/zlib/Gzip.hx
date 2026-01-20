@@ -25,5 +25,9 @@ package js.node.zlib;
 /**
 	Compress data using gzip.
 **/
+#if jsImport
+@:js.import("zlib", "Gzip")
+#else
 @:jsRequire("zlib", "Gzip")
+#end
 extern class Gzip extends Zlib {}

@@ -25,5 +25,9 @@ package js.node.zlib;
 /**
 	Decompress either a Gzip- or Deflate-compressed stream by auto-detecting the header.
 **/
+#if jsImport
+@:js.import("zlib", "Unzip")
+#else
 @:jsRequire("zlib", "Unzip")
+#end
 extern class Unzip extends Zlib {}

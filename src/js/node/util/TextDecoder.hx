@@ -36,7 +36,11 @@ import js.html.ArrayBufferView;
 
 	@see https://nodejs.org/api/util.html#util_class_util_textdecoder
 **/
+#if jsImport
+@:js.import("util", "TextDecoder")
+#else
 @:jsRequire("util", "TextDecoder")
+#end
 extern class TextDecoder {
 	/**
 		Creates an new `TextDecoder` instance.

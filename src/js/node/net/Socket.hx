@@ -203,7 +203,11 @@ enum abstract SocketAdressFamily(String) to String {
 	var IPv6 = "IPv6";
 }
 
+#if jsImport
+@:js.import("net", "Socket")
+#else
 @:jsRequire("net", "Socket")
+#end
 extern class Socket extends js.node.stream.Duplex<Socket> {
 	/**
 		Construct a new socket object.
