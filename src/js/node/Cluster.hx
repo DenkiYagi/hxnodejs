@@ -112,11 +112,17 @@ enum abstract ListeningEventAddressType(haxe.extern.EitherType<Int, String>) to 
 	var UDPv6 = "udp6";
 }
 
+#if jsImport
+@:js.import(@star "cluster")
+#else
 @:jsRequire("cluster")
-extern enum abstract ClusterSchedulingPolicy(Int) {
-	var SCHED_NONE;
-	var SCHED_RR;
+#end
+extern class ClusterSchedulingPolicies {
+	static final SCHED_NONE:ClusterSchedulingPolicy;
+	static final SCHED_RR:ClusterSchedulingPolicy;
 }
+
+abstract ClusterSchedulingPolicy(Int) to Int {}
 
 /**
 	A single instance of Node runs in a single thread.
@@ -127,7 +133,11 @@ extern enum abstract ClusterSchedulingPolicy(Int) {
 
 	Also note that, on Windows, it is not yet possible to set up a named pipe server in a worker.
 **/
+#if jsImport
+@:js.import(@star "cluster")
+#else
 @:jsRequire("cluster")
+#end
 extern class Cluster extends EventEmitter<Cluster> {
 	/**
 		A reference to the `Cluster` object returned by node.js module.

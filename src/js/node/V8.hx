@@ -27,7 +27,11 @@ package js.node;
 
 	Note: The APIs and implementation are subject to change at any time.
 **/
+#if jsImport
+@:js.import(@star "v8")
+#else
 @:jsRequire("v8")
+#end
 extern class V8 {
 	static function getHeapStatistics():V8HeapStatistics;
 

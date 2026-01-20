@@ -62,7 +62,11 @@ enum abstract EventEmitterEvent<T:Function>(Event<T>) to Event<T> {
 
 	@see https://nodejs.org/api/events.html#events_class_eventemitter
 **/
+#if jsImport
+@:js.import("events", "EventEmitter")
+#else
 @:jsRequire("events", "EventEmitter")
+#end
 extern class EventEmitter<TSelf:EventEmitter<TSelf>> implements IEventEmitter {
 	function new();
 

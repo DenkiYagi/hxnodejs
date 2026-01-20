@@ -32,7 +32,11 @@ import js.node.url.URL;
 	HTTPS is the HTTP protocol over TLS/SSL.
 	In Node.js this is implemented as a separate module.
 **/
+#if jsImport
+@:js.import(@star "https")
+#else
 @:jsRequire("https")
+#end
 extern class Https {
 	/**
 		Returns a new HTTPS web server object.

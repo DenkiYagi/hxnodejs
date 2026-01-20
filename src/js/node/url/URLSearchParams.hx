@@ -32,7 +32,11 @@ import js.node.Iterator;
 	The WHATWG `URLSearchParams` interface and the `querystring` module have similar purpose,
 	but the purpose of the querystring module is more general, as it allows the customization of delimiter characters (`&` and` `=`). On the other hand, this API is designed purely for URL query strings.
 **/
+#if jsImport
+@:js.import("url", "URLSearchParams")
+#else
 @:jsRequire("url", "URLSearchParams")
+#end
 extern class URLSearchParams {
 	@:overload(function(init:String):Void {})
 	@:overload(function(obj:Dynamic<String>):Void {})

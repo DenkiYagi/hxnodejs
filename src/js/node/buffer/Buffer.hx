@@ -40,7 +40,11 @@ import js.html.Uint8Array;
 
 	@see https://nodejs.org/api/buffer.html#buffer_class_buffer
 **/
+#if jsImport
+@:js.import("buffer", "Buffer")
+#else
 @:jsRequire("buffer", "Buffer")
+#end
 extern class Buffer extends Uint8Array {
 	/**
 		Allocates a new buffer.

@@ -38,7 +38,11 @@ package js.node.buffer;
 	undue memory retention in their applications.
 **/
 @:deprecated("SlowBuffer is deprecated, use Buffer.allocUnsafeSlow() instead")
+#if jsImport
+@:js.import("buffer", "SlowBuffer")
+#else
 @:jsRequire("buffer", "SlowBuffer")
+#end
 extern class SlowBuffer extends Buffer {
 	/**
 		Allocates a new `SlowBuffer` of `size` bytes.

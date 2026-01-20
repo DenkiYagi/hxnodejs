@@ -22,7 +22,11 @@
 
 package js.node;
 
+#if jsImport
+@:js.import(@star "constants")
+#else
 @:jsRequire("constants")
+#end
 extern class Constants {
 	static var ENGINE_METHOD_RSA(default, null):Int;
 	static var ENGINE_METHOD_DSA(default, null):Int;

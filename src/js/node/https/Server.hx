@@ -26,5 +26,9 @@ package js.node.https;
 	This class is a subclass of `tls.Server` and emits events same as `http.Server`.
 	See [http.Server](https://nodejs.org/api/http.html#http_class_http_server) for more information.
 **/
+#if jsImport
+@:js.import("https", "Server")
+#else
 @:jsRequire("https", "Server")
+#end
 extern class Server extends js.node.tls.Server {}

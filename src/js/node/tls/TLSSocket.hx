@@ -83,7 +83,11 @@ typedef TLSSocketOptions = {
 
 	Its `encrypted` field is always true.
 **/
+#if jsImport
+@:js.import("tls", "TLSSocket")
+#else
 @:jsRequire("tls", "TLSSocket")
+#end
 extern class TLSSocket extends js.node.net.Socket {
 	/**
 		Construct a new TLSSocket object from existing TCP socket.

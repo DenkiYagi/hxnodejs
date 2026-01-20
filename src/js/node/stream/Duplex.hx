@@ -149,7 +149,11 @@ enum abstract DuplexEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T> {
 
 	@see https://nodejs.org/api/stream.html#stream_class_stream_duplex
 **/
+#if jsImport
+@:js.import("stream", "Duplex")
+#else
 @:jsRequire("stream", "Duplex")
+#end
 extern class Duplex<TSelf:Duplex<TSelf>> extends Readable<TSelf> implements IDuplex {
 	// --------- Writable interface implementation ----------------------------
 

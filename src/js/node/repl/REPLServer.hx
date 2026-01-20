@@ -64,7 +64,11 @@ enum abstract REPLServerEvent<T:haxe.Constraints.Function>(Event<T>) to Event<T>
 
 	@see https://nodejs.org/api/repl.html#repl_class_replserver
 **/
+#if jsImport
+@:js.import("repl", "REPLServer")
+#else
 @:jsRequire("repl", "REPLServer")
+#end
 extern class REPLServer extends EventEmitter<REPLServer> {
 	/**
 		It is possible to expose a variable to the REPL explicitly by assigning it to the `context` object associated

@@ -30,7 +30,11 @@ import js.lib.Promise;
 import js.Promise;
 #end
 
+#if jsImport
+@:js.import("util", "promisify")
+#else
 @:jsRequire("util", "promisify")
+#end
 extern class Promisify {
 	/**
 		Takes a function following the common error-first callback style, i.e. taking an `(err, value) => ...` callback

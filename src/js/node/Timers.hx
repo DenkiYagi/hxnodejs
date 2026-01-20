@@ -10,7 +10,11 @@ import haxe.extern.Rest;
 	The timer functions within Node.js implement a similar API as the timers API provided by Web Browsers
 	but use a different internal implementation that is built around the Node.js Event Loop.
 **/
+#if jsImport
+@:js.import(@star "timers")
+#else
 @:jsRequire("timers")
+#end
 extern class Timers {
 	/**
 		Schedules the "immediate" execution of the callback after I/O events' callbacks.

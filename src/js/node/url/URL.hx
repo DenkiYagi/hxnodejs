@@ -26,7 +26,11 @@ package js.node.url;
 	Browser-compatible URL class, implemented by following the WHATWG URL Standard.
 	[Examples of parsed URLs](https://url.spec.whatwg.org/#example-url-parsing) may be found in the Standard itself.
 **/
+#if jsImport
+@:js.import("url", "URL")
+#else
 @:jsRequire("url", "URL")
+#end
 extern class URL {
 	/**
 		Creates a new `URL` object by parsing the `input` relative to the `base`.

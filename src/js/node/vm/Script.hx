@@ -62,7 +62,11 @@ typedef ScriptRunOptions = {
 /**
 	A class for holding precompiled scripts, and running them in specific sandboxes.
 **/
+#if jsImport
+@:js.import("vm", "Script")
+#else
 @:jsRequire("vm", "Script")
+#end
 extern class Script {
 	/**
 		Creating a new `Script` compiles `code` but does not run it. Instead, the created `Script` object

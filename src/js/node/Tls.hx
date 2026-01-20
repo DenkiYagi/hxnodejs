@@ -157,7 +157,11 @@ typedef TlsConnectOptions = {
 	The tls module uses OpenSSL to provide Transport Layer Security
 	and/or Secure Socket Layer: encrypted stream communication.
 **/
+#if jsImport
+@:js.import(@star "tls")
+#else
 @:jsRequire("tls")
+#end
 extern class Tls {
 	/**
 		renegotiation limit, default is 3.
